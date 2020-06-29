@@ -12,18 +12,26 @@ while [ $# -gt 0 ];do
         -t)
             total=1
             ;;
-        *)
+        -d)
+            shift
             dir=$1
+            ;;
+        -h)
+            echo "wpsearchdir.sh [-v][-t][-d TARGET DIR]"
+            exit
             ;;
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
 #for dirs
-dirs=($(ls -lh -d */ | awk '{print $9}' | sed 's/\///g'))
+#dirs=($(ls -lh -d */ | awk '{print $9}' | sed 's/\///g'))
+dirs=$(find "$dir"*/ -maxdepth 1 -mindepth 1 -type d)
 #check for wpsites and add them to array
-for site in "${dirs[@]}"; do
+#for site in "${dirs[@]}"; do
+for site in $(ls -d $dir*/); do
     if [ -d "$site/wp-content/" ]; then
+        site=${site##"$dir"}
         if [ "$verbose" = "1" ]; then
             sleep 1
             echo "Found $site"
