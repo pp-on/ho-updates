@@ -42,6 +42,7 @@ for site in $(ls -d $dir*/); do
 done
 # w/o arguments
 if [ "$verbose" = "0" ]; then
+    #pass it
     echo "${sites[@]}" 
 fi
 # -t -> how many found 
