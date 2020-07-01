@@ -31,9 +31,9 @@ done
           
 for site in "${sites[@]}"; do
     #only names
-    site=${site##"$dir"}
-    site=${site%/}
-    echo -e "================\n\t\t$site\n================"
+    seite=${site##"$dir"}
+    seite=${site%/}
+    echo -e "================================\n\t$seite\n================================"
     cd $site  &>/dev/null
     echo -e "---------------\nCheck Core Update\n---------------"
     $wp core check-update
