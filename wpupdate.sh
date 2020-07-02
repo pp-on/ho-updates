@@ -29,7 +29,7 @@ done
 
 function update_core () { #update wordpress, only when there is a new version
     succes=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
-    echo $?
+    #echo $?
     if [ -z "$succes" ]; then #1
         echo -e "\nProceed with Core Update? [y/n]"
         read answer
