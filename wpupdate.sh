@@ -27,7 +27,20 @@ for site in $(ls -d $dir*/); do
     fi
 done
 
-
+function update_core () { #update wordpress, only when there is a new version
+    succes=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
+    echo $?
+    if [ -z "$succes" ]; then #1
+        echo -e "\nProceed with Core Update? [y/n]"
+        read answer
+        echo -e "\n--------------"
+        if [ "$answer" = "y" ]; then
+            $wp core update
+        else
+            echo "Nothin to be done"
+        fi
+    fi
+}
           
 for site in "${sites[@]}"; do
     #only names
@@ -35,21 +48,24 @@ for site in "${sites[@]}"; do
     seite=${site%/}
     echo -e "================================\n\t$seite\n================================"
     cd $site  &>/dev/null
+    echo -e "---------------\nChecking Site\n---------------"
+    # is wp-site working?
+    error=$($wp core check-update ) #the result of command -> 0 ok, 1 error. string goes to variable
+    #echo $?
+    if [ ! -z "$error" ]; then
+     #   echo "$error"
+        echo "Everything OK"
+    else
+        echo "$error" 
+        continue
+   fi
     echo -e "---------------\nCheck Core Update\n---------------"
     $wp core check-update
-    sleep 1 
-    echo -e "\nProceed? [y/n]"
-    read answer
-    echo -e "\n--------------"
-    if [ "$answer" = "y" ]; then
-        $wp core update
-    else
-        echo "Nothin done"
-    fi
+    update_core
     echo -e "---------------\nCheck Plugins\n---------------"
     $wp plugin list
     sleep 1 
-    echo -e "\nProceed? [y/n]"
+    echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
     read answer
     echo -e "\n--------------"
     if [ "$answer" = "y" ]; then
