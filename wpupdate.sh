@@ -23,7 +23,14 @@ done
 #only WP-Sites are to be processed
 for site in $(ls -d $dir*/); do
     if [ -d "$site/wp-content/" ]; then
-        sites+=("$site")
+        seite=${site##"$dir"}
+        echo "Found $seite"
+        echo "Should it be processed? [y/n] "
+        read answer
+        echo -e "\n--------------"
+        if [ "$answer" = "y" ]; then
+            sites+=("$site")
+        fi
     fi
 done
 
