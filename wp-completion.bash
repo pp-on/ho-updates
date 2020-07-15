@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # bash completion for the `wp` command
 
 _wp_complete() {
