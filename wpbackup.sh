@@ -36,6 +36,12 @@ for site in $(ls -d $dir*/); do
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
+            echo "Type in correct name. If the name is already right, just press
+            enter"
+            read name
+            if [ ! -z "$name" ]; then
+                site=$dir$name/
+            fi
             sites+=("$site")
         fi
     fi
