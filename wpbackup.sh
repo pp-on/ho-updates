@@ -36,7 +36,19 @@ for site in $(ls -d $dir*/); do
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
-            sites+=("$site")
+            echo "if name $site is wrong type in a new one"
+            read name
+            # when the name is corrected, put it inarray
+            # if not, put the original one with path in the same array
+            if [ ! -z "$name" ]; then
+                names+=("$name")
+            else
+                name=${site##"$dir"}
+                name=${name%/}
+                names+=("$name")
+            fi
+            sites+=("$site") #this array must contain the path for every site 
+                             # -> "cd $site"
         fi
     fi
 done
@@ -51,12 +63,11 @@ function folders () {
 
 folders $root
 datum=$(date)          
+i=0
 for site in "${sites[@]}"; do
     cd $site  &>/dev/null
     #only names
-    site=${site##"$dir"}
-    site=${site%/}
-    echo -e "================================\n\t$site\n================================"
+      echo -e "================================\n\t${names[$i]}\n================================"
     # is wp-site working?
     error=$($wp core check-update ) #the result of command -> 0 ok, 1 error. string goes to variable
     #echo $?
@@ -68,17 +79,18 @@ for site in "${sites[@]}"; do
         continue
    fi
    sleep 1
-    echo -e "---------------\nDumping Database#\n---------------"
-    $wp db export "${site}-${datum}.sql" --allow-root
+    echo -e "---------------\nDumping Database\n---------------"
+    $wp db export "${names[$i]}-${datum}.sql" --allow-root
     sleep 1
-    echo -e "---------------\nBackingup files\n---------------"
-    folders $root/$site
+    echo -e "---------------\nBacking up files\n---------------"
+    folders $root/${names[$i]}
     if [ "$verbose" -eq 1 ]; then
-        tar cvzf "$root/$site/${site}-${datum}.tar.gz" . 
+        tar cvzf "$root/${names[$i]}/${names[$i]}-${datum}.tar.gz" . 
     else
-        tar czf "$root/$site/${site}-${datum}.tar.gz" . 
+        tar czf "$root/${names[$i]}/${names[$i]}-${datum}.tar.gz" . 
     fi
-    rm "${site}-${datum}.sql"    #CLEAN UP
+   rm "${names[$i]}-${datum}.sql"    #CLEAN UP
     cd -  &>/dev/null
+    ((i++))
 done
 
