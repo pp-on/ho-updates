@@ -36,7 +36,6 @@ for site in $(ls -d $dir*/); do
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
-<<<<<<< HEAD
             echo "if name $site is wrong type in a new one"
             read name
             # when the name is corrected, put it inarray
@@ -50,7 +49,6 @@ for site in $(ls -d $dir*/); do
             fi
             sites+=("$site") #this array must contain the path for every site 
                              # -> "cd $site"
-=======
             echo "Type in correct name. If the name is already right, just press
             enter"
             read name
@@ -58,7 +56,6 @@ for site in $(ls -d $dir*/); do
                 site=$dir$name/
             fi
             sites+=("$site")
->>>>>>> 6fbea6bc76ab9aa833954f41900a75fa9c8864ef
         fi
     fi
 done
