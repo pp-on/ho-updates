@@ -15,7 +15,7 @@ while [ $# -gt 0 ];do
             dir=$1
             ;;
         -h)
-            echo "wpbackup.sh [-b][-r][-d targetDIR][-w path/to/wp]"
+            echo "wpbackup.sh [-v][-d targetDIR][-w path/to/wp]"
             exit
             ;;
         -w)
@@ -65,6 +65,7 @@ folders $root
 datum=$(date)          
 i=0
 for site in "${sites[@]}"; do
+    backup_dir=$root/wp/${names[$i]}
     cd $site  &>/dev/null
     #only names
       echo -e "================================\n\t${names[$i]}\n================================"
@@ -83,11 +84,11 @@ for site in "${sites[@]}"; do
     $wp db export "${names[$i]}-${datum}.sql" --allow-root
     sleep 1
     echo -e "---------------\nBacking up files\n---------------"
-    folders $root/${names[$i]}
+    folders $backup_dir
     if [ "$verbose" -eq 1 ]; then
-        tar cvzf "$root/${names[$i]}/${names[$i]}-${datum}.tar.gz" . 
+        tar cvzf "$backup_dir/${names[$i]}-${datum}.tar.gz" . 
     else
-        tar czf "$root/${names[$i]}/${names[$i]}-${datum}.tar.gz" . 
+        tar czf "$backup_dir/${names[$i]}-${datum}.tar.gz" . 
     fi
    rm "${names[$i]}-${datum}.sql"    #CLEAN UP
     cd -  &>/dev/null
