@@ -57,7 +57,7 @@ root="${dir}backups"
 #backups folders for every site
 function folders () {
     if [ ! -d "$1" ]; then
-        mkdir $1
+        mkdir -p $1 #parent -> for structure!!
     fi
 }
 
