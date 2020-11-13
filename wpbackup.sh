@@ -61,11 +61,11 @@ function folders () {
     fi
 }
 
-folders $root
-datum=$(date)          
+mkdir $root
+datum=$(date "+%d/%m/%y")          
 i=0
 for site in "${sites[@]}"; do
-    backup_dir=$root/wp/${names[$i]}
+    backup_dir=../backups/wp/${names[$i]}
     cd $site  &>/dev/null
     #only names
       echo -e "================================\n\t${names[$i]}\n================================"
