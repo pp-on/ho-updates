@@ -62,7 +62,7 @@ function folders () {
 }
 
 mkdir $root
-datum=$(date "+%d/%m/%y")          
+datum=$(date "+%d.%m.%y")          
 i=0
 for site in "${sites[@]}"; do
     backup_dir=../backups/wp/${names[$i]}
