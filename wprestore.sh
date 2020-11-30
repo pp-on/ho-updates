@@ -50,7 +50,7 @@ while [ $# -gt 0 ];do
             shift
             dir=$1
             ;;
-        ih)
+        -h)
             echo "wprestore.sh [-s SSTRING][-r RSTRING][-b BackupDir][-u DBUSER[-p DBPW][--host | -l DBHOST][-n
             DBNAME][-d targetDIR][-w path/to/wp][-c][-v][-h]"
             exit
@@ -69,7 +69,7 @@ done
 
 function extract() { #dir where the backup is, trget
     extractioned=0  #is it done?
-    for tar in $(ls $1/*.tr.gz); do
+    for tar in $(ls $1/*.tar.gz); do
        echo "Found $tar"
         echo "Should it be processed? [y/n] "
         read answer
