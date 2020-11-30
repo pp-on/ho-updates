@@ -108,7 +108,7 @@ function config () {
     # replace all DB (array) with  dbname, user, pw, host  in wp_config
     for i in ${!DB[@]}; do
         # regex explanation: all characters  * between ' til ^''
-        sed -i "s/'$DB[$i]',\ '[^']*'/'DB[$i]',\ 'idDB[$i]'/g" $dir/wp-config.php
+        sed -i "s/'$DB[$i]',\ '[^']*'/'$DB[$i]',\ '$idDB[$i]'/g" wp-config.php
     done
 }
 
