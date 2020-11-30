@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+old="http://"  #url to be searched
+new="http://"  #url to be inserted
 DB=( "DB_NAME", "DB_USER", "DB_PASSWORD", "DB_HOST" )
 idDB=( "dbname", "web", "1234", "localhost" )
 wpcli=1         #when falsee, use mysql to search and replace
@@ -10,6 +12,14 @@ dir="./"        #where am i
 wp="wp"         #where is wp-cli 
 while [ $# -gt 0 ];do
     case $1 in
+        -s)
+            shift
+            old=$1
+            ;;
+        -r)
+            shift
+            new=$1
+            ;;
         -n)
             shift
             idDB[0]=$1
@@ -40,8 +50,8 @@ while [ $# -gt 0 ];do
             shift
             dir=$1
             ;;
-        -h)
-            echo "wprestore.sh [-b BackupDir][-u DBUSER[-p DBPW][--host | -l DBHOST][-n
+        ih)
+            echo "wprestore.sh [-s SSTRING][-r RSTRING][-b BackupDir][-u DBUSER[-p DBPW][--host | -l DBHOST][-n
             DBNAME][-d targetDIR][-w path/to/wp][-c][-v][-h]"
             exit
             ;;
@@ -58,6 +68,7 @@ done
 ################################################
 
 function extract() { #dir where the backup is, trget
+    extractioned=0  #is it done?
     for tar in $(ls $1/*.tr.gz); do
        echo "Found $tar"
         echo "Should it be processed? [y/n] "
@@ -65,10 +76,14 @@ function extract() { #dir where the backup is, trget
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             tar xvzf $tar
+            extractioned=1
             continue
         fi
 
     done
+     if [ -z $extractioned ]; then
+         echo "Nothing extracted"
+    fi
 }
 # import db.sql
 function sql() {
@@ -99,14 +114,23 @@ function config () {
 
 #search and replace in db
 function sar () {
-
+    wp search-replace --network --url=${old} ${old} ${new} --precise --dry-run
 }
 ##################
 # main           #
 ##################
 cd $dir
+sleep 1
+echo "extracting..."
 extract  $bdir
+sleep 1
+echo "modifying wp-config..."
 config
+sleep 1  
+echo "db import..."
 sql
+sleep 1
+echo "search and replace..."
+sar
 cd -
 
