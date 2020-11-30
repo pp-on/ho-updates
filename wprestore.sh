@@ -95,7 +95,7 @@ function sql() {
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             #create db
-            mysql -u ${idDB[1]} -p$#{idDB[2]} -h ${idDB[3]} -e "CREATE DATABASE IF NOT EXISTS ${idDB[0]}; USE ${idDB[0]};"
+            mysql -u ${idDB[1]} -p${idDB[2]} -h ${idDB[3]} -e "CREATE DATABASE IF NOT EXISTS ${idDB[0]}; USE ${idDB[0]};"
             if [ -z "$wpcli" ]; then
                 mysql -u ${idDB[1]} -p${idDB[2]} -h ${idDB[3]} ${idDB[0]} < "$sql"
             else
