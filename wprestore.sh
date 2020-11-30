@@ -94,9 +94,9 @@ for sql in $(ls *.sql); do
     echo -e "\n--------------"
     if [ "$answer" = "y" ]; then
         if [ -z "$wpcli" ]; then
-            $wp db import "$sql"
+            mysql -u ${idDB[1]} -p${idDB[2]} -h ${idDB[3]} ${idDB[0]} < "$sql"
         else
-            mysql -u $user -p"$pw" -h "$lh" < "$sql"
+            $wp db import "$sql"
         fi
         continue
     fi
