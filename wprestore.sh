@@ -2,8 +2,8 @@
 
 old="http://"  #url to be searched
 new="http://"  #url to be inserted
-DB=( "DB_NAME", "DB_USER", "DB_PASSWORD", "DB_HOST" )
-idDB=( "dbname", "web", "1234", "localhost" )
+DB=( "DB_NAME" "DB_USER" "DB_PASSWORD" "DB_HOST" )
+idDB=( "dbname" "web" "1234" "localhost" )
 wpcli=1         #when falsee, use mysql to search and replace
 verbose=0       #show files
 file="*.sql"
@@ -110,6 +110,7 @@ function sql() {
 function config () {
     # replace all DB (array) with  dbname, user, pw, host  in wp_config
     for i in ${!DB[@]}; do
+        echo ${DB[$i]}
         # regex explanation: all characters  * between ' til ^''
         sed -i "s/'${DB[$i]}',\ '[^']*'/'${DB[$i]}',\ '${idDB[$i]}'/g" wp-config.php
     done
@@ -124,15 +125,19 @@ function sar () {
 ##################
 cd $dir
 sleep 1
+echo "-----------------"
 echo "extracting..."
 extract  $bdir
+echo "-----------------"
 sleep 1
 echo "modifying wp-config..."
 config
 sleep 1  
+echo "-----------------"
 echo "db import..."
 sql
 sleep 1
+echo "-----------------"
 echo "search and replace..."
 sar
 cd -
