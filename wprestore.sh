@@ -87,21 +87,24 @@ function extract() { #dir where the backup is, trget
 }
 # import db.sql
 function sql() {
-for sql in $(ls *.sql); do
-    echo "Found $sql"
-    echo "Should it be processed? [y/n] "
-    read answer
-    echo -e "\n--------------"
-    if [ "$answer" = "y" ]; then
-        if [ -z "$wpcli" ]; then
-            mysql -u ${idDB[1]} -p${idDB[2]} -h ${idDB[3]} ${idDB[0]} < "$sql"
-        else
-            $wp db import "$sql"
+    
+    for sql in $(ls *.sql); do
+        echo "Found $sql"
+        echo "Should it be processed? [y/n] "
+        read answer
+        echo -e "\n--------------"
+        if [ "$answer" = "y" ]; then
+            #create db
+            mysql -u ${idDB[1]} -p$#{idDB[2]} -h ${idDB[3]} -e "CREATE DATABASE IF NOT EXISTS ${idDB[0]}; USE ${idDB[0]};"
+            if [ -z "$wpcli" ]; then
+                mysql -u ${idDB[1]} -p${idDB[2]} -h ${idDB[3]} ${idDB[0]} < "$sql"
+            else
+                $wp db import "$sql"
+            fi
+            continue
         fi
-        continue
-    fi
-done
-}
+    done
+    }
 
 #replacements for using db
 function config () {
