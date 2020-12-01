@@ -1,5 +1,6 @@
 #!/bin/env bash
 
+sql=""          #database dump to be used, instead db from website
 verbose=0       #show files
 dir=./
 wp="wp"         #where is wp-cli 
@@ -10,12 +11,16 @@ while [ $# -gt 0 ];do
         -v)
             verbose=1
             ;;
+        -db)
+            shift
+            sql=$1
+            ;;
         -d)
             shift
             dir=$1
             ;;
         -h)
-            echo "wpbackup.sh [-v][-d targetDIR][-w path/to/wp]"
+            echo "wpbackup.sh [-v][-db DBDUMP][-d targetDIR][-w path/to/wp]"
             exit
             ;;
         -w)
@@ -81,7 +86,11 @@ for site in "${sites[@]}"; do
    fi
    sleep 1
     echo -e "---------------\nDumping Database\n---------------"
-    $wp db export "${names[$i]}-${datum}.sql" --allow-root
+    if [ -z "$sql"  ]; then
+        $wp db export "${names[$i]}-${datum}.sql" --allow-root
+    else
+        echo "Using ${sql}"
+    fi
     sleep 1
     echo -e "---------------\nBacking up files\n---------------"
     folders $backup_dir
