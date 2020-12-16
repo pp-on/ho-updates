@@ -62,7 +62,6 @@ for site in $(ls -d $dir*/); do
     fi
 done
 
-root="${dir}backups"
 #backups folders for every site
 function folders () {
     if [ ! -d "$1" ]; then
@@ -70,7 +69,6 @@ function folders () {
     fi
 }
 
-mkdir $root
 datum=$(date "+%d.%m.%y")          
 i=0
 for site in "${sites[@]}"; do
