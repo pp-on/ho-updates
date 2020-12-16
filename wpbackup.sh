@@ -5,7 +5,7 @@ verbose=0       #show files
 dir=./
 wp="wp"         #where is wp-cli 
 cms="wp"        #specific for db dump
-restore=0       #restoree site from file 
+bdir="/var/www/localhost/htdocs/arbeit/backups"   #where is the backup
 while [ $# -gt 0 ];do
     case $1 in
         -v)
@@ -19,8 +19,12 @@ while [ $# -gt 0 ];do
             shift
             dir=$1
             ;;
+        -b)
+            shift
+            bdir=$1
+            ;;
         -h)
-            echo "wpbackup.sh [-v][-db DBDUMP][-d targetDIR][-w path/to/wp]"
+            echo "wpbackup.sh [-v][-db DBDUMP][-d targetDIR][-b outputDir][-w path/to/wp]"
             exit
             ;;
         -w)
@@ -70,7 +74,7 @@ mkdir $root
 datum=$(date "+%d.%m.%y")          
 i=0
 for site in "${sites[@]}"; do
-    backup_dir=../backups/wp/${names[$i]}
+    backup_dir=${bdir}/wp/${names[$i]}
     cd $site  &>/dev/null
     #only names
       echo -e "================================\n\t${names[$i]}\n================================"
