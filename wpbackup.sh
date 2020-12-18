@@ -65,19 +65,13 @@ done
 
 #sql dump
 function sqldump () {
-    c=0
     for dump in $(ls *.sql); do
         echo "$dump"
         echo  "Should it be used?"
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
-            ((c++))
             sql="$dump"
-        fi
-        #if no sql
-        if [ $c -eq 0 ]; then
-            $wp db export "${names[$i]}-${datum}.sql" --allow-root
         fi
     done
 }
@@ -109,6 +103,13 @@ for site in "${sites[@]}"; do
    sleep 1
     echo -e "---------------\nDumping Database\n---------------"
     sqldump
+    #if not sql file
+    if [ -z "$sql" ]; then
+        echo "Exporting db with WP-CLI..."
+        $wp db export "${names[$i]}-${datum}.sql" --allow-root
+    else
+        echo "Using $sql"
+    fi
     sleep 1
     echo -e "---------------\nBacking up files\n---------------"
     folders $backup_dir
