@@ -34,6 +34,7 @@ while [ $# -gt 0 ];do
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
+
 done
 #only WP-Sites are to be processed
 for site in $(ls -d $dir*/); do
@@ -62,6 +63,25 @@ for site in $(ls -d $dir*/); do
     fi
 done
 
+#sql dump
+function sqldump () {
+    c=0
+    for dump in $(ls *.sql); do
+        echo "$dump"
+        echo  "Should it be used?"
+        read answer
+        echo -e "\n--------------"
+        if [ "$answer" = "y" ]; then
+            ((c++))
+            sql="$dump"
+        fi
+        #if no sql
+        if [ $c -eq 0 ]; then
+            $wp db export "${names[$i]}-${datum}.sql" --allow-root
+        fi
+    done
+}
+
 #backups folders for every site
 function folders () {
     if [ ! -d "$1" ]; then
@@ -76,23 +96,19 @@ for site in "${sites[@]}"; do
     cd $site  &>/dev/null
     #only names
       echo -e "================================\n\t${names[$i]}\n================================"
-    # is wp-site working?
-    error=$($wp core check-update ) #the result of command -> 0 ok, 1 error. string goes to variable
-    #echo $?
-    if [ ! -z "$error" ]; then
-     #   echo "$error"
-        echo "Everything OK"
-    else
-        echo "$error" 
-        continue
-   fi
+    ## is wp-site working?
+    #error=$($wp core check-update ) #the result of command -> 0 ok, 1 error. string goes to variable
+    ##echo $?
+    #if [ ! -z "$error" ]; then
+    # #   echo "$error"
+    #    echo "Everything OK"
+    #else
+    #    echo "$error" 
+    #    continue
+    #fi
    sleep 1
     echo -e "---------------\nDumping Database\n---------------"
-    if [ -z "$sql"  ]; then
-        $wp db export "${names[$i]}-${datum}.sql" --allow-root
-    else
-        echo "Using ${sql}"
-    fi
+    sqldump
     sleep 1
     echo -e "---------------\nBacking up files\n---------------"
     folders $backup_dir
@@ -101,7 +117,7 @@ for site in "${sites[@]}"; do
     else
         tar czf "$backup_dir/${names[$i]}-${datum}.tar.gz" . 
     fi
-   rm "${names[$i]}-${datum}.sql"    #CLEAN UP
+   #rm "${names[$i]}-${datum}.sql"    #CLEAN UP
     cd -  &>/dev/null
     ((i++))
 done
