@@ -83,7 +83,7 @@ function folders () {
     fi
 }
 
-datum=$(date "+%d.%m.%y")          
+datum=$(date "+%d.%m.%y-%H:%M")
 i=0
 for site in "${sites[@]}"; do
     backup_dir=${bdir}/wp/${names[$i]}
