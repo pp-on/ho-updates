@@ -68,7 +68,7 @@ for site in $(ls -d $dir*/); do
         seite=${site##"$dir"}
         echo "Found $seite"
         echo "Should it be processed? [y/n] "
-        read answer
+        ad answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             echo "Selec t dir"
@@ -112,8 +112,12 @@ function folders () {
 
 datum=$(date "+%d.%m.%y-%H:%M")
 i=0
+#create backups dir
+#folders "$bdir/backups"
 for site in "${sites[@]}"; do
-    backup_dir=${bdir}/wp/${names[$i]}
+    #it has to be absol. dir
+    backup_dir=${bdir}/backups/${names[$i]}
+    folders $backup_dir
     cd $site  &>/dev/null
     #only names
       echo -e "================================\n\t${names[$i]}\n================================"
@@ -139,7 +143,6 @@ for site in "${sites[@]}"; do
     fi
     sleep 1
     echo -e "---------------\nBacking up files\n---------------"
-    folders $backup_dir
     if [ "$verbose" -eq 1 ]; then
         tar cvzf "$backup_dir/${names[$i]}-${datum}.tar.gz" . 
     else
