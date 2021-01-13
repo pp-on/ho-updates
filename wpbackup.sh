@@ -36,7 +36,33 @@ while [ $# -gt 0 ];do
     shift
 
 done
-#only WP-Sites are to be processed
+
+#list evt. dirs to be used for backup
+function listBU () {
+    #is there anything?
+    count=$(ls -d $bdir/wp/* | wc -l)
+    #if true, start the count and print the list
+    if [ $count -gt 0 ]; then
+        i=1
+         for dir in $(ls -d $bdir/wp/*); do
+             dir=${dir##"$bdir/wp/"} #strip before
+             dir=${dir%/} #strip after
+             echo "$i. $dir"
+             ((i++))
+             dirsb+=("$dir")
+         done
+         echo "Select directory number (0 to ($count -1)):"
+        read r
+        echo "${dirsb[$r]} Correct [y/n]"
+        read answer
+        echo -e "\n--------------"
+        #if [ "$answer" = "y" ]; then
+        #    name=${dirsb[$r]}
+        #else
+        #    echo ""
+        #fi
+    fi
+}
 for site in $(ls -d $dir*/); do
     if [ -d "$site/wp-content/" ]; then
         seite=${site##"$dir"}
@@ -46,6 +72,8 @@ for site in $(ls -d $dir*/); do
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
+            echo "Selec t dir"
+            listBU
             echo "if name $site is wrong type in a new one"
             read name
             # when the name is corrected, put it inarray

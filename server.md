@@ -11,7 +11,7 @@
 - netcup
   - reha-service 
   - eca 
-  - werkstattfenster
+  - ppfenster
   - neuronetz 
 - 1u1
   - b&b 
@@ -42,5 +42,7 @@
   - netcup
     - kreativ-l
     - lag
+    - pfennigfenster
+    - rollwagerl
   - who
     - reha-marketing

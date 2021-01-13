@@ -94,6 +94,9 @@ function sql() {
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
+            #first delete <cre>ate and use db
+            sed -i '/CREATE\ DATABASE/d' "$sql"
+            sed -i '/USE/d' "$sql"
             #create db
             mysql -u ${idDB[1]} -p${idDB[2]} -h ${idDB[3]} -e "CREATE DATABASE IF NOT EXISTS ${idDB[0]}; USE ${idDB[0]};"
             if [ -z "$wpcli" ]; then
