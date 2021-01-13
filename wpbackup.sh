@@ -68,7 +68,6 @@ for site in $(ls -d $dir*/); do
         seite=${site##"$dir"}
         echo "Found $seite"
         echo "Should it be processed? [y/n] "
-    cd $site  &>/dev/null
         read answer
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
