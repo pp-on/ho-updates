@@ -110,7 +110,8 @@ function folders () {
     fi
 }
 
-datum=$(date "+%d.%m.%y-%H:%M")
+#datum=$(date "+%d.%m.%y-%H:%M")
+datum=$(date "+%d.%m.%y")
 i=0
 #create backups dir
 #folders "$bdir/backups"
