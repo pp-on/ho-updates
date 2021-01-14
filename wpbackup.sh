@@ -5,7 +5,7 @@ verbose=0       #show files
 dir=./
 wp="wp"         #where is wp-cli 
 cms="wp"        #specific for db dump
-bdir="/var/www/localhost/htdocs/arbeit/backups"   #where is the backup
+bdir="/var/www/localhost/htdocs/arbeit"   #where is the backup
 while [ $# -gt 0 ];do
     case $1 in
         -v)
