@@ -94,6 +94,8 @@ done
 
 #sql dump
 function sqldump () {
+    #empty sql to begin with
+    
     for dump in $(ls *.sql); do
         echo "$dump"
         echo  "Should it be used?"
@@ -101,6 +103,8 @@ function sqldump () {
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             sql="$dump"
+        else
+            sql=""
         fi
     done
 }
