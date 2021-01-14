@@ -72,18 +72,20 @@ for site in $(ls -d $dir*/); do
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             echo "Selec t dir"
-            listBU
-            echo "if name $site is wrong type in a new one"
-            read name
+            #listBU
+            name=${site##"$dir"}
+            name=${name%/}
+            echo "if name $name is wrong type in a new one"
+            read a
             # when the name is corrected, put it inarray
             # if not, put the original one with path in the same array
-            if [ ! -z "$name" ]; then
-                names+=("$name")
+            if [ "$a" =  "y" ]; then
+                echo "enter name"
+                read name
             else
-                name=${site##"$dir"}
-                name=${name%/}
-                names+=("$name")
+                echo "$name will be used"
             fi
+            names+=("$name")
             sites+=("$site") #this array must contain the path for every site 
                              # -> "cd $site"
         fi
