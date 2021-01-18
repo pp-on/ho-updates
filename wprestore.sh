@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 
 old="http://"  #url to be searched
 new="http://"  #url to be inserted
