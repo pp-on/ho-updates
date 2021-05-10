@@ -90,9 +90,19 @@ wp_install (){
     wp core install --url=$url --title=$title --admin_user=$wpuser
     --admin_password=$wppw --admin_email=$wpemail 
 }
+wp_git (){
+    if [ -z "$repo" ]; then
+        echo "No repository specified"
+        echo "please enter one"
+        read repo
+    fi
+
+    rm ./wp_content/ -rf
+    git clone $repo wp_content
+}
 ####################################################
-####################################################
-## MWAIN
+####+################################################
+## MAIN
 
 [ $# -eq 0 ] && usage
 while [ $# -gt 0 ];do
@@ -141,6 +151,10 @@ while [ $# -gt 0 ];do
             shift
             wp=$1
             ;;
+        -c)
+            shift
+            repo=$1
+            ;;
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
@@ -150,3 +164,4 @@ wp_dw
 wp_config
 wp_db
 wp_install
+wp_git
