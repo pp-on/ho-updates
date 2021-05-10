@@ -24,6 +24,8 @@
   - pp-frma
   - pp-wema
   - pp-checkin
+  - pp-news
+  - pp-fenster
 - staging
   - 1u1 
     - asg 1u124.02.2021	Module	24.02.202124.02.2021	Module	24.02.2021
