@@ -118,8 +118,11 @@ wp_git (){
         read repo
     fi
 
-    rm ./wp_content/ -rf
-    git clone $repo wp_content
+    rm ./wp-content/ -rf
+    git clone $repo wp-content
+    echo "activating plugins"
+    $wp plugin activate --all
+    $wp plugin list
 }
 # basic htaccess for SEO
 htaccess() {
