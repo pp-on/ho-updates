@@ -1,5 +1,18 @@
 #!/bin/env bash
 
+# Reset
+Color_Off="\[\033[0m\]"       # Text Reset
+
+# Regular Colors
+Black="\[\033[0;30m\]"        # Black
+Red="\[\033[0;31m\]"          # Red
+Green="\[\033[0;32m\]"        # Green
+Yellow="\[\033[0;33m\]"       # Yellow
+Blue="\[\033[0;34m\]"         # Blue
+Purple="\[\033[0;35m\]"       # Purple
+Cyan="\[\033[0;36m\]"         # Cyan
+White="\[\033[0;37m\]"        # White
+
 hostname="localhost"     #host in DB
 dbname=""                #must
 dbuser="web"
@@ -73,22 +86,30 @@ wp_dw (){
 wp_config (){
     echo "#########################"
     echo "###  creating config  ###"
+    f="wp-config.php"
+    if [ ! -f "$f" ]; then
+        echo "there is no $f"
+    else
+        rm $f
+    fi
     sleep 1
-    $wp config create --dbname=$dbname --dbuser=$dbuser --dbpass=$dbpw 
+    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" 
 }
 #alternative for creating DB with mysql using user and name of wp config
 wp_db (){
     echo "#########################"
     echo "### creating database ###"
     sleep 1
+    #if there's  an error, exit -> || means exit status 1
+    mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS $dbname;" || echo -e "$Red Error dropping Database"
     $wp db create
+    
 }
 wp_install (){
     echo "#########################"
     echo "### installing wp     ###"
     sleep 1
-    wp core install --url=$url --title=$title --admin_user=$wpuser
-    --admin_password=$wppw --admin_email=$wpemail 
+    wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong"
 }
 wp_git (){
     if [ -z "$repo" ]; then
@@ -99,6 +120,21 @@ wp_git (){
 
     rm ./wp_content/ -rf
     git clone $repo wp_content
+}
+# basic htaccess for SEO
+htaccess() {
+
+cat  << EOF > .htaccess
+# BEGIN WordPress
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+# END WordPress
+EOF
+
 }
 ####################################################
 ####+################################################
@@ -164,4 +200,5 @@ wp_dw
 wp_config
 wp_db
 wp_install
+ htaccess
 wp_git
