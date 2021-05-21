@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 dir=./
 wp="wp"         #where is wp-cli 
