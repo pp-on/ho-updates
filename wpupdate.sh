@@ -1,15 +1,19 @@
 #!/bin/env bash
 
+git=0 #use git?
 dir=./
 wp="wp"         #where is wp-cli 
 while [ $# -gt 0 ];do
     case $1 in
+        -g)
+            git=1
+            ;;
         -d)
             shift
             dir=$1
             ;;
         -h)
-            echo "wpupdate.sh [-d targetDIR][-w path/to/wp]"
+            echo "wpupdate.sh [-d targetDIR][-w path/to/wp][-g]"
             exit
             ;;
         -w)
@@ -48,6 +52,32 @@ function update_core () { #update wordpress, only when there is a new version
         fi
     fi
 }
+
+function gitwp(){
+    i=0
+    plugins=$(wp plugin list --update=available --field=name)
+    oldversions=$(wp plugin list --update=available --field=version)
+    for plugin in "${plugins[@]}"; do
+        echo "=============================="
+        echo "Updating $plugin"
+        wp plugin update $plugin
+        #new version
+        new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
+
+        echo "------------------------------"
+        echo "Writing Commit"
+        git add -A wp-content/plugins/$plugin 
+        git commit -m "chore: update plugin $plugin:${oldversions[$i]} --> $version"
+        ((i++)) #increment c-style
+    done
+    echo "=============================="
+    echo "Summary:"
+    echo "=============================="
+    for p in "${!plugins[@]}"; do #get  index of array -> !
+        echo "${plugins[$p]} --> ${oldversions[$p]}"
+    done
+    sleep 2
+}
           
 for site in "${sites[@]}"; do
     #only names
@@ -76,7 +106,11 @@ for site in "${sites[@]}"; do
     read answer
     echo -e "\n--------------"
     if [ "$answer" = "y" ]; then
-        $wp plugin update --all
+        if [ "$git" -eq 1 ]; then
+            gitwp
+        else
+            $wp plugin update --all
+        fi
     else
         echo "Nothin done"
     fi
