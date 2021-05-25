@@ -65,7 +65,9 @@ function gitwp(){
         new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
 
         echo "------------------------------"
-        echo "Writing Commit"
+        echo "Writing Commit:"
+        echo "chore: update plugin $plugin:${oldversions[$i]} --> $version"
+        echo "------------------------------"
         git add -A wp-content/plugins/$plugin 
         git commit -m "chore: update plugin $plugin:${oldversions[$i]} --> $version"
         ((i++)) #increment c-style
