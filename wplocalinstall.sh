@@ -18,7 +18,7 @@ dbname=""                #must
 dbuser="web"
 dbpw="1234"
 title=""
-dir=$(bas ename $PWD)
+dir=$(basename $PWD)
 url="localhost/arbeit/updates/$dir"
 wpuser="test"
 wppw="secret"
@@ -30,11 +30,8 @@ tdir="."
 ##     functions        ###
 ###########################
 usage() { 
-    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname][-t
-    title][--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
-    path/to/wp]"
-    echo -e "-n arg: [MANDATORY] specify the name of the database\n[WARNING] If it exists, it
-    will be dropped"
+    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname][-t title][--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w path/to/wp]"
+    echo -e "-n arg: [MANDATORY] specify the name of the database\n[WARNING] If it exists, it will be dropped"
     echo "-h arg: specify the hostname for the database (default localhost)"
     echo "-u arg: specify the user for the DBMS (default web)"
     echo "-p arg: specify the password for the DBMS (default 1234)"
@@ -47,6 +44,8 @@ usage() {
     oswaldo.nickel@pfennigparade.de)"
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
+
+    exit
 }
 # check if database exists. In order to work -> user has to be in mysql grroup
 
