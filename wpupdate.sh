@@ -56,12 +56,12 @@ function update_core () { #update wordpress, only when there is a new version
 function gitwp(){
     i=0
     cd wp-content  &>/dev/null
-    for plugin in $(wp plugin list --update=available --field=name); do
-        old_v=$(wp plugin get $plugin --field=version)
+    for plugin in $($wp plugin list --update=available --field=name); do
+        old_v=$($wp plugin get $plugin --field=version)
         echo "=============================="
         echo "Updating $plugin"
         sleep 1
-        #wp plugin update $plugin
+        $wp plugin update $plugin
         #new version
         #new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
         new_v=$(wp plugin get $plugin --field=version)
