@@ -76,7 +76,6 @@ function gitwp(){
         git commit -m "chore: update plugin ${plugins[$i]}"
         ((i++)) #increment c-style
     done
-    cd -  &>/dev/null
     echo "=============================="
     echo "Summary:"
     echo "=============================="
@@ -88,9 +87,10 @@ function gitwp(){
         if [ "$a" = "y" ]; then
             git push
         else
-            "Not pushing"
+            echo "Not pushing"
         fi
     sleep 2
+    cd -  &>/dev/null
 }
           
 for site in "${sites[@]}"; do
