@@ -30,7 +30,7 @@ tdir="."
 ##     functions        ###
 ###########################
 usage() { 
-    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname][-t title][--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w path/to/wp]"
+    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword]-n dbname -t title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w path/to/wp][-c repository ]"
     echo -e "-n arg: [MANDATORY] specify the name of the database\n[WARNING] If it exists, it will be dropped"
     echo "-h arg: specify the hostname for the database (default localhost)"
     echo "-u arg: specify the user for the DBMS (default web)"
@@ -44,6 +44,7 @@ usage() {
     oswaldo.nickel@pfennigparade.de)"
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
+    echo "-c arg: repository to be cloned from GitHub"
 
     exit
 }
@@ -117,6 +118,9 @@ wp_git (){
         read repo
     fi
 
+    echo "#########################"
+    echo "### cloning $repo     ###"
+    sleep 1
     rm ./wp-content/ -rf
     git clone $repo wp-content
     echo "activating plugins"
