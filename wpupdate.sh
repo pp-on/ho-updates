@@ -74,13 +74,6 @@ function gitwp(){
         echo "------------------------------"
         git add -A plugins/$plugin 
         git commit -m "chore: update plugin ${plugins[$i]}"
-        echo "Push to Github? [y]"
-        read a
-        if [ "$a" = "y" ]; then
-            git push
-        else
-            "Not pushing"
-        fi
         ((i++)) #increment c-style
     done
     cd -  &>/dev/null
@@ -90,6 +83,13 @@ function gitwp(){
     for p in "${!plugins[@]}"; do #get  index of array -> !
         echo "${plugins[$p]}"
     done
+        echo "Push to Github? [y]"
+        read a
+        if [ "$a" = "y" ]; then
+            git push
+        else
+            "Not pushing"
+        fi
     sleep 2
 }
           
