@@ -67,7 +67,7 @@ function gitwp(){
         new_v=$(wp plugin get $plugin --field=version)
         echo "version: $new_v"
 
-        plugins[$i]="$plugin:$old_v --> $new_v"
+        plugins[$i]="$plugin: $old_v --> $new_v"
         echo "------------------------------"
         echo "Writing Commit:"
         echo "chore: update plugin ${plugins[$i]}"
