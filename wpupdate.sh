@@ -56,12 +56,17 @@ function update_core () { #update wordpress, only when there is a new version
 function gitwp(){
     i=0
     cd wp-content  &>/dev/null
+    #avoid unnecessary merges
+    echo "=============================="
+    echo "updating repository..."
+    sleep 1
+    git pull 1>/dev/null
     for plugin in $($wp plugin list --update=available --field=name); do
         old_v=$($wp plugin get $plugin --field=version)
         echo "=============================="
         echo "Updating $plugin"
         sleep 1
-        $wp plugin update $plugin
+        $wp pugin update $plugin 1>/dev/null
         #new version
         #new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
         new_v=$(wp plugin get $plugin --field=version)
@@ -69,11 +74,14 @@ function gitwp(){
 
         plugins[$i]="$plugin: $old_v --> $new_v"
         echo "------------------------------"
+        echo "staging changes..."
+        sleep 1
+        git add -A plugins/$plugin 1>/dev/null 
+        echo "------------------------------"
         echo "Writing Commit:"
         echo "chore: update plugin ${plugins[$i]}"
         echo "------------------------------"
-        git add -A plugins/$plugin 
-        git commit -m "chore: update plugin ${plugins[$i]}"
+        git commit -m "chore: update plugin ${plugins[$i]}" 1>/dev/null
         ((i++)) #increment c-style
     done
     echo "=============================="
@@ -85,7 +93,7 @@ function gitwp(){
         echo "Push to Github? [y]"
         read a
         if [ "$a" = "y" ]; then
-            git push
+            git push 1>/dev/null
         else
             echo "Not pushing"
         fi
