@@ -87,8 +87,11 @@ function gitwp(){
     echo "=============================="
     echo "Summary:"
     echo "=============================="
+    echo "$i plugins updated"
+    echo "------------------------------"
     for p in "${!plugins[@]}"; do #get  index of array -> !
         echo "${plugins[$p]}"
+        echo "------------------------------"
     done
         echo "Push to Github? [y]"
         read a
