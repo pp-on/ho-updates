@@ -66,7 +66,7 @@ function gitwp(){
         echo "=============================="
         echo "Updating $plugin"
         sleep 1
-        $wp pugin update $plugin 1>/dev/null
+        $wp plugin update $plugin 1>/dev/null
         #new version
         #new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
         new_v=$(wp plugin get $plugin --field=version)

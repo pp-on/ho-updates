@@ -79,6 +79,7 @@ check_db(){
 create_db (){
     echo ""
     echo "##########################\n# Creating Database $dbname\n"
+    sleep 1
     mysql -u $dbuser -p$dbpw -h $hostname -e "DROP DATABASE IF EXISTS $dbname;
     CREATE DATABASE $dbname"
 }
@@ -130,6 +131,12 @@ wp_git (){
     git clone $repo wp-content
     echo "activating plugins"
     $wp plugin activate --all
+}
+wp_key_acf_pro (){
+    echo "#########################"
+    echo "### activating acf pro###"
+    sleep 1
+    wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
 # basic htaccess for SEO
@@ -217,3 +224,4 @@ wp_db
 wp_install
  htaccess
 wp_git
+wp_key_acf_pro
