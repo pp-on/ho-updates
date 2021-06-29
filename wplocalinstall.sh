@@ -14,7 +14,7 @@ Cyan="\[\033[0;36m\]"         # Cyan
 White="\[\033[0;37m\]"        # White
 
 hostname="localhost"     #host in DB
-dbname=""                #must
+dbname=$(basename $PWD)  #current dir woul be the name
 dbuser="web"
 dbpw="1234"
 title=""
@@ -25,16 +25,17 @@ wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
 wp="wp"         #where is wp-cli 
 tdir="."
-repo="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
+hardcode="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
     
 ###########################
 ##     functions        ###
 ###########################
 usage() { 
-    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword]-n dbname -t
+    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
     title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
     path/to/wp][-c repository ][-r repo.git]"
-    echo -e "-n arg: [MANDATORY] specify the name of the database\n[WARNING] If it exists, it will be dropped"
+    echo -e "-n arg:  specify the name of the database (if not, current dir
+    would be used)\n[WARNING] If it exists, it will be dropped"
     echo "-h arg: specify the hostname for the database (default localhost)"
     echo "-u arg: specify the user for the DBMS (default web)"
     echo "-p arg: specify the password for the DBMS (default 1234)"
@@ -200,6 +201,10 @@ while [ $# -gt 0 ];do
         -c)
             shift
             repo=$1
+            ;;
+        -r)
+            shift
+            repo=${hardcode}${1}
             ;;
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
