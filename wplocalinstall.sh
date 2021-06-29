@@ -25,12 +25,15 @@ wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
 wp="wp"         #where is wp-cli 
 tdir="."
+repo="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
     
 ###########################
 ##     functions        ###
 ###########################
 usage() { 
-    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword]-n dbname -t title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w path/to/wp][-c repository ]"
+    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword]-n dbname -t
+    title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
+    path/to/wp][-c repository ][-r repo.git]"
     echo -e "-n arg: [MANDATORY] specify the name of the database\n[WARNING] If it exists, it will be dropped"
     echo "-h arg: specify the hostname for the database (default localhost)"
     echo "-u arg: specify the user for the DBMS (default web)"
@@ -45,6 +48,7 @@ usage() {
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
     echo "-c arg: repository to be cloned from GitHub"
+    echo "-r arg: second part of git repo (first part is hardcoded)"
 
     exit
 }
