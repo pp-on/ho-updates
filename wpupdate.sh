@@ -54,6 +54,7 @@ function update_core () { #update wordpress, only when there is a new version
 }
 
 function gitwp(){
+    local plugins
     i=0
     cd wp-content  &>/dev/null
     #avoid unnecessary merges
