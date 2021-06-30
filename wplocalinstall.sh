@@ -17,8 +17,8 @@ hostname="localhost"     #host in DB
 dbname=$(basename $PWD)  #current dir woul be the name
 dbuser="web"
 dbpw="1234"
-title=""
 dir=$(basename $PWD)
+title="test${dir^^}"           #uppercase
 url="localhost/arbeit/updates/repos/$dir"
 wpuser="test"
 wppw="secret"
@@ -26,6 +26,7 @@ wpemail="oswaldo.nickel@pfennigparade.de"
 wp="wp"         #where is wp-cli 
 tdir="."
 hardcode="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
+repo=${hardcode}${dir}.git    #default, it can be cchanged with -c or -r
     
 ###########################
 ##     functions        ###
@@ -113,7 +114,7 @@ wp_db (){
 }
 wp_install (){
     echo "#########################"
-    echo "### installing wp     ###"
+    echo "### installing wp $title ###"
     sleep 1
     wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong"
 }
