@@ -108,7 +108,7 @@ wp_db (){
     echo "### creating database ###"
     sleep 1
     #if there's  an error, exit -> || means exit status 1
-    mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS $dbname;" || echo -e "$Red Error dropping Database"
+    mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error dropping Database"
     $wp db create
     
 }
@@ -159,7 +159,7 @@ EOF
 ####+################################################
 ## MAIN
 
-[ $# -eq 0 ] && usage
+#[ $# -eq 0 ] && usage
 while [ $# -gt 0 ];do
     case $1 in
         -n)
@@ -213,6 +213,10 @@ while [ $# -gt 0 ];do
         -r)
             shift
             repo=${hardcode}${1}
+            ;;
+        --help)
+            usage
+            exit
             ;;
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
