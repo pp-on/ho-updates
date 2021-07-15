@@ -99,7 +99,7 @@ wp_config (){
         rm $f
     fi
     sleep 1
-    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" 
+    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$hostname" 
 }
 #alternative for creating DB with mysql using user and name of wp config
 wp_db (){
@@ -114,7 +114,7 @@ wp_db (){
 wp_install (){
     out "installing wp ${title}" 1
     sleep 1
-    wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong"
+    $wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong"
 }
 wp_git (){
     if [ -z "$repo" ]; then
@@ -133,7 +133,7 @@ wp_git (){
 wp_key_acf_pro (){
     out "activating acf pro" 2 
     sleep 1
-    wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
+    $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
 # basic htaccess for SEO
