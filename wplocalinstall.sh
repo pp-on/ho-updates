@@ -57,8 +57,9 @@ usage() {
 # check if database exists. In order to work -> user has to be in mysql grroup
 
 check_db(){ 
-    echo "#########################"
+    echo "#########################################"
     echo "### checking database ###"
+    echo "#########################################"
     checkdb=$(mysqlshow -u web -p1234 $dbname | grep -v Wildcard | grep -o $dbname)
     if [ -z "$checkdb" ]; then
         echo "found no Database with the name $dbname. Moving on"
@@ -79,23 +80,21 @@ check_db(){
 }
 create_db (){
     echo ""
-    echo "##########################\n# Creating Database $dbname\n"
+    out "Creating Database $dbname" 1
     sleep 1
     mysql -u $dbuser -p$dbpw -h $hostname -e "DROP DATABASE IF EXISTS $dbname;
     CREATE DATABASE $dbname"
 }
 wp_dw (){
-    echo "#########################"
-    echo "### downloading core  ###"
+    out "downloading core" 1
     sleep 1
     $wp core download --locale=de_DE
 }
 wp_config (){
-    echo "#########################"
-    echo "###  creating config  ###"
+    out "creating config" 1
     f="wp-config.php"
     if [ ! -f "$f" ]; then
-        echo "there is no $f"
+        echo "$Yellow there is no $f $Color_Off"
     else
         rm $f
     fi
@@ -104,17 +103,16 @@ wp_config (){
 }
 #alternative for creating DB with mysql using user and name of wp config
 wp_db (){
-    echo "#########################"
-    echo "### creating database ###"
+    out "Creating Database $dbname" 1
     sleep 1
     #if there's  an error, exit -> || means exit status 1
-    mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error dropping Database"
+    mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS
+    `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
     $wp db create
     
 }
 wp_install (){
-    echo "#########################"
-    echo "### installing wp $title ###"
+    out "installing wp ${title}" 1
     sleep 1
     wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong"
 }
@@ -125,24 +123,22 @@ wp_git (){
         read repo
     fi
 
-    echo "#########################"
-    echo "### cloning $repo     ###"
+    out "cloning $repo" 1
     sleep 1
     rm ./wp-content/ -rf
     git clone $repo wp-content
-    echo "activating plugins"
+    out "activating plugins" 2
     $wp plugin activate --all
 }
 wp_key_acf_pro (){
-    echo "#########################"
-    echo "### activating acf pro###"
+    out "activating acf pro" 2 
     sleep 1
     wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
 # basic htaccess for SEO
 htaccess() {
-
+    out "creating .htaccess" 2
 cat  << EOF > .htaccess
 # BEGIN WordPress
 RewriteEngine On
@@ -153,6 +149,24 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 # END WordPress
 EOF
+
+}
+
+out () { #what?
+    for ((i=0; i<70; i++)); do
+        if [ $2 -eq 1  ]; then
+            line+='#'
+        else
+            line+='-'
+        fi
+
+    done
+    name="##        ${1}        "
+    length=${#name}
+    #echo $length
+    echo $line
+    echo -e "$name${line:$length}" 
+    echo $line
 
 }
 ####################################################
