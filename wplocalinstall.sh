@@ -165,7 +165,8 @@ out () { #what?
     length=${#name}
     #echo $length
     echo $line
-    echo -e "$name${line:$length}" 
+    #echo -e "$name${line:$length}" 
+    echo "${1}"
     echo $line
 
 }
