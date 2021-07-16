@@ -153,7 +153,7 @@ EOF
 }
 
 out () { #what?
-    for ((i=0; i<70; i++)); do
+    for ((i=0; i<30; i++)); do
         if [ $2 -eq 1  ]; then
             line+='#'
         else
