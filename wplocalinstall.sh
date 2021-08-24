@@ -14,6 +14,7 @@ Cyan="\[\033[0;36m\]"         # Cyan
 White="\[\033[0;37m\]"        # White
 
 hostname="localhost"     #host in DB
+wsl=0
 dbname=$(basename $PWD)  #current dir woul be the name
 dbuser="web"
 dbpw="1234"
@@ -51,6 +52,8 @@ usage() {
     echo "-w arg: specify location of wp-cli"
     echo "-c arg: repository to be cloned from GitHub"
     echo "-r arg: second part of git repo (first part is hardcoded)"
+    echo "--wsl: use this script in wsl/windows -> mysql for creating DB,
+    localhost 127.0.0.1 and url /mnt/c/xampp/htdocs/repos"
 
     exit
 }
@@ -152,6 +155,21 @@ EOF
 
 }
 
+wsl () {
+    # replace "-" with "_" for database name 
+    dbname=${dir//[^a-zA-Z0-9]/_}
+
+    out "WSL/Windows" 1
+    sleep 1
+    out "DB: $dbname" 2
+    sleep 1
+    out "hostname: $hostname" 2
+    sleep 1
+    url="localhost/repos/${dir}"
+    out "Local: $url" 2
+    check_db
+}
+
 out () { #what?
     for ((i=0; i<30; i++)); do
         if [ $2 -eq 1  ]; then
@@ -229,6 +247,10 @@ while [ $# -gt 0 ];do
             shift
             repo=${hardcode}${1}
             ;;
+        --wsl)
+            wsl=1
+            hostname="127.0.0.1"
+            ;;
         --help)
             usage
             exit
@@ -238,9 +260,15 @@ while [ $# -gt 0 ];do
     shift
 done
 
-wp_dw
-wp_config
-wp_db
+if [ "$wsl" -eq 0  ]; then
+    wp_dw
+    wp_config
+    wp_db
+else
+    wsl
+    wp_dw
+    wp_config
+fi
 wp_install
  htaccess
 wp_git
