@@ -170,7 +170,8 @@ wsl () {
     check_db
 }
 
-out () { #what?
+out () { #what? - or #
+    local line #avoid extra lines between calls
     for ((i=0; i<30; i++)); do
         if [ $2 -eq 1  ]; then
             line+='#'
