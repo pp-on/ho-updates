@@ -24,7 +24,13 @@ url="localhost/arbeit/updates/repos/$dir"
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
-wp="wp"         #where is wp-cli 
+php=$(php -r "echo substr(phpversion(),0,3);")
+#php=$(($phps * 1))
+#if [ "$php" -gt 7 ]; then
+  #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
+#else
+    wp="wp"
+#fi
 tdir="."
 hardcode="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
 repo=${hardcode}${dir}.git    #default, it can be cchanged with -c or -r
@@ -63,7 +69,7 @@ check_db(){
     echo "#########################################"
     echo "### checking database ###"
     echo "#########################################"
-    checkdb=$(mysqlshow -u web -p1234 $dbname | grep -v Wildcard | grep -o $dbname)
+    checkdb=$(mysqlshow  -h $hostname -u web -p1234 -h $hostname $dbname | grep -v Wildcard | grep -o $dbname)
     if [ -z "$checkdb" ]; then
         echo "found no Database with the name $dbname. Moving on"
         create_db
@@ -103,6 +109,11 @@ wp_config (){
     fi
     sleep 1
     $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$hostname" 
+
+#    if [ "$wsl" -eq 1 ]; then
+ #       echo "define('WP_USE_EXT_MYSQL', false);" >> wp-config.php
+  #  fi
+
 }
 #alternative for creating DB with mysql using user and name of wp config
 wp_db (){
@@ -160,6 +171,8 @@ wsl () {
     dbname=${dir//[^a-zA-Z0-9]/_}
 
     out "WSL/Windows" 1
+    sleep 1
+    out "PHP: $php wp: $wp" 2
     sleep 1
     out "DB: $dbname" 2
     sleep 1
