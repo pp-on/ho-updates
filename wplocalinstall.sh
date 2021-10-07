@@ -140,7 +140,11 @@ wp_git (){
     out "cloning $repo" 1
     sleep 1
     rm ./wp-content/ -rf
-    git clone $repo wp-content
+    if [ $wsl -eq 1 ]; then
+        gh repo clone $repo
+    else
+        git clone $repo wp-content
+    fi
     out "activating plugins" 2
     $wp plugin activate --all
 }
@@ -180,6 +184,9 @@ wsl () {
     sleep 1
     url="localhost/repos/${dir}"
     out "Local: $url" 2
+    sleep 1
+    out " Repo: $repo" 2
+    sleep 2
     check_db
 }
 
@@ -264,6 +271,7 @@ while [ $# -gt 0 ];do
         --wsl)
             wsl=1
             hostname="127.0.0.1"
+            repo="pfennigparade/${dir}"
             ;;
         --help)
             usage
