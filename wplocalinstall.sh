@@ -24,8 +24,8 @@ url="localhost/arbeit/updates/repos/$dir"
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
-php=$(php -r "echo substr(phpversion(),0,3);")
-#php=$(($phps * 1))
+php_string=$(php -r "echo substr(phpversion(),0,3);")
+php=$(($php_string + 0)) #string to int
 #if [ "$php" -gt 7 ]; then
   #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
 #else
