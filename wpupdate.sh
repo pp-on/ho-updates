@@ -129,7 +129,7 @@ for site in "${sites[@]}"; do
     $wp core check-update
     update_core
     echo -e "---------------\nCheck Plugins\n---------------"
-    $wp plugin list
+    $wp plugin list --update=available 
     sleep 1 
     echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
     read answer
