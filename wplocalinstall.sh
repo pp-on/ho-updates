@@ -142,7 +142,7 @@ wp_git (){
     sleep 1
     rm ./wp-content/ -rf
     if [ $wsl -eq 1 ]; then
-        gh repo clone $repo
+        gh repo clone $repo wp-content
     else
         git clone $repo wp-content
     fi
