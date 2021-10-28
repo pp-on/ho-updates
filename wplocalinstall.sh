@@ -15,17 +15,18 @@ White="\[\033[0;37m\]"        # White
 
 hostname="localhost"     #host in DB
 wsl=0
-dbname=$(basename $PWD)  #current dir woul be the name
 dbuser="web"
 dbpw="1234"
 dir=$(basename $PWD)
+# replace "-" with "_" for database name 
+dbname=${dir//[^a-zA-Z0-9]/_}
 title="test${dir^^}"           #uppercase
 url="localhost/arbeit/updates/repos/$dir"
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
-php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
-#php_string=$(php -r "echo substr(phpversion(),0,3);")
+#php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
+php_string=$(php -r "echo substr(phpversion(),0,3);")
 php=$(($php_string + 0)) #string to int
 #if [ "$php" -gt 7 ]; then
   #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
@@ -35,7 +36,7 @@ php=$(($php_string + 0)) #string to int
 tdir="."
 hardcode="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
 repo=${hardcode}${dir}.git    #default, it can be cchanged with -c or -r
-    
+gb=0     #is Git Bash been used?    
 ###########################
 ##     functions        ###
 ###########################
@@ -61,7 +62,7 @@ usage() {
     echo "-r arg: second part of git repo (first part is hardcoded)"
     echo "--wsl: use this script in wsl/windows -> mysql for creating DB,
     localhost 127.0.0.1 and url /mnt/c/xampp/htdocs/repos"
-
+    echo --gitbash: since wsl2 does not work with git, use this torun the script
     exit
 }
 # check if database exists. In order to work -> user has to be in mysql grroup
@@ -121,8 +122,11 @@ wp_db (){
     out "Creating Database $dbname" 1
     sleep 1
     #if there's  an error, exit -> || means exit status 1
-    mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS
-    `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+    if [ $gb -eq 1 ]; then
+        winpty mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+    else
+        mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+    fi
     $wp db create
     
 }
@@ -171,11 +175,10 @@ EOF
 
 }
 
-wsl () {
-    # replace "-" with "_" for database name 
-    dbname=${dir//[^a-zA-Z0-9]/_}
+wsl (){ #what?, where?
+    url=$2
 
-    out "WSL/Windows" 1
+    out $1 1
     sleep 1
     out "PHP: $php wp: $wp" 2
     sleep 1
@@ -183,12 +186,10 @@ wsl () {
     sleep 1
     out "hostname: $hostname" 2
     sleep 1
-    url="localhost/repos/${dir}"
     out "Local: $url" 2
     sleep 1
     out " Repo: $repo" 2
     sleep 2
-    check_db
 }
 
 out () { #what? - or #
@@ -273,7 +274,19 @@ while [ $# -gt 0 ];do
             wsl=1
             hostname="127.0.0.1"
             repo="pfennigparade/${dir}"
+            wsl "WSL2/Windows" "localhost/repos/${dir}"
+            wp_dw
+            wp_config
+            check_db
             ;;
+        --gitbash)
+            gb=1
+            wsl "Git Bash/Windows" "localhost/repos/${dir}"
+            wp_dw
+            wp_config
+            wp_db
+            ;;
+
         --help)
             usage
             exit
@@ -283,14 +296,11 @@ while [ $# -gt 0 ];do
     shift
 done
 
-if [ "$wsl" -eq 0  ]; then
+if [ "$wsl" -eq 0 -a "$gb" -eq 0  ]; then
+    wsl "$(uname -a)/Linux" $url
     wp_dw
     wp_config
     wp_db
-else
-    wsl
-    wp_dw
-    wp_config
 fi
 wp_install
  htaccess
