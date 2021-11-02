@@ -123,6 +123,8 @@ wp_db (){
     sleep 1
     #if there's  an error, exit -> || means exit status 1
     if [ $gb -eq 1 ]; then
+        out "Dropping $dbname"
+        sleep 2
         winpty mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
     else
         mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
