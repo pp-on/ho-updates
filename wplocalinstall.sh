@@ -122,13 +122,16 @@ wp_db (){
     out "Creating Database $dbname" 1
     sleep 1
     #if there's  an error, exit -> || means exit status 1
-    if [ $gb -eq 1 ]; then
-        out "Dropping $dbname"
-        sleep 2
-        winpty mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
-    else
-        mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
-    fi
+#    if [ $gb -eq 1 ]; then
+#        winpty mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+#    else
+#        mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+#    fi
+    out "Dropping $dbname" 2
+    sleep 1
+    $wp db drop --yes
+    out "Creating new $dbname" 2
+    sleep 1
     $wp db create
     
 }
