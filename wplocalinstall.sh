@@ -286,7 +286,8 @@ while [ $# -gt 0 ];do
             ;;
         --gitbash)
             gb=1
-            wsl "Git Bash/Windows" "localhost/repos/${dir}"
+            wsl "Git_Bash/Windows" "localhost/repos/${dir}"
+
             wp_dw
             wp_config
             wp_db
