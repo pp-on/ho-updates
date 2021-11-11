@@ -26,8 +26,8 @@ wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
 #php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
-php_string=$(php -r "echo substr(phpversion(),0,3);")
-php=$(($php_string + 0)) #string to int
+php=$(php -r "echo substr(phpversion(),0,3);")
+#php=$(($php_string + 0)) #string to int
 #if [ "$php" -gt 7 ]; then
   #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
 #else
