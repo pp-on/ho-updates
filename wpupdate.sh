@@ -67,10 +67,17 @@ process_sites(){
                 read answer
                 echo -e "\n--------------"
                 if [ "$answer" = "y" ]; then
+                    #only names
+                    site=${site#"$dir"}
+                    site=${site%%/}
                     sites+=("$site")
                 fi
             fi
         done
+        for i in "${sites[@]}"; do
+            echo $i
+        done
+
     fi
 }
 
@@ -140,18 +147,18 @@ function gitwp(){
     sleep 2
     cd -  &>/dev/null
 }
-          
+
+#is directories (-s) known?
 if [ "$argSites" -eq 0 ]; then
     process_sites 
 else 
     process_dirs "$dirs"
 fi
+
 for site in "${sites[@]}"; do
-    #only names
-    seite=${site##"$dir"}
-    seite=${site%/}
-    echo -e "================================\n\t$seite\n================================"
-    cd $site  &>/dev/null
+    echo -e "================================\n\t$site\n================================"
+    cd "$dir$site"  &>/dev/null #change to root wp of site
+    sleep 1
     echo -e "---------------\nChecking Site\n---------------"
     # is wp-site working?
     error=$($wp core check-update ) #the result of command -> 0 ok, 1 error. string goes to variable
