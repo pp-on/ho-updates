@@ -142,7 +142,9 @@ function gitwp(){
 }
           
 if [ "$argSites" -eq 0 ]; then
-    process_sites else process_dirs "$dirs"
+    process_sites 
+else 
+    process_dirs "$dirs"
 fi
 for site in "${sites[@]}"; do
     #only names
