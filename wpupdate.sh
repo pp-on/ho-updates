@@ -48,7 +48,6 @@ process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
             site=${dirs%%,*} #first element -> dirs=a,b,c site=a  
             dirs=${dirs#"$site",} #new string w/o first element -> b,c
             while [ ! -d "$dir$site" ]; do #it has to be a correct name
-            else
                 echo "$dir$site not found! Tipe in [n]ew name or press enter to
                 continue..."
                 read a
