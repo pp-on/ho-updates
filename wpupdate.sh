@@ -67,7 +67,10 @@ process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
             
 
         done
-
+        echo "----------------"
+        sleep 1
+        echo "${#sites[@]} selected websites" 
+                    echo "----------------"
         for i in ${sites[@]}; do
             echo $i
         done
