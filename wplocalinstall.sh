@@ -1,17 +1,17 @@
 #!/bin/env bash
 
 # Reset
-Color_Off="\[\033[0m\]"       # Text Reset
+Color_Off="\e[0m"       # Text Reset
 
 # Regular Colors
-Black="\[\033[0;30m\]"        # Black
-Red="\[\033[0;31m\]"          # Red
-Green="\[\033[0;32m\]"        # Green
-Yellow="\[\033[0;33m\]"       # Yellow
-Blue="\[\033[0;34m\]"         # Blue
-Purple="\[\033[0;35m\]"       # Purple
-Cyan="\[\033[0;36m\]"         # Cyan
-White="\[\033[0;37m\]"        # White
+Black="\e[30m"        # Black
+Red="\e[31m"          # Red
+Green="\e[32m"        # Green
+Yellow="\e[33m"       # Yellow
+Blue="\e[34m"         # Blue
+Purple="\e[35m"       # Purple
+Cyan="\e[36m"         # Cyan
+White="\e[37m"        # White
 
 hostname="localhost"     #host in DB
 wsl=0
@@ -34,12 +34,23 @@ php=$(php -r "echo substr(phpversion(),0,3);")
     wp="wp"
 #fi
 tdir="."
-hardcode="git@github.com-a:pfennigparade/" #first part of ssh repo for key arbeit
-repo=${hardcode}${dir}.git    #default, it can be cchanged with -c or -r
+artgit="ssh"
+git="https://github.com"
+#git="git@github.com-a"
+gituser="pfennigparade" #first part of ssh repo for key arbeit
+repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -c or -r
 gb=0     #is Git Bash been used?    
 ###########################
 ##     functions        ###
 ###########################
+tldr() {
+    echo "This script will install a new fresh WordPress in the actual
+    directory."
+    echo "It will used its name and create a db. Then download andninstall
+    WordPress. Then it will clone and activate all the plugins."
+    echo "Default will be cloned with https"
+    echo "Requirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"
+}
 usage() { 
     echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
     title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
@@ -58,11 +69,11 @@ usage() {
     oswaldo.nickel@pfennigparade.de)"
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
-    echo "-c arg: repository to be cloned from GitHub"
-    echo "-r arg: second part of git repo (first part is hardcoded)"
+    echo "-g arg: repository to be cloned from GitHub"
     echo "--wsl: use this script in wsl/windows -> mysql for creating DB,
     localhost 127.0.0.1 and url /mnt/c/xampp/htdocs/repos"
     echo --gitbash: since wsl2 does not work with git, use this torun the script
+    echo "--ssh arg: host in github to used to clone (default: git@github.com)"
     exit
 }
 # check if database exists. In order to work -> user has to be in mysql grroup
@@ -267,13 +278,9 @@ while [ $# -gt 0 ];do
             shift
             wp=${1}
             ;;
-        -c)
-            shift
-            repo=$1
-            ;;
         -r)
             shift
-            repo=${hardcode}${1}
+            repo=${1}
             ;;
         --wsl)
             wsl=1
@@ -294,6 +301,7 @@ while [ $# -gt 0 ];do
             ;;
 
         --help)
+            tldr
             usage
             exit
             ;;
