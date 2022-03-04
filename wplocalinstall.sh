@@ -288,10 +288,9 @@ while [ $# -gt 0 ];do
             ;;
         --ssh)
             shift
-            if [ -z ${1} ]; then
-                repo="git@github.com-a:${gituser}/${dir}.git"
-            else
                 git=${1}
+            if [ -z "$git" ]; then
+                repo="git@github.com-a:${gituser}/${dir}.git"
             fi
             ;;
         --wsl)
