@@ -44,17 +44,15 @@ gb=0     #is Git Bash been used?
 ##     functions        ###
 ###########################
 tldr() {
-    echo "This script will install a new fresh WordPress in the actual
-    directory."
-    echo "It will used its name and create a db. Then download andninstall
-    WordPress. Then it will clone and activate all the plugins."
-    echo "Default will be cloned with https"
-    echo "Requirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"
+    echo -e $Green"This script will install a new fresh WordPress in the actual
+    directory.\nIt will used its name and create a db. Then download andninstall
+    WordPress. Then it will clone and activate all the
+    plugins.\n${Purple}Default will be cloned with https\nRequirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"$Color_Off
 }
 usage() { 
-    echo "USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
+    echo -e "${Cyan}USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
     title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
-    path/to/wp][-c repository ][-r repo.git]"
+    path/to/wp][-g repository ][--ssh user@host for github]${Color_Off}"
     echo -e "-n arg:  specify the name of the database (if not, current dir
     would be used)\n[WARNING] If it exists, it will be dropped"
     echo "-h arg: specify the hostname for the database (default localhost)"
@@ -319,4 +317,4 @@ fi
 wp_install
  htaccess
 wp_git
-wp_key_acf_pro
+
