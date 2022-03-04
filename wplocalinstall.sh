@@ -82,7 +82,8 @@ check_db(){
     echo "#########################################"
     checkdb=$(mysqlshow  -h $hostname -u web -p1234 -h $hostname $dbname | grep -v Wildcard | grep -o $dbname)
     if [ -z "$checkdb" ]; then
-        echo "found no Database with the name $dbname. Moving on"
+        echo -e "${Red}found no Database with the name $dbname. Moving
+        on${Color_Off}"
         create_db
     else
         echo "found Database $dbname"
@@ -114,7 +115,7 @@ wp_config (){
     out "creating config" 1
     f="wp-config.php"
     if [ ! -f "$f" ]; then
-        echo "$Yellow there is no $f $Color_Off"
+        echo -e "$Yellow there is no $f $Color_Off"
     else
         rm $f
     fi
@@ -147,7 +148,9 @@ wp_db (){
 wp_install (){
     out "installing wp ${title}" 1
     sleep 1
-    $wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong"
+    $wp core install --url="$url" --title="$title" --admin_user="$wpuser"
+    --admin_password="$wppw" --admin_email="$wpemail"   || echo -e
+    "${Red}Something went wrong${Color_Off}"
 }
 wp_git (){
     if [ -z "$repo" ]; then
@@ -219,10 +222,13 @@ out () { #what? - or #
     name="##        ${1}        "
     length=${#name}
     #echo $length
-    echo $line
+    if [ $2 -eq 1  ]; then
+        line=${Yellow}${line}
+   else
+        line=${Cyan}${line}
+   fi
     #echo -e "$name${line:$length}" 
-    echo "${1}"
-    echo $line
+    echo -e ${line}\n${1}\n$line${Color_Off}
 
 }
 ####################################################
