@@ -37,8 +37,8 @@ tdir="."
 artgit="ssh"
 git="https://github.com"
 #git="git@github.com-a"
-gituser="pfennigparade" #first part of ssh repo for key arbeit
-repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -c or -r
+gituser="pfennigparade" #github user
+repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 gb=0     #is Git Bash been used?    
 ###########################
 ##     functions        ###
@@ -276,9 +276,17 @@ while [ $# -gt 0 ];do
             shift
             wp=${1}
             ;;
-        -r)
+        -g)
             shift
             repo=${1}
+            ;;
+        --ssh)
+            shift
+            if [ -z ${1} ]; then
+                repo="git@github.com-a:${gituser}/${dir}.git"
+            else
+                git=${1}
+            fi
             ;;
         --wsl)
             wsl=1
@@ -317,4 +325,4 @@ fi
 wp_install
  htaccess
 wp_git
-
+wp_key_acf_pro
