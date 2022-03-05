@@ -212,7 +212,7 @@ wsl (){ #what?, where?
 out () { #what? - or #
     local line #avoid extra lines between calls
     for ((i=0; i<30; i++)); do
-        if [ $2 -eq 1  ]; then
+        if [[ "$2" -eq 1 ]]; then
             line+='#'
         else
             line+='-'
@@ -222,7 +222,7 @@ out () { #what? - or #
     name="##        ${1}        "
     length=${#name}
     #echo $length
-    if [ $2 -eq 1  ]; then
+    if [[ "$2" -eq 1 ]]; then
         line=${Yellow}${line}
    else
         line=${Cyan}${line}
