@@ -25,8 +25,9 @@ url="localhost/arbeit/updates/repos/$dir"
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
+php=$(php -v |  head -n 1 | cut -d " " -f 2)
 #php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
-php=$(php -r "echo substr(phpversion(),0,3);")
+#php=$(php -r "echo substr(phpversion(),0,3);")
 #php=$(($php_string + 0)) #string to int
 #if [ "$php" -gt 7 ]; then
   #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
@@ -148,9 +149,7 @@ wp_db (){
 wp_install (){
     out "installing wp ${title}" 1
     sleep 1
-    $wp core install --url="$url" --title="$title" --admin_user="$wpuser"
-    --admin_password="$wppw" --admin_email="$wpemail"   || echo -e
-    "${Red}Something went wrong${Color_Off}"
+    $wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong${Color_Off}"
 }
 wp_git (){
     if [ -z "$repo" ]; then
@@ -189,7 +188,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 # END WordPress
 EOF
-
+sleep 1
+echo "Done"
 }
 
 wsl (){ #what?, where?
@@ -228,7 +228,10 @@ out () { #what? - or #
         line=${Cyan}${line}
    fi
     #echo -e "$name${line:$length}" 
-    echo -e ${line}\n${1}\n$line${Color_Off}
+    #echo -e ${line}\n${1}\n$line${Color_Off}
+echo -e ${line}
+echo -e ${1}
+echo -e $line${Color_Off}
 
 }
 ####################################################
