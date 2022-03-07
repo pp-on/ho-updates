@@ -30,17 +30,22 @@ done
 dirs=$(find "$dir"*/ -maxdepth 1 -mindepth 1 -type d)
 #check for wpsites and add them to array
 #for site in "${dirs[@]}"; do
-for site in $(ls -d $dir*/); do
-    if [ -d "$site/wp-content/" ]; then
-        site=${site##"$dir"}
-        if [ "$verbose" = "1" ]; then
-            sleep 1
-            echo "Found $site"
+searchwp() {
+    for site in $(ls -d $dir*/); do
+        if [ -d "$site/wp-content/" ]; then
+            site=${site##"$dir"}
+            if [ "$verbose" = "1" ]; then
+                sleep 1
+                echo "Found $site"
+            fi
+            sites+=("$site")
+            let anzahl++
         fi
-        sites+=("$site")
-        let anzahl++
-    fi
-done
+    done
+
+}
+searchwp
+
 # w/o arguments
 if [ "$verbose" = "0" ]; then
     #pass it
