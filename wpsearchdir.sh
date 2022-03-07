@@ -43,9 +43,6 @@ searchwp() {
         fi
     done
 
-}
-searchwp
-
 # w/o arguments
 if [ "$verbose" = "0" ]; then
     #pass it
@@ -55,3 +52,22 @@ fi
 if [ "$total" = "1" ]; then
     echo -e "\n=======\nTotal $anzahl WP-Sites"
 fi
+}
+process_sites(){
+    if [ -z "$sites" ]; then #if no folders aka Websites were pass as argument
+        for site in $(ls -d $dir*/); do
+            if [ -d "$site/wp-content/" ]; then
+                seite=${site##"$dir"}
+                echo "Found $seite"
+                echo "Should it be processed? [y] "
+                read answer
+                echo -e "\n--------------"
+                if [ "$answer" = "y" ]; then
+                    #only names
+                    site=${site#"$dir"}
+                    site=${site%%/}
+                    sites+=("$site")
+                fi
+            fi
+        done
+
