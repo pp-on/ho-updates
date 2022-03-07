@@ -3,6 +3,7 @@
 verbose=0
 total=0
 dir=./
+anzahl=0
 
 while [ $# -gt 0 ];do
     case $1 in
@@ -37,7 +38,7 @@ for site in $(ls -d $dir*/); do
             echo "Found $site"
         fi
         sites+=("$site")
-        let i++
+        let anzahl++
     fi
 done
 # w/o arguments
@@ -47,5 +48,5 @@ if [ "$verbose" = "0" ]; then
 fi
 # -t -> how many found 
 if [ "$total" = "1" ]; then
-    echo -e "\n=======\nTotal $i WP-Sites"
+    echo -e "\n=======\nTotal $anzahl WP-Sites"
 fi
