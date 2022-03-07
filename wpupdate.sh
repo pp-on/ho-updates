@@ -1,5 +1,18 @@
 #!/bin/env bash
 
+# Reset
+Color_Off="\e[0m"       # Text Reset
+
+# Regular Colors
+Black="\e[30m"        # Black
+Red="\e[31m"          # Red
+Green="\e[32m"        # Green
+Yellow="\e[33m"       # Yellow
+Blue="\e[34m"         # Blue
+Purple="\e[35m"       # Purple
+Cyan="\e[36m"         # Cyan
+White="\e[37m"        # White
+
 git=0 #use git?
 dir=./
 wp="wp"         #where is wp-cli 
@@ -67,13 +80,14 @@ process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
             
 
         done
-        echo "----------------"
+        echo -e "${Yellow}----------------"
         sleep 1
-        echo "${#sites[@]} selected websites" 
+        echo -e "${#sites[@]} selected websites" 
                     echo "----------------"
         for i in ${sites[@]}; do
-            echo $i
+            echo -e ${Cyan}$i
         done
+        echo -e "${Yellow}----------------"
     fi
 }
 
@@ -112,7 +126,7 @@ function update_core () { #update wordpress, only when there is a new version
         if [ "$answer" = "y" ]; then
             $wp core update
         else
-            echo "Nothin to be done"
+            echo -e "${Blue}Nothin to be done${Color_Off}"
         fi
     fi
 }
@@ -177,24 +191,25 @@ else
 fi
 
 for site in "${sites[@]}"; do
-    echo -e "================================\n\t$site\n================================"
+    echo -e "${Cyan}================================\n\t$site\n================================"
     cd "$dir$site"  &>/dev/null #change to root wp of site
     sleep 1
-    echo -e "---------------\nChecking Site\n---------------"
+    echo -e "${Green}---------------\nChecking Site\n---------------"
     # is wp-site working?
     error=$($wp core check-update ) #the result of command -> 0 ok, 1 error. string goes to variable
     #echo $?
     if [ ! -z "$error" ]; then
      #   echo "$error"
-        echo "Everything OK"
+        echo -e "${Green}Everything OK"
     else
-        echo "$error" 
+        echo -e ${Red}"$error" 
         continue
    fi
-    echo -e "---------------\nCheck Core Update\n---------------"
+    echo -e "${Yellow}---------------\nCheck Core  Update\n---------------${Color_Off}"
     $wp core check-update
     update_core
-    echo -e "---------------\nCheck Plugins\n---------------"
+    echo -e "${Yellow}---------------\nCheck Plugins\n---------------${Color_Off}"
+   #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
     $wp plugin list --update=available 
     sleep 1 
     echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
