@@ -18,11 +18,17 @@ total=0
 dir=./
 anzahl=0
 print=0
+sdirs="" #given dirs to be selected
 
 while [ $# -gt 0 ];do
     case $1 in
         -p)
             print=1
+            ;;
+        -b)
+            shift
+            sdirs="$1"
+            process_dirs "$sdirs"
             ;;
         -s)
             searchwp
@@ -38,7 +44,7 @@ while [ $# -gt 0 ];do
             dir=$1
             ;;
         -h)
-            echo "wpsearchdir.sh [-s][-p][-v][-t][-d TARGET DIR]"
+            echo "wpsearchdir.sh [-s][-p][-v][-t][-d TARGET DIR][-b (dir1,dir2,...)]"
             exit
             ;;
     esac
