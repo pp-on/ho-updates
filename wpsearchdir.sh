@@ -4,9 +4,16 @@ verbose=0
 total=0
 dir=./
 anzahl=0
+print=0
 
 while [ $# -gt 0 ];do
     case $1 in
+        -p)
+            print=1
+            ;;
+        -s)
+            searchwp
+            ;;
         -v)
             verbose=1
             ;;
@@ -18,7 +25,7 @@ while [ $# -gt 0 ];do
             dir=$1
             ;;
         -h)
-            echo "wpsearchdir.sh [-v][-t][-d TARGET DIR]"
+            echo "wpsearchdir.sh [-s][-p][-v][-t][-d TARGET DIR]"
             exit
             ;;
     esac
@@ -34,25 +41,18 @@ searchwp() {
     for site in $(ls -d $dir*/); do
         if [ -d "$site/wp-content/" ]; then
             site=${site##"$dir"}
-            if [ "$verbose" = "1" ]; then
-                sleep 1
-                echo "Found $site"
-            fi
-            sites+=("$site")
-            let anzahl++
+            [ "$verbose" = "1" ] && sleep 1 && echo "Found $site"
+            sites+=("$site"); let anzahl++
         fi
     done
 
-# w/o arguments
-if [ "$verbose" = "0" ]; then
-    #pass it
-    echo "${sites[@]}" 
-fi
-# -t -> how many found 
-if [ "$total" = "1" ]; then
-    echo -e "\n=======\nTotal $anzahl WP-Sites"
-fi
 }
+# w/o arguments
+[ "$print" = "1" ] && echo "${sites[@]}" 
+
+# -t -> how many found 
+[ "$total" = "1" ] && echo -e "\n=======\nTotal $anzahl WP-Sites"
+
 process_sites(){
     if [ -z "$sites" ]; then #if no folders aka Websites were pass as argument
         for site in $(ls -d $dir*/); do
