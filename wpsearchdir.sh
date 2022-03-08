@@ -13,6 +13,7 @@ Purple="\e[35m"       # Purple
 Cyan="\e[36m"         # Cyan
 White="\e[37m"        # White
 
+wp="wp"         #where is wp-cli 
 verbose=0
 total=0
 dir=./
@@ -39,12 +40,16 @@ while [ $# -gt 0 ];do
         -t)
             total=1
             ;;
+        -w)
+            shift
+            wp=${1}
+            ;;
         -d)
             shift
             dir=$1
             ;;
         -h)
-            echo "wpsearchdir.sh [-s][-p][-v][-t][-d TARGET DIR][-b (dir1,dir2,...)]"
+            echo "wpsearchdir.sh [-w path/to/wpcli][-s][-p][-v][-t][-d TARGET DIR][-b (dir1,dir2,...)]"
             exit
             ;;
     esac
@@ -94,6 +99,21 @@ process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
 
         done
     fi
+}
+list_wp_plugins(){
+    local i
+    local a
+
+    echo -e "${Green}----------------"
+    for i in ${sites[@]}; do
+        echo -e $i
+        echo "----------------${Color_Off}"
+        $wp plugin list
+        echo "Con"
+        read a
+
+    done
+    fo
 }
 print_sites(){
         echo -e "${Yellow}----------------"
