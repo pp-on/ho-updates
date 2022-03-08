@@ -47,8 +47,13 @@ searchwp() {
     done
 
 }
+print_sites(){
+    for s in "${sites[@]}"; do
+        echo $s
+    done
+}
 # w/o arguments
-[ "$print" = "1" ] && echo "${sites[@]}" 
+[ "$print" = "1" ] && print_sites
 
 # -t -> how many found 
 [ "$total" = "1" ] && echo -e "\n=======\nTotal $anzahl WP-Sites"
