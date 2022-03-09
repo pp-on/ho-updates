@@ -108,8 +108,9 @@ list_wp_plugins(){
     for i in ${sites[@]}; do
         cd "$dir$i"  &>/dev/null #change to root wp of site
         echo -e $i
-        echo "----------------${Color_Off}"
-        $wp plugin list
+        echo -e "----------------${Color_Off}"
+        $wp plugin list --color
+        echo -e "${Yellow} $($wp plugin list --format=count) Plugins"
         echo -e "${Purple}To continue press any key and enter...${Color_Off}"
         read a
         cd -  &>/dev/null #change back to orignal dir 
