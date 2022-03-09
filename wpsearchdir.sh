@@ -104,8 +104,8 @@ list_wp_plugins(){
     local i
     local a
 
-    echo -e "${Green}----------------"
     for i in ${sites[@]}; do
+        echo -e "${Green}----------------"
         cd "$dir$i"  &>/dev/null #change to root wp of site
         echo -e $i
         echo -e "----------------${Color_Off}"
