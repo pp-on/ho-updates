@@ -113,7 +113,6 @@ list_wp_plugins(){
         read a
 
     done
-    fo
 }
 print_sites(){
         echo -e "${Yellow}----------------"
