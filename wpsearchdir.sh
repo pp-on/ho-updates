@@ -106,12 +106,13 @@ list_wp_plugins(){
 
     echo -e "${Green}----------------"
     for i in ${sites[@]}; do
+        cd "$dir$site"  &>/dev/null #change to root wp of site
         echo -e $i
         echo "----------------${Color_Off}"
         $wp plugin list
-        echo "Con"
+        echo -e "${Purple}To continue press any key and enter...${Color_Off}"
         read a
-
+        cd -  &>/dev/null #change back to orignal dir 
     done
 }
 print_sites(){
