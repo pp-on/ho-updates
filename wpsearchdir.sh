@@ -1,5 +1,26 @@
 #!/bin/bash
 
+#make functions available to be used
+#in other scripts for maintaning more
+#than one wordpress's sies in a web
+#serv er or locally
+#+----------------------------------+
+#|      Functions                   |
+#+----------------------------------+
+#| process_dirs()                   |
+#| split $argument in sites names   |
+#+----------------------------------+
+#| searchwp()                       |
+#| search for wp sites in $dir      |
+#+----------------------------------+
+#| list_wp_plugins()                |
+#+----------------------------------+
+#| print_sites()                    |
+#+----------------------------------+
+#| process_sites()                  |
+#| add or not a wpsite to an array  |
+#+----------------------------------+
+
 # Reset
 Color_Off="\e[0m"       # Text Reset
 
@@ -106,7 +127,7 @@ list_wp_plugins(){
 
     for i in ${sites[@]}; do
         echo -e "${Green}----------------"
-        cd "$dir$i"  &>/dev/null #change to root wp of site
+        td "$dir$i"  &>/dev/null #change to root wp of site
         echo -e $i
         echo -e "----------------${Color_Off}"
         $wp plugin list --color
