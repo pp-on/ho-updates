@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #search for wp-sites
-source ./wpsearchdir.sh
+source ~/git/ho-updates/wpsearchdir.sh
 
 dir=./
 wp="wp"         #where is wp-cli 
@@ -25,8 +25,8 @@ while [ $# -gt 0 ];do
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
-done
-#only WP-Sites are to be processed
-for site in "${sites[@]}"; do
-    echo $site
-done
+done 
+
+process_dirs "aurahotel,beans-and-books"
+print_sites
+list_wp_plugins

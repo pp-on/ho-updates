@@ -83,6 +83,7 @@ dirs=$(find "$dir"*/ -maxdepth 1 -mindepth 1 -type d)
 #check for wpsites and add them to array
 #for site in "${dirs[@]}"; do
 searchwp() {
+    local site #only valid within this function
     for site in $(ls -d "$dir"*/); do
         if [ -d "$site/wp-content/" ]; then
             site=${site##"$dir"}
@@ -94,6 +95,7 @@ searchwp() {
 }
 process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
     local dirs="$1"
+    local site #only valid within this function
     local site
     if [ ! -z "$dirs" ]; then #if something did go wrong
         while [ "$dirs" != "$site" ]; do
@@ -138,14 +140,15 @@ list_wp_plugins(){
     done
 }
 print_sites(){
-        echo -e "${Yellow}----------------"
-        sleep 1
-        echo -e "${#sites[@]} selected websites" 
-                    echo "----------------"
-        for i in ${sites[@]}; do
-            echo -e ${Cyan}$i
-        done
-        echo -e "${Yellow}----------------"
+    local i
+    echo -e "${Yellow}----------------"
+    sleep 1
+    echo -e "${#sites[@]} selected websites" 
+    echo "----------------"
+    for i in ${sites[@]}; do
+        echo -e ${Cyan}$i
+    done
+    echo -e "${Yellow}----------------"
 }
 # w/o arguments
 [ "$print" = "1" ] && print_sites
@@ -154,6 +157,7 @@ print_sites(){
 [ "$total" = "1" ] && echo -e "\n=======\nTotal $anzahl WP-Sites"
 
 process_sites(){
+    local site #only valid within this function
     if [ -z "$sites" ]; then #if no folders aka Websites were pass as argument
         for site in $(ls -d $dir*/); do
             if [ -d "$site/wp-content/" ]; then
