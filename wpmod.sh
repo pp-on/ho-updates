@@ -25,8 +25,17 @@ while [ $# -gt 0 ];do
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
+<<<<<<< HEAD
 done 
 
 process_dirs "aurahotel,beans-and-books"
+=======
+done
+#only WP-Sites are to be processed
+verbose=1
+#searchwp
+#print_sites
+process_dirs "wp-starter,aurahotel,bbsb,eca"
+>>>>>>> 939b3996dd120b0dc9e6adbf86ab4f16d3ed88a8
 print_sites
 list_wp_plugins

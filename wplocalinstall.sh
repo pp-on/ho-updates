@@ -175,6 +175,26 @@ wp_key_acf_pro (){
     $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
+#activate debug
+wp_debug(){
+    out "adding WP DEBUG to wp-config" 2
+    cat <<EOF >> wp-config.php
+    // Enable WP_DEBUG mode
+define( 'WP_DEBUG', true );
+
+// Enable Debug logging to the /wp-content/debug.log file
+define( 'WP_DEBUG_LOG', true );
+
+// Disable display of errors and warnings
+define( 'WP_DEBUG_DISPLAY', false );
+@ini_set( 'display_errors', 0 );
+
+// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
+define( 'SCRIPT_DEBUG', true );
+EOF
+
+     
+}
 # basic htaccess for SEO
 htaccess() {
     out "creating .htaccess" 2
@@ -331,6 +351,7 @@ if [ "$wsl" -eq 0 -a "$gb" -eq 0  ]; then
     wp_db
 fi
 wp_install
+wp_debug
  htaccess
 wp_git
 wp_key_acf_pro
