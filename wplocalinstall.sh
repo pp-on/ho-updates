@@ -35,11 +35,10 @@ php=$(php -v |  head -n 1 | cut -d " " -f 2)
     wp="wp"
 #fi
 tdir="."
-artgit="ssh"
-git="https://github.com"
+ssh=0 # for git clone HTTPS(default)
+#pk_ssh=0 #my personal key (not set)
 #git="git@github.com-a"
 gituser="pfennigparade" #github user
-repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 gb=0     #is Git Bash been used?    
 ###########################
 ##     functions        ###
@@ -213,8 +212,21 @@ echo "Done"
 }
 
 wsl (){ #what?, where?
-    url=$2
+    if [ $ssh -eq 1 ]; then
+        git="git@github.com-a" 
+    elif [ $ssh -eq 2 ]; then
+        git="git@github.com" 
+    else
+        git="https://github.com"
+    fi
+    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 
+    #personal key
+#    [[ -n "$pk_ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
+    #normal key
+ #   [[ -n "$ssh" ]] && repo="git@github.com:${gituser}/${dir}.git"
+    url=$2
+            
     out $1 1
     sleep 1
     out "PHP: $php wp: $wp" 2
@@ -309,17 +321,16 @@ while [ $# -gt 0 ];do
             shift
             repo=${1}
             ;;
+        --private-ssh)
+            ssh=1 #use my ssh key
+            ;;
         --ssh)
-            shift
-                git=${1}
-            if [ -z "$git" ]; then
-                repo="git@github.com-a:${gituser}/${dir}.git"
-            fi
+            ssh=2 #use default ssh key
             ;;
         --wsl)
             wsl=1
             hostname="127.0.0.1"
-            repo="pfennigparade/${dir}"
+            #repo="pfennigparade/${dir}"
             wsl "WSL2/Windows" "localhost/repos/${dir}"
             wp_dw
             wp_config
