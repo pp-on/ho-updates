@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #search for wp-sites
-source ~/git/ho-updates/wpsearchdir.sh
+source ~/git/ho-updates/wphelpfuntions.sh
 
 dir=./
 wp="wp"         #where is wp-cli 
