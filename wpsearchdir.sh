@@ -70,5 +70,4 @@ for site in $(ls -d "$dir"*/); do
         sites+=("$site"); (( anzahl++ ))
     fi
 done
-[ -n "$total" ] && echo -e "${Yellow}${anzahl}${Color_Off} WordPress Sites
-found"
+[ -n "$total" ] && echo -e "${Yellow}${anzahl}${Color_Off} WordPress Sites found"
