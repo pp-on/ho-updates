@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #make functions available to be used
 #in other scripts for maintaning more
 #than one wordpress's sies in a web
@@ -176,4 +175,10 @@ process_sites(){
         done
     fi
 }
+os_detection(){
+    #linux or wsl , gitbash empty
+    local OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
+    [ -z "$OS" ] && OS="Git Bash"
+
+}
