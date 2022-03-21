@@ -337,7 +337,8 @@ while [ $# -gt 0 ];do
             wsl "WSL2/Windows" "localhost/repos/${dir}"
             wp_dw
             wp_config
-            check_db
+            #check_db
+            wp_db
             ;;
         --gitbash)
             gb=1
