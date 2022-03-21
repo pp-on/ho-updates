@@ -1,5 +1,8 @@
 #!/bin/env bash
 
+#search for wp-sites
+source ~/git/ho-updates/wphelpfuntions.sh
+
 # Reset
 Color_Off="\e[0m"       # Text Reset
 
