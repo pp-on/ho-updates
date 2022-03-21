@@ -212,17 +212,17 @@ echo "Done"
 }
 
 wsl (){ #what?, where?
-    if [ $ssh -eq 1 ]; then
-        git="git@github.com-a" 
-    elif [ $ssh -eq 2 ]; then
-        git="git@github.com" 
-    else
-        git="https://github.com"
-    fi
-    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
+#    if [ $ssh -eq 1 ]; then
+#        git="git@github.com-a" 
+#    elif [ $ssh -eq 2 ]; then
+#        git="git@github.com" 
+#    else
+#        git="https://github.com"
+#    fi
+#    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 
     #personal key
-#    [[ -n "$pk_ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
+    [[ -n "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
     #normal key
  #   [[ -n "$ssh" ]] && repo="git@github.com:${gituser}/${dir}.git"
     url=$2
@@ -321,11 +321,11 @@ while [ $# -gt 0 ];do
             shift
             repo=${1}
             ;;
-        --private-ssh)
-            ssh=1 #use my ssh key
-            ;;
+  #      --private-ssh)
+ #           ssh=1 #use my ssh key
+#            ;;
         --ssh)
-            ssh=2 #use default ssh key
+            ssh=1 #use default ssh key
             ;;
         --wsl)
             wsl=1

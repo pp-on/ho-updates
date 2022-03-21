@@ -176,8 +176,9 @@ process_sites(){
     fi
 }
 os_detection(){
+    local OS
     #linux or wsl , gitbash empty
-    local OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
+    OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
     [ -z "$OS" ] && OS="Git Bash"
 
