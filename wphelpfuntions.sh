@@ -19,6 +19,8 @@
 #| process_sites()                  |
 #| add or not a wpsite to an array  |
 #+----------------------------------+
+#| os_detection()                   |
+#+----------------------------------+
 
 # Reset
 Color_Off="\e[0m"       # Text Reset
@@ -128,7 +130,7 @@ list_wp_plugins(){
 
     for i in ${sites[@]}; do
         echo -e "${Green}----------------"
-        td "$dir$i"  &>/dev/null #change to root wp of site
+        cd "$dir$i"  &>/dev/null #change to root wp of site
         echo -e $i
         echo -e "----------------${Color_Off}"
         $wp plugin list --color
@@ -176,10 +178,26 @@ process_sites(){
     fi
 }
 os_detection(){
+    UNAME="$(uname -a)"
     local OS
     #linux or wsl , gitbash empty
     OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
+case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
+  linux)
+    printf 'linux\n'
+    ;;
+  *wsl*)
+      cOS="WSL:${OS}"
+    ;;
+  msys*|cygwin*|mingw*)
+    # or possible 'bash on windows'
+    printf 'Git Bash\n'
+    ;;
+  *)
+    printf 'unknown\n'
+    ;;
+esac
     [ -z "$OS" ] && OS="Git Bash"
 
 }
