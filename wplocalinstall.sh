@@ -16,7 +16,7 @@ Purple="\e[35m"       # Purple
 Cyan="\e[36m"         # Cyan
 White="\e[37m"        # White
 
-#hostname="localhost"     #host in DB
+hostname="localhost"     #host in DB
 wsl=0
 dbuser="web"
 dbpw="1234"
