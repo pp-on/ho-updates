@@ -16,7 +16,7 @@ Purple="\e[35m"       # Purple
 Cyan="\e[36m"         # Cyan
 White="\e[37m"        # White
 
-hostname="localhost"     #host in DB
+#hostname="localhost"     #host in DB
 wsl=0
 dbuser="web"
 dbpw="1234"
@@ -114,8 +114,9 @@ wp_dw (){
     sleep 1
     $wp core download --locale=de_DE
 }
-wp_config (){
+wp_config (){ #hostname
     out "creating config" 1
+    out "using hostname $1" 2
     f="wp-config.php"
     if [ ! -f "$f" ]; then
         echo -e "$Yellow there is no $f $Color_Off"
@@ -123,7 +124,7 @@ wp_config (){
         rm $f
     fi
     sleep 1
-    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$hostname" 
+    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$1" 
 
 #    if [ "$wsl" -eq 1 ]; then
  #       echo "define('WP_USE_EXT_MYSQL', false);" >> wp-config.php
@@ -332,17 +333,12 @@ while [ $# -gt 0 ];do
             ;;
         --wsl)
             wsl=1
-            hostname="127.0.0.1"
-            #repo="pfennigparade/${dir}"
-            wsl "WSL2/Windows" "localhost/repos/${dir}"
             wp_dw
-            wp_config
             #check_db
             wp_db
             ;;
         --gitbash)
             gb=1
-            wsl "Git_Bash/Windows" "localhost/repos/${dir}"
 
             wp_dw
             wp_config
@@ -359,13 +355,19 @@ while [ $# -gt 0 ];do
     shift
 done
 
-if [ "$wsl" -eq 0 -a "$gb" -eq 0  ]; then
-    wsl "$(uname -a)/Linux" $url
-    wp_dw
-    wp_config
-    wp_db
+    if [ "$wsl" -eq 1 -a "$gb" -eq 0  ]; then
+            hostname="127.0.0.1"
+            #repo="pfennigparade/${dir}"
+            wsl "WSL2/Windows" "localhost/repos/${dir}" 
+    elif [ "$wsl" -eq 0 -a "$gb" -eq 1  ]; then
+        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
+    else
+        wsl "$(uname -a)/Linux" $url
 fi
-wp_install
+wp_dw
+            wp_config $hostname
+wp_db
+w p_install
 wp_debug
  htaccess
 wp_git

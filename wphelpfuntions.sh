@@ -179,25 +179,21 @@ process_sites(){
 }
 os_detection(){
     UNAME="$(uname -a)"
-    local OS
     #linux or wsl , gitbash empty
-    OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
+    OS="$(echo /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
 case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
-    printf 'linux\n'
-    ;;
+    cOS="Linux"
+      ;;
   *wsl*)
-      cOS="WSL:${OS}"
+      cOS="WSL"
     ;;
   msys*|cygwin*|mingw*)
     # or possible 'bash on windows'
-    printf 'Git Bash\n'
+    cOS="Git Bash"
     ;;
   *)
-    printf 'unknown\n'
     ;;
 esac
-    [ -z "$OS" ] && OS="Git Bash"
-
 }
