@@ -270,13 +270,30 @@ echo -e ${1}
 echo -e $line${Color_Off}
 
 }
+assign_env(){
+    var=$1
+    value=$2
+    echo $wsl
+    $wsl=1
+    sleep 1
+    echo $wsl
+}
+
+os_process(){
+    os_detection
+    [[ "$cOS" == "WSL" ]] && wsl=1 && hostname="127.0.0.1" 
+    wsl "${cOS}/${OS}" "localhost/repos/${dir}" 
+
+}
 ####################################################
 ####+################################################
 ## MAIN
 
-#[ $# -eq 0 ] && usage
+##[ $# -eq 0 ] && usage
 while [ $# -gt 0 ];do
+#for arg in "$@"; do
     case $1 in
+    #case $arg in
         -n)
             shift
             dbname=$1
@@ -329,13 +346,11 @@ while [ $# -gt 0 ];do
  #           ssh=1 #use my ssh key
 #            ;;
         --ssh)
-            ssh=1 #use default ssh key
+            { ssh=1; } #use default ssh key
             ;;
         --wsl)
-            wsl=1
-            wp_dw
-            #check_db
-            wp_db
+            #{ wsl=1; } 
+            assign_env wsl 1
             ;;
         --gitbash)
             gb=1
@@ -354,20 +369,22 @@ while [ $# -gt 0 ];do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
-
-    if [ "$wsl" -eq 1 -a "$gb" -eq 0  ]; then
-            hostname="127.0.0.1"
-            #repo="pfennigparade/${dir}"
-            wsl "WSL2/Windows" "localhost/repos/${dir}" 
-    elif [ "$wsl" -eq 0 -a "$gb" -eq 1  ]; then
-        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
-    else
-        wsl "$(uname -a)/Linux" $url
-fi
+os_process
+echo $wsl
+sleep 1
+#q   if [ -n "$wsl" ] && [ -z "$gb" ]; then
+#            hostname="127.0.0.1"
+#            #repo="pfennigparade/${dir}"
+#            wsl "WSL2/Windows" "localhost/repos/${dir}" 
+#    elif [ -z  "$wsl" ] && [ -n "$gb"  ]; then
+#        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
+#    else
+##        wsl "Linux" $url
+#fi
 wp_dw
-            wp_config $hostname
+wp_config $hostname
 wp_db
-w p_install
+wp_install
 wp_debug
  htaccess
 wp_git
