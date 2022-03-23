@@ -260,6 +260,8 @@ out () { #what? - or #
     #echo $length
     if [[ "$2" -eq 1 ]]; then
         line=${Yellow}${line}
+    elif [[ "$2" -eq 3 ]]; then
+        line=${Red}${line}
    else
         line=${Cyan}${line}
    fi
