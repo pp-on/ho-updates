@@ -191,7 +191,7 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
     ;;
   msys*|cygwin*|mingw*)
     # or possible 'bash on windows'
-    cOS="Git Bash"
+    cOS="Git_Bash"
     ;;
   *)
     ;;
