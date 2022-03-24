@@ -42,6 +42,7 @@ ssh=0 # for git clone HTTPS(default)
 #pk_ssh=0 #my personal key (not set)
 #git="git@github.com-a"
 gituser="pfennigparade" #github user
+repo="https://github.com/${gituser}/${dir}.git"
 gb=0     #is Git Bash been used?    
 ###########################
 ##     functions        ###
@@ -226,7 +227,7 @@ wsl (){ #what?, where?
 #    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 
     #personal key
-    [[ -n "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
+    [[ ! -z "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
     #normal key
  #   [[ -n "$ssh" ]] && repo="git@github.com:${gituser}/${dir}.git"
     url=$2
@@ -348,7 +349,7 @@ while [ $# -gt 0 ];do
  #           ssh=1 #use my ssh key
 #            ;;
         --ssh)
-            { ssh=1; } #use default ssh key
+            ((ssh++)) #use default ssh key
             ;;
         --wsl)
             #{ wsl=1; } 
@@ -371,6 +372,7 @@ while [ $# -gt 0 ];do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
+out $ssh 3
 os_process
 echo $wsl
 sleep 1
