@@ -274,12 +274,10 @@ echo -e $line${Color_Off}
 
 }
 assign_env(){
-    var=$1
+    declare -n var="$1" #string $1 will be the name of var
     value=$2
-    echo $wsl
-    $wsl=1
-    sleep 1
-    echo $wsl
+    echo ${!var} #print the name of var
+    var="$2"
 }
 
 os_process(){
@@ -349,7 +347,8 @@ while [ $# -gt 0 ];do
  #           ssh=1 #use my ssh key
 #            ;;
         --ssh)
-            ((ssh++)) #use default ssh key
+            assign_env ssh 1
+            #((ssh++)) #use default ssh key
             ;;
         --wsl)
             #{ wsl=1; } 
@@ -372,6 +371,7 @@ while [ $# -gt 0 ];do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
+            assign_env ssh 1
 out $ssh 3
 os_process
 echo $wsl
