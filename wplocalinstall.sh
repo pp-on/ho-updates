@@ -227,7 +227,7 @@ wsl (){ #what?, where?
 #    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 
     #personal key
-    [[ ! -z "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
+    #[[ ! -z "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
     #normal key
  #   [[ -n "$ssh" ]] && repo="git@github.com:${gituser}/${dir}.git"
     url=$2
@@ -276,7 +276,8 @@ echo -e $line${Color_Off}
 assign_env(){
     declare -n var="$1" #string $1 will be the name of var
     value=$2
-    echo ${!var} #print the name of var
+    #echo ${!var} #print the name of var
+    out ${!var} 2 #print the name of var
     var="$2"
 }
 
@@ -347,7 +348,7 @@ while [ $# -gt 0 ];do
  #           ssh=1 #use my ssh key
 #            ;;
         --ssh)
-            assign_env ssh 1
+            assign_env repo "git@github.com-a:${gituser}/${dir}.git"
             #((ssh++)) #use default ssh key
             ;;
         --wsl)
@@ -371,10 +372,8 @@ while [ $# -gt 0 ];do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
-            assign_env ssh 1
 out $ssh 3
 os_process
-echo $wsl
 sleep 1
 #q   if [ -n "$wsl" ] && [ -z "$gb" ]; then
 #            hostname="127.0.0.1"
