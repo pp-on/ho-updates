@@ -26,7 +26,8 @@ while [ $# -gt 0 ];do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done 
-
+ssh=0
+assign_env "ssh" 1
 #only WP-Sites are to be processed
 verbose=1
 #searchwp

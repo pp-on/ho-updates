@@ -197,3 +197,39 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
     ;;
 esac
 }
+out () { #what? - or #
+    local line #avoid extra lines between calls
+    for ((i=0; i<30; i++)); do
+        if [[ "$2" -eq 1 ]]; then
+            line+='#'
+        else
+            line+='-'
+        fi
+
+    done
+    name="##        ${1}        "
+    length=${#name}
+    #echo $length
+    if [[ "$2" -eq 1 ]]; then
+        line=${Yellow}${line}
+    elif [[ "$2" -eq 3 ]]; then
+        line=${Red}${line}
+   else
+        line=${Cyan}${line}
+   fi
+    #echo -e "$name${line:$length}" 
+    #echo -e ${line}\n${1}\n$line${Color_Off}
+echo -e ${line}
+echo -e ${1}
+echo -e $line${Color_Off}
+
+}
+assign_env(){
+    declare -n var="$1" #string $1 will be the name of var
+    value=$2
+    #echo ${!var} #print the name of var
+    out $var 1
+    out "${!var}" 2 #print the name of var
+    var="$value"
+    out $var 1
+}

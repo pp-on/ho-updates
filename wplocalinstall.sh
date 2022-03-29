@@ -246,40 +246,6 @@ wsl (){ #what?, where?
     sleep 2
 }
 
-out () { #what? - or #
-    local line #avoid extra lines between calls
-    for ((i=0; i<30; i++)); do
-        if [[ "$2" -eq 1 ]]; then
-            line+='#'
-        else
-            line+='-'
-        fi
-
-    done
-    name="##        ${1}        "
-    length=${#name}
-    #echo $length
-    if [[ "$2" -eq 1 ]]; then
-        line=${Yellow}${line}
-    elif [[ "$2" -eq 3 ]]; then
-        line=${Red}${line}
-   else
-        line=${Cyan}${line}
-   fi
-    #echo -e "$name${line:$length}" 
-    #echo -e ${line}\n${1}\n$line${Color_Off}
-echo -e ${line}
-echo -e ${1}
-echo -e $line${Color_Off}
-
-}
-assign_env(){
-    declare -n var="$1" #string $1 will be the name of var
-    value=$2
-    #echo ${!var} #print the name of var
-    out ${!var} 2 #print the name of var
-    var="$2"
-}
 
 os_process(){
     os_detection
@@ -348,7 +314,8 @@ while [ $# -gt 0 ];do
  #           ssh=1 #use my ssh key
 #            ;;
         --ssh)
-            assign_env repo "git@github.com-a:${gituser}/${dir}.git"
+            #assign_env "repo" "git@github.com-a:${gituser}/${dir}.git"
+            export repo="git@github.com-a:${gituser}/${dir}.git"
             #((ssh++)) #use default ssh key
             ;;
         --wsl)
