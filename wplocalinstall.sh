@@ -291,11 +291,11 @@ os_process(){
 ####+################################################
 ## MAIN
 
-##[ $# -eq 0 ] && usage
-while [ $# -gt 0 ];do
-#for arg in "$@"; do
-    case $1 in
-    #case $arg in
+[ $# -eq 0 ] && usage
+#while [ $# -gt 0 ];do
+for arg in "$@"; do
+    #case $1 in
+    case $arg in
         -n)
             shift
             dbname=$1

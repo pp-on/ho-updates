@@ -5,8 +5,10 @@ source ~/git/ho-updates/wphelpfuntions.sh
 
 dir=./
 wp="wp"         #where is wp-cli 
-while [ $# -gt 0 ];do
-    case $1 in
+#while [ $# -gt 0 ];do
+for arg in "$@"; do
+    #case $1 in
+    case $arg in
         -g)
             git=1
             ;;
