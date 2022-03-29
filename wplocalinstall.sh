@@ -38,7 +38,7 @@ php=$(php -v |  head -n 1 | cut -d " " -f 2)
     wp="wp"
 #fi
 tdir="."
-ssh=0 # for git clone HTTPS(default)
+ssh="false" # for git clone HTTPS(default)
 #pk_ssh=0 #my personal key (not set)
 #git="git@github.com-a"
 gituser="pfennigparade" #github user
@@ -155,7 +155,8 @@ wp_install (){
     sleep 1
     $wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"   || echo -e "${Red}Something went wrong${Color_Off}"
 }
-wp_git (){
+wp_git (){ 
+  
     if [ -z "$repo" ]; then
         echo "No repository specified"
         echo "please enter one"
@@ -253,11 +254,42 @@ os_process(){
     wsl "${cOS}/${OS}" "localhost/repos/${dir}" 
 
 }
+setSSH(){
+    #ssh=1
+    #personal key
+    #repo="git@github.com-a:${gituser}/${dir}.git"
+    #[[ -n "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git" || repo="git@github.com:${gituser}/${dir}.git"
+    echo "true"
+}
+main(){ #ssh
+    ssh="$1"
+    [[ "$ssh" == "true" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
+
+os_process
+sleep 1
+#q   if [ -n "$wsl" ] && [ -z "$gb" ]; then
+#            hostname="127.0.0.1"
+#            #repo="pfennigparade/${dir}"
+#            wsl "WSL2/Windows" "localhost/repos/${dir}" 
+#    elif [ -z  "$wsl" ] && [ -n "$gb"  ]; then
+#        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
+#    else
+##        wsl "Linux" $url
+#fi
+wp_dw
+wp_config $hostname
+wp_db
+wp_install
+wp_debug
+ htaccess
+wp_git 
+wp_key_acf_pro
+}
 ####################################################
 ####+################################################
 ## MAIN
 
-[ $# -eq 0 ] && usage
+#[ $# -eq 0 ] && usage
 #while [ $# -gt 0 ];do
 for arg in "$@"; do
     #case $1 in
@@ -315,8 +347,13 @@ for arg in "$@"; do
 #            ;;
         --ssh)
             #assign_env "repo" "git@github.com-a:${gituser}/${dir}.git"
-            export repo="git@github.com-a:${gituser}/${dir}.git"
+            #export repo="git@github.com-a:${gituser}/${dir}.git"
             #((ssh++)) #use default ssh key
+            main "true"
+            ;;
+        "")
+            #no arguments
+            main "false"
             ;;
         --wsl)
             #{ wsl=1; } 
@@ -339,23 +376,3 @@ for arg in "$@"; do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
-out $ssh 3
-os_process
-sleep 1
-#q   if [ -n "$wsl" ] && [ -z "$gb" ]; then
-#            hostname="127.0.0.1"
-#            #repo="pfennigparade/${dir}"
-#            wsl "WSL2/Windows" "localhost/repos/${dir}" 
-#    elif [ -z  "$wsl" ] && [ -n "$gb"  ]; then
-#        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
-#    else
-##        wsl "Linux" $url
-#fi
-wp_dw
-wp_config $hostname
-wp_db
-wp_install
-wp_debug
- htaccess
-wp_git
-wp_key_acf_pro
