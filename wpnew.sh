@@ -161,6 +161,11 @@ while [[ "$#" -gt 0 ]];do
         -s)
             ssh="$2"
             ;;
+        -\?|--help)
+            tldr
+            usage
+            exit
+            ;;
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
