@@ -47,9 +47,6 @@ while [ $# -gt 0 ];do
             sdirs="$1"
             process_dirs "$sdirs"
             ;;
-        -s)
-            searchwp
-            ;;
         -v)
             verbose=1
             ;;
