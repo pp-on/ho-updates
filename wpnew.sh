@@ -5,7 +5,7 @@ source ~/git/ho-updates/wphelpfuntions.sh
 #wp  functions for installing
 source ~/git/ho-updates/wpfunctionsinstall.sh
 
-hostname="localhost"     #host in DB
+hostname=""     #host in DB
 out_msg=0
 dbuser="web"
 dbpw="1234"
@@ -113,7 +113,7 @@ out_msg (){ #what?, where? ssh
 
 os_process(){
     os_detection
-    [[ "$cOS" == "WSL" ]] && out_msg=1 && hostname="127.0.0.1" 
+    [[ "$cOS" == "WSL" ]]  && hostname="127.0.0.1" || hostname="localhost"
     out_msg "${cOS}/${OS}" "localhost/repos/${dir}" "$1"
 
 }
@@ -161,11 +161,6 @@ while [[ "$#" -gt 0 ]];do
         -s)
             ssh="$2"
             ;;
-        -\?|--help)
-            tldr
-            usage
-            exit
-            ;;
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
@@ -173,5 +168,6 @@ done
 colors
 sleep 1
 out "$ssh" 1
+out "$hostname" 2
 sleep 1
 main
