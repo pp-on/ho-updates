@@ -6,10 +6,10 @@ source ~/git/ho-updates/wphelpfuntions.sh
 source ~/git/ho-updates/wpfunctionsinstall.sh
 
 hostname="localhost"     #host in DB
-wsl=0
+out_msg=0
 dbuser="web"
 dbpw="1234"
-dir=$(basename $PWD)
+dir=$(basename "$PWD")
 # replace "-" with "_" for database name 
 dbname=${dir//[^a-zA-Z0-9]/_}
 title="test${dir^^}"           #uppercase
@@ -17,22 +17,11 @@ url="localhost/arbeit/updates/repos/$dir"
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
-php=$(php -v |  head -n 1 | cut -d " " -f 2)
-#php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
-#php=$(php -r "echo substr(phpversion(),0,3);")
-#php=$(($php_string + 0)) #string to int
-#if [ "$php" -gt 7 ]; then
-  #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
-#else
-    wp="wp"
-#fi
-tdir="."
-ssh="false" # for git clone HTTPS(default)
-#pk_ssh=0 #my personal key (not set)
+wp="wp"
+ssh=0 # for git clone HTTPS(default)
 #git="git@github.com-a"
 gituser="pfennigparade" #github user
-repo="https://github.com/${gituser}/${dir}.git"
-gb=0     #is Git Bash been used?    
+#repo="https://github.com/${gituser}/${dir}.git"
 ###########################
 ##     functions        ###
 ###########################
@@ -61,9 +50,9 @@ usage() {
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
     echo "-g arg: repository to be cloned from GitHub"
-    echo "--wsl: use this script in wsl/windows -> mysql for creating DB,
+    echo "--out_msg: use this script in out_msg/windows -> mysql for creating DB,
     localhost 127.0.0.1 and url /mnt/c/xampp/htdocs/repos"
-    echo --gitbash: since wsl2 does not work with git, use this torun the script
+    echo --gitbash: since out_msg2 does not work with git, use this torun the script
     echo "--ssh arg: host in github to used to clone (default: git@github.com)"
     exit
 }
@@ -93,21 +82,19 @@ check_db(){
 
 }
 
-wsl (){ #what?, where?
-#    if [ $ssh -eq 1 ]; then
-#        git="git@github.com-a" 
-#    elif [ $ssh -eq 2 ]; then
-#        git="git@github.com" 
-#    else
-#        git="https://github.com"
-#    fi
-#    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
+out_msg (){ #what?, where? ssh
+    local ssh
+    ssh="$3"
+    if [ $ssh -eq 1 ]; then
+        git="git@github.com-a" 
+    elif [ $ssh -eq 2 ]; then
+        git="git@github.com" 
+    else
+        git="https://github.com"
+    fi
+    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
 
-    #personal key
-    #[[ ! -z "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
-    #normal key
- #   [[ -n "$ssh" ]] && repo="git@github.com:${gituser}/${dir}.git"
-    url=$2
+    url="$2"
             
     out $1 1
     sleep 1
@@ -126,8 +113,8 @@ wsl (){ #what?, where?
 
 os_process(){
     os_detection
-    [[ "$cOS" == "WSL" ]] && wsl=1 && hostname="127.0.0.1" 
-    wsl "${cOS}/${OS}" "localhost/repos/${dir}" 
+    [[ "$cOS" == "WSL" ]] && out_msg=1 && hostname="127.0.0.1" 
+    out_msg "${cOS}/${OS}" "localhost/repos/${dir}" "$1"
 
 }
 setSSH(){
@@ -138,20 +125,9 @@ setSSH(){
     echo "true"
 }
 main(){ #ssh
-    ssh="$1"
-    [[ "$ssh" == "true" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
 
-os_process
+os_process "$ssh" 
 sleep 1
-#q   if [ -n "$wsl" ] && [ -z "$gb" ]; then
-#            hostname="127.0.0.1"
-#            #repo="pfennigparade/${dir}"
-#            wsl "WSL2/Windows" "localhost/repos/${dir}" 
-#    elif [ -z  "$wsl" ] && [ -n "$gb"  ]; then
-#        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
-#    else
-##        wsl "Linux" $url
-#fi
 wp_dw
 wp_config $hostname
 wp_db
@@ -166,84 +142,26 @@ wp_key_acf_pro
 ## MAIN
 
 #[ $# -eq 0 ] && usage
-#while [ $# -gt 0 ];do
-for arg in "$@"; do
-    #case $1 in
-    case $arg in
-        -n)
-            shift
-            dbname=$1
+while [[ "$#" -gt 0 ]];do
+#for arg in "$@"; do
+    case $1 in
+    #case $arg in
+        -u) #url
+            url="$2"
             ;;
-        -u)
-            shift
-            dbuser=$1
-            ;;
-        -p)
-            shift
-            dbpw=$1
-            ;;
-        -t)
-             shift
-             title=$1
-             ;;
-        --url)
-            shift
-             url=$1
-            ;;
-        --wpu)
-            shift
-            wpuser=$1
-            ;;
-        --wpp)
-            shift
-            wppw=$1
-            ;;
-        --wpe)
-            shift
-            wpemail=$1
-            ;;
-        -d)
-            shift
-            tdir=$1
-            ;;
-        -h)
-            shift
-            hostname=$1
+        -h) #hostname
+            hostname="$2"
             ;;
         -w)
-            shift
-            wp=${1}
+            wp="$2"
             ;;
         -g)
-            shift
-            repo=${1}
+            repo="$2"
             ;;
-  #      --private-ssh)
- #           ssh=1 #use my ssh key
-#            ;;
-        --ssh)
-            #assign_env "repo" "git@github.com-a:${gituser}/${dir}.git"
-            #export repo="git@github.com-a:${gituser}/${dir}.git"
-            #((ssh++)) #use default ssh key
-            main "true"
+        -s)
+            ssh="$2"
             ;;
-        "")
-            #no arguments
-            main "false"
-            ;;
-        --wsl)
-            #{ wsl=1; } 
-            assign_env wsl 1
-            ;;
-        --gitbash)
-            gb=1
-
-            wp_dw
-            wp_config
-            wp_db
-            ;;
-
-        --help)
+        -\?|--help)
             tldr
             usage
             exit
@@ -252,3 +170,8 @@ for arg in "$@"; do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
+colors
+sleep 1
+out "$ssh" 1
+sleep 1
+main
