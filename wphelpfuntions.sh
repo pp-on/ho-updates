@@ -6,6 +6,8 @@
 #+----------------------------------+
 #|      Functions                   |
 #+----------------------------------+
+#| colors()                         |
+#+----------------------------------+
 #| process_dirs()                   |
 #| split $argument in sites names   |
 #+----------------------------------+
@@ -21,19 +23,11 @@
 #+----------------------------------+
 #| os_detection()                   |
 #+----------------------------------+
+#| out () < text, typ of line       |
+#| print text with line "-" or "="  |
+#+----------------------------------+
 
-# Reset
-Color_Off="\e[0m"       # Text Reset
 
-# Regular Colors
-Black="\e[30m"        # Black
-Red="\e[31m"          # Red
-Green="\e[32m"        # Green
-Yellow="\e[33m"       # Yellow
-Blue="\e[34m"         # Blue
-Purple="\e[35m"       # Purple
-Cyan="\e[36m"         # Cyan
-White="\e[37m"        # White
 
 wp="wp"         #where is wp-cli 
 verbose=0
@@ -83,6 +77,21 @@ done
 dirs=$(find "$dir"*/ -maxdepth 1 -mindepth 1 -type d)
 #check for wpsites and add them to array
 #for site in "${dirs[@]}"; do
+colors(){
+# Reset
+Color_Off="\e[0m"       # Text Reset
+
+# Regular Colors
+Black="\e[30m"        # Black
+Red="\e[31m"          # Red
+Green="\e[32m"        # Green
+Yellow="\e[33m"       # Yellow
+Blue="\e[34m"         # Blue
+Purple="\e[35m"       # Purple
+Cyan="\e[36m"         # Cyan
+White="\e[37m"        # White
+
+}
 searchwp() {
     local site #only valid within this function
     for site in $(ls -d "$dir"*/); do
@@ -128,7 +137,7 @@ list_wp_plugins(){
     local i
     local a
 
-    for i in ${sites[@]}; do
+    for i in "${sites[@]}"; do
         echo -e "${Green}----------------"
         cd "$dir$i"  &>/dev/null #change to root wp of site
         echo -e $i
@@ -146,7 +155,7 @@ print_sites(){
     sleep 1
     echo -e "${#sites[@]} selected websites" 
     echo "----------------"
-    for i in ${sites[@]}; do
+    for i in "${sites[@]}"; do
         echo -e ${Cyan}$i
     done
     echo -e "${Yellow}----------------"
