@@ -137,20 +137,22 @@ process_sites(){
     fi
 }
 os_detection(){
+    local OS
+    local UNAME
     UNAME="$(uname -a)"
     #linux or wsl , gitbash empty
     OS="$(echo /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
 case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
-    cOS="Linux"
+    cOS="${OS}-${UNAME}"
       ;;
   *wsl*)
-      cOS="WSL"
+      cOS="WSL-${UNAME}"
     ;;
   msys*|cygwin*|mingw*)
     # or possible 'bash on windows'
-    cOS="Git_Bash"
+    cOS="Git_Bash-${UNAME}"
     ;;
   *)
     ;;
