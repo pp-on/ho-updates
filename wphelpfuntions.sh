@@ -139,7 +139,7 @@ process_sites(){
 os_detection(){
     local OS
     local UNAME
-    UNAME="$(uname -a)"
+    UNAME="$(uname -r)"
     #linux or wsl , gitbash empty
     OS="$(echo /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
@@ -148,11 +148,11 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
     cOS="${OS}-${UNAME}"
       ;;
   *wsl*)
-      cOS="WSL-${UNAME}"
+      cOS="WSL"
     ;;
   msys*|cygwin*|mingw*)
     # or possible 'bash on windows'
-    cOS="Git_Bash-${UNAME}"
+    cOS="Git_Bash"
     ;;
   *)
     ;;
@@ -172,17 +172,17 @@ out () { #what? - or #
     length=${#name}
     #echo $length
     if [[ "$2" -eq 1 ]]; then
-        line=${Yellow}${line}
+        line="${Yellow}${line}"
     elif [[ "$2" -eq 3 ]]; then
-        line=${Red}${line}
+        line="${Red}${line}"
    else
-        line=${Cyan}${line}
+        line="${Cyan}${line}"
    fi
     #echo -e "$name${line:$length}" 
     #echo -e ${line}\n${1}\n$line${Color_Off}
-echo -e ${line}
-echo -e ${1}
-echo -e $line${Color_Off}
+echo -e "${line}"
+echo -e "${1}"
+echo -e "${line}${Color_Off}"
 
 }
 assign_env(){

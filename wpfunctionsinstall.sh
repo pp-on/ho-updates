@@ -113,3 +113,48 @@ EOF
 sleep 1
 echo "Done"
 }
+out_msg (){ #what?, where? ssh
+    local ssh
+    ssh="$3"
+    if [ $ssh -eq 1 ]; then
+        git="git@github.com-a" 
+    elif [ $ssh -eq 2 ]; then
+        git="git@github.com" 
+    else
+        git="https://github.com"
+    fi
+    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
+
+    url="$2"
+            
+    out $1 1
+    sleep 1
+    out "PHP: $php wp: $wp" 2
+    sleep 1
+    out "DB: $dbname" 2
+    sleep 1
+    out "hostname: $hostname" 2
+    sleep 1
+    out "Local: $url" 2
+    sleep 1
+    out " Repo: $repo" 2
+    sleep 2
+}
+
+
+os_process(){ #kernel version
+    os_detection
+    [[ "$cOS" == "WSL" ]]  && url="localhost/repos/${dir}" && hostname="127.0.0.1" || hostname="localhost"
+    out_msg "${cOS}-${1}" "${url}" "$ssh"
+
+}
+main(){ 
+    wp_dw
+    wp_config 
+    wp_db
+    wp_install
+    wp_debug
+     htaccess
+    wp_git 
+    wp_key_acf_pro
+}

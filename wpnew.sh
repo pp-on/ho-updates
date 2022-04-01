@@ -28,53 +28,6 @@ usage() {
     echo -e "${Cyan}USAGE: $0 ${Green} ssh=1 or https=0, location of target dir(http://localhost/...) $Color_Off}"
 }
 
-out_msg (){ #what?, where? ssh
-    local ssh
-    ssh="$3"
-    if [ $ssh -eq 1 ]; then
-        git="git@github.com-a" 
-    elif [ $ssh -eq 2 ]; then
-        git="git@github.com" 
-    else
-        git="https://github.com"
-    fi
-    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
-
-    url="$2"
-            
-    out $1 1
-    sleep 1
-    out "PHP: $php wp: $wp" 2
-    sleep 1
-    out "DB: $dbname" 2
-    sleep 1
-    out "hostname: $hostname" 2
-    sleep 1
-    out "Local: $url" 2
-    sleep 1
-    out " Repo: $repo" 2
-    sleep 2
-}
-
-
-os_process(){
-    os_detection
-    [[ "$cOS" == "WSL" ]]  && hostname="127.0.0.1" || hostname="localhost"
-    out_msg "${cOS}" "${url}" "$ssh"
-
-}
-main(){ #ssh
-    os_process 
-    sleep 1
-    wp_dw
-    wp_config 
-    wp_db
-    wp_install
-    wp_debug
-     htaccess
-    wp_git 
-    wp_key_acf_pro
-}
 ####################################################
 ####+################################################
 ## MAIN
@@ -109,4 +62,6 @@ while [[ "$#" -gt 0 ]];do
 done
 colors
 sleep 1
+    os_process 
+    sleep 1
 main

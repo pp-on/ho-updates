@@ -5,7 +5,7 @@ source ~/git/ho-updates/wphelpfuntions.sh
 #wp  functions for installing
 source ~/git/ho-updates/wpfunctionsinstall.sh
 
-hostname="localhost"     #host in DB
+hostname=""     #host in DB
 wsl=0
 dbuser="web"
 dbpw="1234"
@@ -18,21 +18,12 @@ wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
 php=$(php -v |  head -n 1 | cut -d " " -f 2)
-#php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
-#php=$(php -r "echo substr(phpversion(),0,3);")
-#php=$(($php_string + 0)) #string to int
-#if [ "$php" -gt 7 ]; then
-  #  wp="php7 /home/ossi/.local/bin/wp"         #where is wp-cli 
-#else
-    wp="wp"
-#fi
+wp="wp"
 tdir="."
-ssh="false" # for git clone HTTPS(default)
-#pk_ssh=0 #my personal key (not set)
+ssh=0 # for git clone HTTPS(default)
 #git="git@github.com-a"
 gituser="pfennigparade" #github user
 repo="https://github.com/${gituser}/${dir}.git"
-gb=0     #is Git Bash been used?    
 ###########################
 ##     functions        ###
 ###########################
@@ -93,74 +84,6 @@ check_db(){
 
 }
 
-wsl (){ #what?, where?
-#    if [ $ssh -eq 1 ]; then
-#        git="git@github.com-a" 
-#    elif [ $ssh -eq 2 ]; then
-#        git="git@github.com" 
-#    else
-#        git="https://github.com"
-#    fi
-#    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
-
-    #personal key
-    #[[ ! -z "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
-    #normal key
- #   [[ -n "$ssh" ]] && repo="git@github.com:${gituser}/${dir}.git"
-    url=$2
-            
-    out $1 1
-    sleep 1
-    out "PHP: $php wp: $wp" 2
-    sleep 1
-    out "DB: $dbname" 2
-    sleep 1
-    out "hostname: $hostname" 2
-    sleep 1
-    out "Local: $url" 2
-    sleep 1
-    out " Repo: $repo" 2
-    sleep 2
-}
-
-
-os_process(){
-    os_detection
-    [[ "$cOS" == "WSL" ]] && wsl=1 && hostname="127.0.0.1" 
-    wsl "${cOS}/${OS}" "localhost/repos/${dir}" 
-
-}
-setSSH(){
-    #ssh=1
-    #personal key
-    #repo="git@github.com-a:${gituser}/${dir}.git"
-    #[[ -n "$ssh" ]] && repo="git@github.com-a:${gituser}/${dir}.git" || repo="git@github.com:${gituser}/${dir}.git"
-    echo "true"
-}
-main(){ #ssh
-    ssh="$1"
-    [[ "$ssh" == "true" ]] && repo="git@github.com-a:${gituser}/${dir}.git"
-
-os_process
-sleep 1
-#q   if [ -n "$wsl" ] && [ -z "$gb" ]; then
-#            hostname="127.0.0.1"
-#            #repo="pfennigparade/${dir}"
-#            wsl "WSL2/Windows" "localhost/repos/${dir}" 
-#    elif [ -z  "$wsl" ] && [ -n "$gb"  ]; then
-#        wsl "Git_Bash/Windows" "localhost/repos/${dir}"
-#    else
-##        wsl "Linux" $url
-#fi
-wp_dw
-wp_config $hostname
-wp_db
-wp_install
-wp_debug
- htaccess
-wp_git 
-wp_key_acf_pro
-}
 ####################################################
 ####+################################################
 ## MAIN
@@ -218,29 +141,11 @@ for arg in "$@"; do
             shift
             repo=${1}
             ;;
-  #      --private-ssh)
- #           ssh=1 #use my ssh key
-#            ;;
+        --private-ssh)
+            ssh=1 #use my ssh key
+            ;;
         --ssh)
-            #assign_env "repo" "git@github.com-a:${gituser}/${dir}.git"
-            #export repo="git@github.com-a:${gituser}/${dir}.git"
-            #((ssh++)) #use default ssh key
-            main "true"
-            ;;
-        "")
-            #no arguments
-            main "false"
-            ;;
-        --wsl)
-            #{ wsl=1; } 
-            assign_env wsl 1
-            ;;
-        --gitbash)
-            gb=1
-
-            wp_dw
-            wp_config
-            wp_db
+            ssh=2 #normal
             ;;
 
         --help)
@@ -252,3 +157,7 @@ for arg in "$@"; do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
+colors
+os_process ${UNAME}
+sleep 1
+main
