@@ -1,12 +1,14 @@
 #!/bin/bash
 
 #search for wp-sites
-source ~/git/ho-updates/wphelpfuntions.sh
+##source ~/git/ho-updates/wphelpfuntions.sh
 
-dir=./
+#dir=./
 wp="wp"         #where is wp-cli 
-#while [ $# -gt 0 ];do
-for arg in "$@"; do
+echo "before: ${dir}"
+while [ $# -gt 0 ];do
+#for arg in "$@"; do
+#while getopts 'd:w:gh' arg; do
     #case $1 in
     case $arg in
         -g)
@@ -14,7 +16,7 @@ for arg in "$@"; do
             ;;
         -d)
             shift
-            dir=$1
+            dir="$1"
             ;;
         -h)
             echo "wpupdate.sh [-d targetDIR][-w path/to/wp][-g]"
@@ -25,10 +27,9 @@ for arg in "$@"; do
             wp=$1
             ;;
     esac
-    #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done 
-
+echo "after: ${dir}"
 #only WP-Sites are to be processed
 verbose=1
 #searchwp
