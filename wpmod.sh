@@ -28,9 +28,7 @@ while [ $# -gt 0 ];do
             ;;
     esac
     shift
-done 
-echo "after: ${dir}"
-#only WP-Sites are to be processed
+done #only WP-Sites are to be processed
 verbose=1
 #searchwp
 #print_sites

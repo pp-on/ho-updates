@@ -6,6 +6,8 @@
 #+----------------------------------+
 #|      Functions                   |
 #+----------------------------------+
+#| colors()                         |
+#+----------------------------------+
 #| process_dirs()                   |
 #| split $argument in sites names   |
 #+----------------------------------+
@@ -21,68 +23,25 @@
 #+----------------------------------+
 #| os_detection()                   |
 #+----------------------------------+
+#| out () < text, typ of line       |
+#| print text with line "-" or "="  |
+#+----------------------------------+
 
-# Reset
-Color_Off="\e[0m"       # Text Reset
+colors(){
+    # Reset
+    Color_Off="\e[0m"       # Text Reset
 
-# Regular Colors
-Black="\e[30m"        # Black
-Red="\e[31m"          # Red
-Green="\e[32m"        # Green
-Yellow="\e[33m"       # Yellow
-Blue="\e[34m"         # Blue
-Purple="\e[35m"       # Purple
-Cyan="\e[36m"         # Cyan
-White="\e[37m"        # White
+    # Regular Colors
+    Black="\e[30m"        # Black
+    Red="\e[31m"          # Red
+    Green="\e[32m"        # Green
+    Yellow="\e[33m"       # Yellow
+    Blue="\e[34m"         # Blue
+    Purple="\e[35m"       # Purple
+    Cyan="\e[36m"         # Cyan
+    White="\e[37m"        # White
 
-wp="wp"         #where is wp-cli 
-verbose=0
-total=0
-dir=./
-anzahl=0
-print=0
-sdirs="" #given dirs to be selected
-
-while [ $# -gt 0 ];do
-    case $1 in
-        -p)
-            print=1
-            ;;
-        -b)
-            shift
-            sdirs="$1"
-            process_dirs "$sdirs"
-            ;;
-        -s)
-            searchwp
-            ;;
-        -v)
-            verbose=1
-            ;;
-        -t)
-            total=1
-            ;;
-        -w)
-            shift
-            wp=${1}
-            ;;
-        -d)
-            shift
-            dir=$1
-            ;;
-        -h)
-            echo "wpsearchdir.sh [-w path/to/wpcli][-s][-p][-v][-t][-d TARGET DIR][-b (dir1,dir2,...)]"
-            exit
-            ;;
-    esac
-    #next argument -> e.g. $2 becomes $1, $3 becomes $2...
-    shift
-done
-#for dirs
-#dirs=($(ls -lh -d */ | awk '{print $9}' | sed 's/\///g'))
-dirs=$(find "$dir"*/ -maxdepth 1 -mindepth 1 -type d)
-#check for wpsites and add them to array
-#for site in "${dirs[@]}"; do
+}
 searchwp() {
     local site #only valid within this function
     for site in $(ls -d "$dir"*/); do
@@ -128,7 +87,7 @@ list_wp_plugins(){
     local i
     local a
 
-    for i in ${sites[@]}; do
+    for i in "${sites[@]}"; do
         echo -e "${Green}----------------"
         cd "$dir$i"  &>/dev/null #change to root wp of site
         echo -e $i
@@ -146,7 +105,7 @@ print_sites(){
     sleep 1
     echo -e "${#sites[@]} selected websites" 
     echo "----------------"
-    for i in ${sites[@]}; do
+    for i in "${sites[@]}"; do
         echo -e ${Cyan}$i
     done
     echo -e "${Yellow}----------------"
@@ -178,13 +137,15 @@ process_sites(){
     fi
 }
 os_detection(){
-    UNAME="$(uname -a)"
+    local OS
+    local UNAME
+    UNAME="$(uname -r)"
     #linux or wsl , gitbash empty
     OS="$(echo /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
 case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
-    cOS="Linux"
+    cOS="${OS}-${UNAME}"
       ;;
   *wsl*)
       cOS="WSL"
@@ -196,4 +157,40 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   *)
     ;;
 esac
+}
+out () { #what? - or #
+    local line #avoid extra lines between calls
+    for ((i=0; i<30; i++)); do
+        if [[ "$2" -eq 1 ]]; then
+            line+='#'
+        else
+            line+='-'
+        fi
+
+    done
+    name="##        ${1}        "
+    length=${#name}
+    #echo $length
+    if [[ "$2" -eq 1 ]]; then
+        line="${Yellow}${line}"
+    elif [[ "$2" -eq 3 ]]; then
+        line="${Red}${line}"
+   else
+        line="${Cyan}${line}"
+   fi
+    #echo -e "$name${line:$length}" 
+    #echo -e ${line}\n${1}\n$line${Color_Off}
+echo -e "${line}"
+echo -e "${1}"
+echo -e "${line}${Color_Off}"
+
+}
+assign_env(){
+    declare -n var="$1" #string $1 will be the name of var
+    value=$2
+    #echo ${!var} #print the name of var
+    out $var 1
+    out "${!var}" 2 #print the name of var
+    var="$value"
+    out $var 1
 }
