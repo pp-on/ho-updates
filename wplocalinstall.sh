@@ -5,7 +5,7 @@ source ~/git/ho-updates/wphelpfuntions.sh
 #wp  functions for installing
 source ~/git/ho-updates/wpfunctionsinstall.sh
 
-hostname=""     #host in DB
+hostname="localhost"     #host in DB
 wsl=0
 dbuser="web"
 dbpw="1234"
@@ -13,7 +13,7 @@ dir=$(basename $PWD)
 # replace "-" with "_" for database name 
 dbname=${dir//[^a-zA-Z0-9]/_}
 title="test${dir^^}"           #uppercase
-url="localhost/arbeit/updates/repos/$dir"
+url="localhost/arbeit/repos/$dir"
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
