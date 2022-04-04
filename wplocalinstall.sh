@@ -158,6 +158,7 @@ for arg in "$@"; do
     shift
 done
 colors
+os_detection
 os_process ${UNAME}
 sleep 1
 main
