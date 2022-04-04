@@ -149,6 +149,8 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
       ;;
   *wsl*)
       cOS="WSL"
+      hostname="127.0.0.1"
+      hostname="127.0.0.1"
     ;;
   msys*|cygwin*|mingw*)
     # or possible 'bash on windows'
