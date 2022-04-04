@@ -139,13 +139,13 @@ process_sites(){
 os_detection(){
     local OS
     local UNAME
-    UNAME="$(uname -r)"
+    UNAME="$(uname -a)"
     #linux or wsl , gitbash empty
     OS="$(echo /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
 
 case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
-    cOS="${OS}-${UNAME}"
+      cOS="${OS}-$(uname -r)"
       ;;
   *wsl*)
       cOS="WSL"
@@ -157,6 +157,8 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   *)
     ;;
 esac
+    #kernel version
+    UNAME="$(uname -r)"
 }
 out () { #what? - or #
     local line #avoid extra lines between calls
