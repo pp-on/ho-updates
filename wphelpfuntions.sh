@@ -141,7 +141,8 @@ os_detection(){
     local UNAME
     UNAME="$(uname -a)"
     #linux or wsl , gitbash empty
-    OS="$(echo /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
+    #OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
+    OS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
 
 case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
