@@ -145,7 +145,9 @@ out_msg (){ #what?, where? ssh
 os_process(){ #kernel version
  #   [[ "$cOS" == "WSL" ]]  && url="localhost/repos/${dir}" && hostname="127.0.0.1" 
  #   [[ "$cOS" == "Git_Bash" ]]  && url="localhost/repos/${dir}" &&  hostname="localhost"
-    out_msg "${cOS}-${1}" "${url}" "$ssh"
+    
+    uname="$(uname -r)"
+    out_msg "${cOS}-${uname}" "${url}" "$ssh"
 
 }
 main(){ 
