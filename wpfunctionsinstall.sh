@@ -63,11 +63,12 @@ wp_git (){
     out "cloning $repo" 1
     sleep 1
     rm ./wp-content/ -rf
-    if [ $wsl -eq 1 ]; then
-        gh repo clone $repo wp-content
-    else
-        git clone $repo wp-content
-    fi
+   # if [ $wsl -eq 1 ]; then
+    #    gh repo clone $repo wp-content
+    #else
+    #    git clone $repo wp-content
+    #fi
+    git clone $repo wp-content
     out "activating plugins" 2
     $wp plugin activate --all
 }
@@ -117,13 +118,13 @@ out_msg (){ #what?, where? ssh
     local ssh
     ssh="$3"
     if [ $ssh -eq 1 ]; then
-        git="git@github.com-a" 
+        git="git@github.com-a:" 
     elif [ $ssh -eq 2 ]; then
-        git="git@github.com" 
+        git="git@github.com:" 
     else
-        git="https://github.com"
+        git="https://github.com/"
     fi
-    repo=${git}/${gituser}/${dir}.git    #default, it can be cchanged with -g
+    repo=${git}${gituser}/${dir}.git    #default, it can be cchanged with -g
 
     url="$2"
             
