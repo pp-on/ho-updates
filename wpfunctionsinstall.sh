@@ -114,9 +114,9 @@ EOF
 sleep 1
 echo "Done"
 }
-out_msg (){ #what?, where? ssh
+ssh_repo(){ #ssh
     local ssh
-    ssh="$3"
+    ssh="$1"
     if [ $ssh -eq 1 ]; then
         git="git@github.com-a:" 
     elif [ $ssh -eq 2 ]; then
@@ -125,7 +125,8 @@ out_msg (){ #what?, where? ssh
         git="https://github.com/"
     fi
     repo=${git}${gituser}/${dir}.git    #default, it can be cchanged with -g
-
+}
+out_msg (){ #what?, where? ssh
     url="$2"
             
     out $1 1
