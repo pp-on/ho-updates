@@ -12,9 +12,9 @@ wp_dw (){
     sleep 1
     $wp core download --locale=de_DE
 }
-wp_config (){ #hostname
+wp_config (){ #
     out "creating config" 1
-    out "using hostname $1" 2
+    out "using hostname $hostname" 2
     f="wp-config.php"
     if [ ! -f "$f" ]; then
         echo -e "$Yellow there is no $f $Color_Off"
@@ -22,7 +22,7 @@ wp_config (){ #hostname
         rm $f
     fi
     sleep 1
-    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$1" 
+    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$hostname" 
 
 #    if [ "$wsl" -eq 1 ]; then
  #       echo "define('WP_USE_EXT_MYSQL', false);" >> wp-config.php
