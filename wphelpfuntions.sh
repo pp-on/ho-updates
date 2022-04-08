@@ -142,14 +142,14 @@ os_detection(){
     UNAME="$(uname -a)"
     #linux or wsl , gitbash empty
     #OS="$(cat /etc/os-release | grep '^'NAME'' | cut -d '=' -f2)"
-    OS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
 
 case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
-      cOS="${OS}-$(uname -r)"
+      cOS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
       ;;
   *wsl*)
-      cOS="WSL"
+      cOS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
+      #cOS="WSL"
       hostname="127.0.0.1"
     ;;
   msys*|cygwin*|mingw*)
