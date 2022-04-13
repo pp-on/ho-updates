@@ -22,6 +22,9 @@ while [ $# -gt 0 ];do
             os_detection
             ;;
         -p)
+            process_sites
+            ;;
+        --print)
             print_sites
             ;;
         -c)
@@ -31,7 +34,7 @@ while [ $# -gt 0 ];do
             list_wp_plugins
             ;;
         -h)
-            echo "wpmod.sh [-c][-l][-o][-s SEL,DIRS,...][--copy_plugins FROM][-d targetDIR][-w path/to/wp][-g]"
+            echo "wpmod.sh [--print][-p][-c][-l][-o][-s SEL,DIRS,...][--copy_plugins FROM][-d targetDIR][-w path/to/wp][-g]"
             exit
             ;;
         -s)
