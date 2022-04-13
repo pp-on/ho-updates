@@ -18,9 +18,29 @@ while [ $# -gt 0 ];do
             shift
             dir="$1"
             ;;
+        -o)
+            os_detection
+            ;;
+        -p)
+            print_sites
+            ;;
+        -c)
+            colors
+            ;;
+        -l)
+            list_wp_plugins
+            ;;
         -h)
-            echo "wpupdate.sh [-d targetDIR][-w path/to/wp][-g]"
+            echo "wpmod.sh [-c][-l][-o][-s SEL,DIRS,...][--copy_plugins FROM][-d targetDIR][-w path/to/wp][-g]"
             exit
+            ;;
+        -s)
+            shift
+            process_dirs "$1"
+            ;;
+        --copy-plugins)
+            shift
+            copy_plugins "$1"
             ;;
         -w)
             shift
