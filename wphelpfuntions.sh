@@ -209,6 +209,6 @@ copy_plugins(){ #from
     from="$1"
     for i in "${sites[@]}"; do
         target="${i}/wp-content/plugins/"
-        cp $from $target -v
+        cp "$from" "$target" -v
     done
 }
