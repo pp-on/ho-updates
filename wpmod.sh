@@ -5,12 +5,12 @@ source ~/git/ho-updates/wphelpfuntions.sh
 
 #dir=./
 wp="wp"         #where is wp-cli 
-echo "before: ${dir}"
+os=0
 while [ $# -gt 0 ];do
 #for arg in "$@"; do
 #while getopts 'd:w:gh' arg; do
     #case $1 in
-    case $arg in
+    case $1 in
         -g)
             git=1
             ;;
@@ -19,7 +19,7 @@ while [ $# -gt 0 ];do
             dir="$1"
             ;;
         -o)
-            os_detection
+            os_detection 1
             ;;
         -p)
             process_sites
@@ -33,10 +33,6 @@ while [ $# -gt 0 ];do
         -l)
             list_wp_plugins
             ;;
-        -h)
-            echo "wpmod.sh [--print][-p][-c][-l][-o][-s SEL,DIRS,...][--copy_plugins FROM][-d targetDIR][-w path/to/wp][-g]"
-            exit
-            ;;
         -s)
             shift
             process_dirs "$1"
@@ -49,14 +45,15 @@ while [ $# -gt 0 ];do
             shift
             wp=$1
             ;;
+        -h)
+            echo "wpmod.sh [--print][-p][-c][-l][-o][-s SEL,DIRS,...][--copy_plugins FROM][-d targetDIR][-w path/to/wp][-g]"
+            exit
+            ;;
+        *)
+            echo "hhh"
+            exit
     esac
     shift
 done #only WP-Sites are to be processed
 verbose=1
 #searchwp
-#print_sites
-os_detection
-echo $cOS
-process_dirs "wp-starter,aurahotel,bbsb,eca"
-print_sites
-list_wp_plugins
