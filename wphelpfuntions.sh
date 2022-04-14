@@ -26,7 +26,9 @@
 #| out () < text, typ of line       |
 #| print text with line "-" or "="  |
 #+----------------------------------+
-
+#| copy_plugins()< from             |
+#| to arrays sites/plugin           |
+#+----------------------------------+
 colors(){
     # Reset
     Color_Off="\e[0m"       # Text Reset
@@ -116,7 +118,9 @@ print_sites(){
 # -t -> how many found 
 [ "$total" = "1" ] && echo -e "\n=======\nTotal $anzahl WP-Sites"
 
-process_sites(){
+process_sites(){ #optional: dir
+    local dir #avoid misstakes
+    [ -z "$1" ] && dir="./" || dir="$1" 
     local site #only valid within this function
     if [ -z "$sites" ]; then #if no folders aka Websites were pass as argument
         for site in $(ls -d $dir*/); do
@@ -150,7 +154,7 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   *wsl*)
       cOS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
       #cOS="WSL"
-      hostname="127.0.0.1"
+#      hostname="127.0.0.1"
     ;;
   msys*|cygwin*|mingw*)
     # or possible 'bash on windows'
@@ -161,6 +165,8 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
 esac
     #kernel version
     UNAME="$(uname -r)"
+
+    [ -n "$1" ] && out "$cOS" 1
 }
 out () { #what? - or #
     local line #avoid extra lines between calls
@@ -197,4 +203,12 @@ assign_env(){
     out "${!var}" 2 #print the name of var
     var="$value"
     out $var 1
+}
+copy_plugins(){ #from
+    local target
+    from="$1"
+    for i in "${sites[@]}"; do
+        target="${i}/wp-content/plugins/"
+        cp $from $target -v
+    done
 }
