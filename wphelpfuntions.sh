@@ -22,12 +22,13 @@
 #| add or not a wpsite to an array  |
 #+----------------------------------+
 #| os_detection()                   |
+#| arg: 1 -> print OS
 #+----------------------------------+
 #| out () < text, typ of line       |
 #| print text with line "-" or "="  |
 #+----------------------------------+
 #| copy_plugins()< from             |
-#| to arrays sites/plugin           |
+#| cp from/plug/in to array wp-sites|
 #+----------------------------------+
 colors(){
     # Reset
