@@ -210,9 +210,16 @@ assign_env(){
 }
 copy_plugins(){ #from
     local target
-    from="$1" #full path
+    local name
+    from="$1" #full path w/o / at the end !!!
+    name="${from##/*}"
+
     for i in "${sites[@]}"; do
         target="${i}/wp-content/plugins/"
-        cp "$from" "$target" -rv
+        cp "$from" "$target" -r
     done
+    sleep 1
+    echo "Done"
+    out "Activating $name" 2
+    $wp plugin activate $name
 }
