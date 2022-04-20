@@ -56,6 +56,9 @@ searchwp() {
     done
 
 }
+# https://tldp.org/LDP/abs/html/string-manipulation.html
+# # , ## -> remove shortest (longest) FRONT -> ${abc#a} = bc
+# % , %% -> remove shortest (longest) BACK -> ${abc%a} = NULL
 process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
     local dirs="$1"
     local site #only valid within this function
