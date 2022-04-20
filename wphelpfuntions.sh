@@ -210,9 +210,9 @@ assign_env(){
 }
 copy_plugins(){ #from
     local target
-    from="$1"
+    from="$1" #full path
     for i in "${sites[@]}"; do
         target="${i}/wp-content/plugins/"
-        cp "$from" "$target" -v
+        cp "$from" "$target" -rv
     done
 }
