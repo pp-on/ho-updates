@@ -212,7 +212,8 @@ copy_plugins(){ #from
     local target
     local name
     from="$1" #full path w/o / at the end !!!
-    name="${from##/*}"
+    #name="${from%%/*}"
+    name=$(basename "$from")
 
     for i in "${sites[@]}"; do
         target="${i}/wp-content/plugins/"
