@@ -217,16 +217,11 @@ copy_plugins(){ #from
     #name="${from%%/*}"
     name=$(basename "$from")
 
-    sleep 1; echo $from
 
 
     for i in "${sites[@]}"; do
         out "${i}" 1
         target="${i}/wp-content/plugins/"
-        echo $i
-        echo  $target
-        sleep 10 
-    sleep 1; echo $from
         out "copying ${name}from ${from}" 2
         cp "$from" "$target" -r
         sleep 1
