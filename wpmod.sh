@@ -39,7 +39,6 @@ while [ $# -gt 0 ];do
             ;;
         --copy-plugins)
             shift
-            out "Copy Plugin $1" 1
             copy_plugins "$1"
             ;;
         -w)
