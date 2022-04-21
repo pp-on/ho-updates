@@ -216,11 +216,15 @@ copy_plugins(){ #from
     name=$(basename "$from")
 
     for i in "${sites[@]}"; do
+        out "$i" 1
         target="${i}/wp-content/plugins/"
+        out "copying $name from $from"
         cp "$from" "$target" -r
+        sleep 1
+        echo "Done"
+        out "Activating $name" 2
+        cd "${dir}/${i}"
+        $wp plugin activate $name
+        cd -
     done
-    sleep 1
-    echo "Done"
-    out "Activating $name" 2
-    $wp plugin activate $name
 }
