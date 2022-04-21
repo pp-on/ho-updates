@@ -3,9 +3,8 @@
 #search for wp-sites
 source ~/git/ho-updates/wphelpfuntions.sh
 
-#dir=./
+dir=./
 wp="wp"         #where is wp-cli 
-os=0
 while [ $# -gt 0 ];do
 #for arg in "$@"; do
 #while getopts 'd:w:gh' arg; do
