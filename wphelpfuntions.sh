@@ -174,6 +174,7 @@ esac
 }
 out () { #what? - or #
     local line #avoid extra lines between calls
+    local i #avoid stupid errors
     for ((i=0; i<30; i++)); do
         if [[ "$2" -eq 1 ]]; then
             line+='#'
@@ -211,19 +212,27 @@ assign_env(){
 copy_plugins(){ #from
     local target
     local name
+    local i #avoid stupid errors
     from="$1" #full path w/o / at the end !!!
     #name="${from%%/*}"
     name=$(basename "$from")
 
+    sleep 1; echo $from
+
+
     for i in "${sites[@]}"; do
-        out "$i" 1
+        out "${i}" 1
         target="${i}/wp-content/plugins/"
-        out "copying $name from $from"
+        echo $i
+        echo  $target
+        sleep 10 
+    sleep 1; echo $from
+        out "copying ${name}from ${from}" 2
         cp "$from" "$target" -r
         sleep 1
         echo "Done"
         out "Activating $name" 2
-        cd "${dir}/${i}"
+        cd "${dir}${i}"
         $wp plugin activate $name
         cd -
     done
