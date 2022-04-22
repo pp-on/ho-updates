@@ -156,7 +156,6 @@ main(){
     wp_config 
     wp_db
     wp_install
-    wp_debug
      htaccess
     wp_git 
     wp_key_acf_pro
