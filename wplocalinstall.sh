@@ -147,7 +147,9 @@ for arg in "$@"; do
         --ssh)
             ssh=2 #normal
             ;;
-
+        --debug)
+            wp_debug
+            ;;
         --help)
             tldr
             usage
