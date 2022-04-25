@@ -30,6 +30,8 @@
 #| copy_plugins()< from             |
 #| cp from/plug/in to array wp-sites|
 #+----------------------------------+
+#| wp_new_user()< Uname, pw, email  |
+#+----------------------------------+
 colors(){
     # Reset
     Color_Off="\e[0m"       # Text Reset
