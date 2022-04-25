@@ -233,3 +233,8 @@ copy_plugins(){ #from
         cd -
     done
 }
+wp_new_user(){ #user,passw,email
+    out "creating user ${1}"
+    sleep 1
+    "$wp" user create "$1" "$3" --user_pass="$2" --role=administrator
+}
