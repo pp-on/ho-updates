@@ -150,6 +150,9 @@ for arg in "$@"; do
         --debug)
             wp_debug
             ;;
+        --colors)
+           colors 
+            ;;
         --help)
             tldr
             usage
@@ -159,8 +162,7 @@ for arg in "$@"; do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
-colors
-os_detection 0
+#os_detection 0
 os_process 
 sleep 1
 main
