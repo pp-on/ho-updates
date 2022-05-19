@@ -138,6 +138,15 @@ for arg in "$@"; do
             wp=${1}
             ;;
         -g)
+            wp_git
+            ;;
+        -ap|--activate-plugins)
+            wp_ap
+            ;;
+        -acf|--acf-pro-key)
+            wp_key_acf_pro
+            ;;
+        -r|--repo)
             shift
             repo=${1}
             ;;
