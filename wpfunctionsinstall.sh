@@ -69,6 +69,9 @@ wp_git (){
     #    git clone $repo wp-content
     #fi
     git clone $repo wp-content
+}
+
+wp_ap {
     out "activating plugins" 2
     $wp plugin activate --all
 }
