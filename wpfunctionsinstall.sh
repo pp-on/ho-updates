@@ -160,6 +160,4 @@ main(){
     wp_db
     wp_install
      htaccess
-    wp_git 
-    wp_key_acf_pro
 }
