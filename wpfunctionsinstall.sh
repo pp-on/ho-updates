@@ -69,9 +69,6 @@ wp_git (){
     #    git clone $repo wp-content
     #fi
     git clone $repo wp-content
-}
-
-wp_ap {
     out "activating plugins" 2
     $wp plugin activate --all
 }
@@ -132,7 +129,7 @@ ssh_repo(){ #ssh
 out_msg (){ #what?, where? ssh
     url="$2"
             
-    out $1 1
+    out "$1" 1
     sleep 1
     out "PHP: $php wp: $wp" 2
     sleep 1
@@ -160,4 +157,6 @@ main(){
     wp_db
     wp_install
      htaccess
+    wp_git 
+    wp_key_acf_pro
 }

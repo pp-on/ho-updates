@@ -36,7 +36,11 @@ while [ $# -gt 0 ];do
             shift
             process_dirs "$1"
             ;;
-        --copy-plugins)
+        -r)
+            shift
+            remove_plugins "$1"
+            ;;
+        -cp|--copy-plugins)
             shift
             copy_plugins "$1"
             ;;

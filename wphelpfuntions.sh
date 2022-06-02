@@ -157,8 +157,8 @@ case $( echo "${UNAME}" | tr '[:upper:]' '[:lower:]') in
   linux)
       cOS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
       ;;
-  *wsl*)
-      cOS="$(cat /etc/os-release | grep '_NAME' | cut -d '=' -f2)"
+  *wsl*|*buntu*)
+      cOS="$(cat /etc/os-release | sed -n '1p' | cut -d '"' -f2)"
       #cOS="WSL"
 #      hostname="127.0.0.1"
     ;;
@@ -172,7 +172,7 @@ esac
     #kernel version
     UNAME="$(uname -r)"
 
-    [ -n "$1" ] && out "$cOS" 1
+    [[ "$1" -eq 1 ]] && out "$cOS" 1
 }
 out () { #what? - or #
     local line #avoid extra lines between calls
@@ -233,6 +233,27 @@ copy_plugins(){ #from
         cd "${dir}${i}"
         $wp plugin activate $plugin_name
         cd -
+    done
+}
+remove_plugins() {
+    local plugin_name
+    local i
+
+    plugin_name="$1"
+    for i in "${sites[@]}"; do
+        cd ${i}/wp-content/plugins
+        if [ -d "$plugin_name" ]; then
+            out "Removing $plugin_name" 2
+             "$wp" plugin delete "$plugin_name"
+            sleep 1
+            echo "Done"
+            "$wp" plugin list
+        fi
+        if [ $# -eq 2 ]; then #pause, when 2 args
+            echo -e "${Purple}To continue press any key and enter...${Color_Off}"
+            read a
+        fi
+        cd -  &>/dev/null #change back to orignal dir 
     done
 }
 wp_new_user(){ #user,passw,email

@@ -8,7 +8,7 @@ source ~/git/ho-updates/wpfunctionsinstall.sh
 hostname="localhost"     #host in DB
 wsl=0
 dbuser="web"
-dbpw="1234"
+dbpw="Hola@1234"
 dir=$(basename $PWD)
 # replace "-" with "_" for database name 
 dbname=${dir//[^a-zA-Z0-9]/_}
@@ -138,19 +138,10 @@ for arg in "$@"; do
             wp=${1}
             ;;
         -g)
-            wp_git
-            ;;
-        -ap|--activate-plugins)
-            wp_ap
-            ;;
-        -acf|--acf-pro-key)
-            wp_key_acf_pro
-            ;;
-        -r|--repo)
             shift
             repo=${1}
             ;;
-        --private-ssh)
+        -pk|--private-ssh)
             ssh=1 #use my ssh key
             ;;
         --ssh)
@@ -158,9 +149,6 @@ for arg in "$@"; do
             ;;
         --debug)
             wp_debug
-            ;;
-        --colors)
-           colors 
             ;;
         --help)
             tldr
@@ -171,7 +159,8 @@ for arg in "$@"; do
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
 done
-#os_detection 0
+colors
+os_detection 0
 os_process 
 sleep 1
 main
