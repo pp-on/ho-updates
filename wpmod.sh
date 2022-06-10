@@ -40,6 +40,9 @@ while [ $# -gt 0 ];do
             shift
             remove_plugins "$1"
             ;;
+        -wm|--wp-migrate-db-pro)
+            wp_key_migrate
+            ;;
         -cp|--copy-plugins)
             shift
             copy_plugins "$1"

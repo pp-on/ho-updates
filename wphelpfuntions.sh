@@ -225,14 +225,17 @@ copy_plugins(){ #from
     for i in "${sites[@]}"; do
         out "${i}" 1
         target="${i}/wp-content/plugins/"
-        out "copying ${plugin_name}from ${from}" 2
-        cp "$from" "$target" -r
-        sleep 1
-        echo "Done"
-        out "Activating $plugin_name" 2
-        cd "${dir}${i}"
-        $wp plugin activate $plugin_name
-        cd -
+        if [ -d "${target}${plugin_name}" ]; then
+            out "${plugin_name} already exists" 3
+        else
+            out "copying ${plugin_name}from ${from}" 2
+            cp "$from" "$target" -r
+            sleep 1
+            echo "Done"
+            out "Activating $plugin_name" 2
+            cd "${dir}${i}"
+            $wp plugin activate $plugin_name
+        fi
     done
 }
 remove_plugins() {
@@ -241,13 +244,14 @@ remove_plugins() {
 
     plugin_name="$1"
     for i in "${sites[@]}"; do
+        out "$i" 1
         cd ${i}/wp-content/plugins
         if [ -d "$plugin_name" ]; then
             out "Removing $plugin_name" 2
              "$wp" plugin delete "$plugin_name"
             sleep 1
             echo "Done"
-            "$wp" plugin list
+#            "$wp" plugin list
         fi
         if [ $# -eq 2 ]; then #pause, when 2 args
             echo -e "${Purple}To continue press any key and enter...${Color_Off}"

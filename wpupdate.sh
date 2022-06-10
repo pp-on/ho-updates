@@ -1,4 +1,5 @@
 #!/bin/env bash
+#start lamp
 
 # Reset
 Color_Off="\e[0m"       # Text Reset
