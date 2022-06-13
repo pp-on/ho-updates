@@ -253,7 +253,7 @@ remove_plugins() {
             echo "Done"
 #            "$wp" plugin list
         fi
-        if [ $# -eq 2 ]; then #pause, when 2 args
+        if [ "$2" -eq 1 ]; then #pause, when 2 args
             echo -e "${Purple}To continue press any key and enter...${Color_Off}"
             read a
         fi
@@ -263,5 +263,10 @@ remove_plugins() {
 wp_new_user(){ #user,passw,email
     out "creating user ${1}"
     sleep 1
-    "$wp" user create "$1" "$3" --user_pass="$2" --role=administrator
+    for i in "${sites[@]}"; do
+        out "$i" 1
+        cd "$i"
+        "$wp" user create "$1" "$3" --user_pass="$2" --role=administrator
+        cd -  &>/dev/null #change back to orignal dir 
+    done
 }
