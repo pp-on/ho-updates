@@ -5,6 +5,9 @@ source ~/git/ho-updates/wphelpfuntions.sh
 
 dir=./
 wp="wp"         #where is wp-cli 
+wpuser="test"
+wppw="secret"
+wpemail="oswaldo.nickel@pfennigparade.de"
 while [ $# -gt 0 ];do
 #for arg in "$@"; do
 #while getopts 'd:w:gh' arg; do
@@ -38,7 +41,8 @@ while [ $# -gt 0 ];do
             ;;
         -r)
             shift
-            remove_plugins "$1"
+            remove_plugins "$1" "$2"
+            shift
             ;;
         -wm|--wp-migrate-db-pro)
             wp_key_migrate
@@ -46,6 +50,10 @@ while [ $# -gt 0 ];do
         -cp|--copy-plugins)
             shift
             copy_plugins "$1"
+            ;;
+        -n)
+            out "creating user ${wpuser} with password ${wppw}" 1
+            wp_new_user $wpuser $wppw $wpemail
             ;;
         -w)
             shift
