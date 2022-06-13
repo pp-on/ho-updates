@@ -219,8 +219,6 @@ copy_plugins(){ #from
     #plugin_name="${from%%/*}"
     plugin_name=$(basename "$from")
 
-    echo $plugin_name
-    sleep 10
 
     for i in "${sites[@]}"; do
         out "${i}" 1
