@@ -141,6 +141,10 @@ out_msg (){ #what?, where? ssh
     sleep 1
     out "DB: $dbname" 2
     sleep 1
+    out "WP_user:  $wpuser" 2
+    out "WP_pass: $wppw" 2
+    out "WP_email: $wpemail" 2
+    sleep 1
     out "hostname: $hostname" 2
     sleep 1
     out "Local: $url" 2
