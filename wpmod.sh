@@ -39,6 +39,10 @@ while [ $# -gt 0 ];do
             shift
             process_dirs "$1"
             ;;
+        -u|--update)
+            shift
+            wp_update "$1"
+            ;;
         -r)
             shift
             remove_plugins "$1" "$2"
