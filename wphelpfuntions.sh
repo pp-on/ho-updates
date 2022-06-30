@@ -233,6 +233,7 @@ copy_plugins(){ #from
             out "Activating $plugin_name" 2
             cd "${dir}${i}"
             $wp plugin activate $plugin_name
+            cd -  &>/dev/null #change back to orignal dir 
         fi
     done
 }
@@ -266,5 +267,25 @@ wp_new_user(){ #user,passw,email
         cd "$i"
         "$wp" user create "$1" "$3" --user_pass="$2" --role=administrator
         cd -  &>/dev/null #change back to orignal dir 
+    done
+}
+
+wp_update() { #what full path e/o closing /
+    plugin=$(basename "$1")
+    path="${1}"
+    for i in "${sites[@]}"; do
+        out "$i" 1
+        out "check $plugin if there is one, update it"
+        installed=$(wp is-installed $plugin)
+        if [ -z "$installed" ]; then
+            out "no $plugin found" 3
+            out "installing $path" 2
+            copy_plugins $path #no need for cd $i -> is already in the function
+        else
+            out "found $plugin! Updating..." 2
+            cd $i #for wpcli -> into site
+            $wp plugin update $plugin
+            cd -  &>/dev/null #change back to orignal dir 
+        fi
     done
 }
