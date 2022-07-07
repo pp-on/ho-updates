@@ -3,11 +3,12 @@
 #search for wp-sites
 source ~/git/ho-updates/wphelpfuntions.sh
 
-dir=./
-wp="wp"         #where is wp-cli 
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
+
+dir=./
+wp="wp"         #where is wp-cli 
 while [ $# -gt 0 ];do
 #for arg in "$@"; do
 #while getopts 'd:w:gh' arg; do
