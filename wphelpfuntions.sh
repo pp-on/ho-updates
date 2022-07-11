@@ -276,16 +276,23 @@ wp_update() { #what full path e/o closing /
     for i in "${sites[@]}"; do
         out "$i" 1
         out "check $plugin if there is one, update it"
-        installed=$(wp is-installed $plugin)
+            cd $i #for wpcli -> into site
+        installed=$(wp plugin is-installed $plugin)
         if [ -z "$installed" ]; then
             out "no $plugin found" 3
             out "installing $path" 2
-            copy_plugins $path #no need for cd $i -> is already in the function
+            cp $path . -rv
+            $wp plugin activate $plugin
         else
             out "found $plugin! Updating..." 2
-            cd $i #for wpcli -> into site
             $wp plugin update $plugin
-            cd -  &>/dev/null #change back to orignal dir 
         fi
+            cd -  &>/dev/null #change back to orignal dir 
     done
+}
+wp_key_migrate(){
+    out "activating wp-migrate-db-pro"
+    sleep 1
+    $wp eval 'wpmdb_licence_key("a8ff1ac2-3291-4591-b774-9d506de828fd");'
+    
 }
