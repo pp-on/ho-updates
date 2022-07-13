@@ -293,6 +293,6 @@ wp_update() { #what full path e/o closing /
 wp_key_migrate(){
     out "activating wp-migrate-db-pro"
     sleep 1
-    echo "define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd' );" >> "$[sites[0]]"/wp-config.php
+    echo "define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd' );" >>"${sites[0]}"/wp-config.php
     
 }
