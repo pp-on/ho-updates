@@ -233,6 +233,7 @@ copy_plugins(){ #from
             out "Activating $plugin_name" 2
             cd "${dir}${i}"
             $wp plugin activate $plugin_name
+            cd -  &>/dev/null #change back to orignal dir 
         fi
     done
 }
@@ -267,4 +268,34 @@ wp_new_user(){ #user,passw,email
         "$wp" user create "$1" "$3" --user_pass="$2" --role=administrator
         cd -  &>/dev/null #change back to orignal dir 
     done
+}
+
+wp_update() { #what full path e/o closing /
+    plugin=$(basename "$1")
+    path="${1}"
+    for i in "${sites[@]}"; do
+        out "$i" 1
+        out "check $plugin if there is one, update it"
+            cd $i #for wpcli -> into site
+        installed=$(wp plugin is-installed $plugin)
+        if [ -z "$installed" ]; then
+            out "no $plugin found" 3
+            out "installing $path" 2
+            cp $path . -rv
+            $wp plugin activate $plugin
+        else
+            out "found $plugin! Updating..." 2
+            $wp plugin update $plugin
+        fi
+            cd -  &>/dev/null #change back to orignal dir 
+    done
+}
+wp_key_migrate(){
+    for i in "${sites[@]}"; do
+        out "$i" 1
+        out "activating wp-migrate-db-pro" 2
+        sleep 1
+        echo "define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd' );" >>"${sites[0]}"/wp-config.php
+    done
+    
 }

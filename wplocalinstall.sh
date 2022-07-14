@@ -9,11 +9,13 @@ hostname="localhost"     #host in DB
 wsl=0
 dbuser="web"
 dbpw="Hola@1234"
+wpemail="oswaldo.nickel@pfennigparade.de"
 dir=$(basename $PWD)
 # replace "-" with "_" for database name 
 dbname=${dir//[^a-zA-Z0-9]/_}
 title="test${dir^^}"           #uppercase
-url="localhost/arbeit/repos/$dir"
+#url="localhost/arbeit/repos/$dir"
+url="arbeit.local/repos/$dir"
 php=$(php -v |  head -n 1 | cut -d " " -f 2)
 wp="wp"
 tdir="."

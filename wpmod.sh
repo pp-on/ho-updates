@@ -17,30 +17,34 @@ while [ $# -gt 0 ];do
         -g)
             git=1
             ;;
-        -d)
+        -d|--orignal-dir)
             shift
             dir="$1"
             ;;
-        -o)
+        -o|--os-detection)
             os_detection 1
             ;;
-        -p)
+        -a|--all-sites)
             process_sites
             ;;
-        --print)
+        -p|--print)
             print_sites
             ;;
-        -c)
+        -c|--colors)
             colors
             ;;
-        -l)
+        -l|--list)
             list_wp_plugins
             ;;
-        -s)
+        -s|--sites)
             shift
             process_dirs "$1"
             ;;
-        -r)
+        -u|--update)
+            shift
+            wp_update "$1"
+            ;;
+        -r|--remove)
             shift
             remove_plugins "$1" "$2"
             shift
@@ -52,15 +56,15 @@ while [ $# -gt 0 ];do
             shift
             copy_plugins "$1"
             ;;
-        -n)
+        -n|--new-user)
             out "creating user ${wpuser} with password ${wppw}" 1
             wp_new_user $wpuser $wppw $wpemail
             ;;
-        -w)
+        -w|--location-wp)
             shift
             wp=$1
             ;;
-        -h)
+        -h|--help)
             echo "wpmod.sh [--print][-p][-c][-l][-o][-s SEL,DIRS,...][--copy_plugins FROM][-d targetDIR][-w path/to/wp][-g]"
             exit
             ;;

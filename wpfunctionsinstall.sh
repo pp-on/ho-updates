@@ -84,7 +84,7 @@ wp_key_acf_pro (){
 wp_key_migrate(){
     out "activating wp-migrate-db-pro"
     sleep 1
-    $wp eval 'wp-migrate-db-pro_license("a8ff1ac2-3291-4591-b774-9d506de828fd");'
+    $wp eval 'wpmdb_licence_key("a8ff1ac2-3291-4591-b774-9d506de828fd");'
     
 }
 #activate debug
