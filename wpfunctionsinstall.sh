@@ -1,5 +1,8 @@
 #! /bin/bash
 
+wpuser="test"
+wppw="secret"
+wpemail="oswaldo.nickel@pfennigparade.de"
 create_db (){
     echo ""
     out "Creating Database $dbname" 1
