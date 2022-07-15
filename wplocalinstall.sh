@@ -132,6 +132,9 @@ for arg in "$@"; do
             shift
             hostname=$1
             ;;
+        -wm|--wp-migrate-db-pro)
+            wp_key_migrate
+            ;;
         -w)
             shift
             wp=${1}
