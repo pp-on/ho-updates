@@ -210,6 +210,10 @@ for site in "${sites[@]}"; do
     $wp core check-update
     update_core
     echo -e "${Yellow}---------------\nCheck Plugins\n---------------${Color_Off}"
+    cd wp-content
+    git pull
+    cd -
+
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
    plugins_up=$($wp plugin list --update=available) 
    if [ -z "$plugins_up" ]; then
