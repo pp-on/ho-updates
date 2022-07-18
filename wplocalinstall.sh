@@ -1,9 +1,11 @@
 #!/bin/env bash
 
+MYDIR="$(dirname "$0")"
+
 #search for wp-sites
-source ~/git/ho-updates/wphelpfuntions.sh
+source "${MYDIR}/wphelpfuntions.sh" 
 #wp  functions for installing
-source ~/git/ho-updates/wpfunctionsinstall.sh
+source "${MYDIR}/wpfunctionsinstall.sh"
 
 hostname="localhost"     #host in DB
 wsl=0
