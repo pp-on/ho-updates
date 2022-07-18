@@ -299,3 +299,9 @@ wp_key_migrate(){
 #    done
     
 }
+wp_key_acf_pro (){
+    out "activating acf pro" 2 
+    sleep 1
+    $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
+    $wp plugin list
+}
