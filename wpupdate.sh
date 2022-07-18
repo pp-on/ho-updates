@@ -211,19 +211,20 @@ for site in "${sites[@]}"; do
     update_core
     echo -e "${Yellow}---------------\nCheck Plugins\n---------------${Color_Off}"
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
-    $wp plugin list --update=available 
-    sleep 1 
-    echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
-    read answer
-    echo -e "\n--------------"
-    if [ "$answer" = "y" ]; then
-        if [ "$git" -eq 1 ]; then
-            gitwp
-        else
-            $wp plugin update --all
-        fi
-    else
-        echo "Nothin done"
+   plugins_up=$($wp plugin list --update=available) 
+   if [ -z "$plugins_up" ]; then
+       echo "Nothing to be updated!"
+   else
+       echo "$plugins_up"
+       sleep 1 
+       echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
+       read answer
+       echo -e "\n--------------"
+       if [ "$answer" = "y" ]; then
+           [ "$git" -eq 1 ] && gitwp || $wp plugin update --all
+       else
+           echo "Nothin done"
+       fi
     fi
     cd -  &>/dev/null
 done
