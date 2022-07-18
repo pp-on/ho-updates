@@ -295,7 +295,7 @@ wp_key_migrate(){
 #        out "$i" 1
         out "activating wp-migrate-db-pro" 2
         sleep 1
-        echo "define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd');" >> "$i"/wp-config.php
+        echo "define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd');" >> ./wp-config.php
 #    done
     
 }
