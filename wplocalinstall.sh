@@ -166,3 +166,4 @@ os_detection 0
 os_process 
 sleep 1
 main
+wp_key_migrate
