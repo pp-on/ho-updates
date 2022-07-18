@@ -78,12 +78,6 @@ wp_key_acf_pro (){
     $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
-wp_key_migrate(){
-    out "activating wp-migrate-db-pro"
-    sleep 1
-    $wp eval 'wpmdb_licence_key("a8ff1ac2-3291-4591-b774-9d506de828fd");'
-    
-}
 #activate debug
 wp_debug(){
     out "adding WP DEBUG to wp-config" 2
