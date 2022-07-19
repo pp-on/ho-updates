@@ -192,6 +192,8 @@ out () { #what? - or #
         line="${Yellow}${line}"
     elif [[ "$2" -eq 3 ]]; then
         line="${Red}${line}"
+    elif [[ "$2" -eq 4 ]]; then
+        line="${Green}${line}"
    else
         line="${Cyan}${line}"
    fi
