@@ -1,32 +1,30 @@
 #!/bin/env bash
-#start lamp
 
-# Reset
-Color_Off="\e[0m"       # Text Reset
+MYDIR="$(dirname "$0")"
 
-# Regular Colors
-Black="\e[30m"        # Black
-Red="\e[31m"          # Red
-Green="\e[32m"        # Green
-Yellow="\e[33m"       # Yellow
-Blue="\e[34m"         # Blue
-Purple="\e[35m"       # Purple
-Cyan="\e[36m"         # Cyan
-White="\e[37m"        # White
+#search for wp-sites
+source "${MYDIR}/wphelpfuntions.sh" 
 
 git=0 #use git?
 dir=./
 wp="wp"         #where is wp-cli 
-php_string=$(php -v |  head -n 1 | cut -d " " -f 2)
-#php_string=$(php -r "echo substr(phpversion(),0,3);")
-#php=$(($php_string + 0)) #string to int
-argSites=0 
+#argSites=0 
 while [ $# -gt 0 ];do
     case $1 in
-        -s)
+        -a|--all-sites)
+            process_sites
+            ;;
+        #-s)
+            #shift
+            #dirs="$1"
+            #argSites=1
+            #;;
+        -s|--sites)
             shift
-            dirs="$1"
-            argSites=1
+            process_dirs "$1"
+            ;;
+        -c|--colors)
+            colors
             ;;
         -g)
             git=1
@@ -48,74 +46,6 @@ while [ $# -gt 0 ];do
     shift
 done
 
-#split -s dirs with , in array sites
-#reference
-#${var#*SubStr}  # drops substring from start of string up to first occurrence of `SubStr`
-#${var##*SubStr} # drops substring from start of string up to last occurrence of `SubStr`
-#${var%SubStr*}  # drops substring from last occurrence of `SubStr` to end of string
-#${var%%SubStr*} # drops substring from first occurrence of `SubStr` to end of string
-process_dirs(){ #split directories -> a,b,c sites[0]=a, sites[1]=b, sites[2]=c
-    local dirs="$1"
-    local site
-    if [ ! -z "$dirs" ]; then #if something did go wrong
-        while [ "$dirs" != "$site" ]; do
-            site=${dirs%%,*} #first element -> dirs=a,b,c site=a  
-            dirs=${dirs#"$site",} #new string w/o first element -> b,c
-            while [ ! -d "$dir$site" ]; do #it has to be a correct name
-                echo "$dir$site not found! Tipe in [n]ew name or [c]ontinue..."
-                read a
-                if [ "$a" = "n" ]; then
-                    echo "----------------"
-                    echo "enter new name: "
-                    read site
-                    echo "----------------"
-                elif [ "$a" = "c" ]; then
-                    site="" #first element is empty
-                    break #stop loop
-                else
-                    continue #startover
-                    #break
-                fi
-            done
-            [ ! -z "$site" ] && sites+=("$site") #copy into array
-            
-
-        done
-        echo -e "${Yellow}----------------"
-        sleep 1
-        echo -e "${#sites[@]} selected websites" 
-                    echo "----------------"
-        for i in ${sites[@]}; do
-            echo -e ${Cyan}$i
-        done
-        echo -e "${Yellow}----------------"
-    fi
-}
-
-#only WP-Sites are to be processed
-process_sites(){
-    if [ -z "$sites" ]; then #if no folders aka Websites were pass as argument
-        for site in $(ls -d $dir*/); do
-            if [ -d "$site/wp-content/" ]; then
-                seite=${site##"$dir"}
-                echo "Found $seite"
-                echo "Should it be processed? [y] "
-                read answer
-                echo -e "\n--------------"
-                if [ "$answer" = "y" ]; then
-                    #only names
-                    site=${site#"$dir"}
-                    site=${site%%/}
-                    sites+=("$site")
-                fi
-            fi
-        done
-        for i in "${sites[@]}"; do
-            echo $i
-        done
-
-    fi
-}
 
 function update_core () { #update wordpress, only when there is a new version
     succes=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
@@ -185,11 +115,11 @@ function gitwp(){
 }
 
 #is directories (-s) known?
-if [ "$argSites" -eq 0 ]; then
-    process_sites 
-else 
-    process_dirs "$dirs"
-fi
+#if [ "$argSites" -eq 0 ]; then
+    #process_sites 
+###else 
+    #process_dirs "$dirs"
+#fi
 
 for site in "${sites[@]}"; do
     echo -e "${Cyan}================================\n\t$site\n================================"
