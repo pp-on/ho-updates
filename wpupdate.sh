@@ -64,17 +64,16 @@ function update_core () { #update wordpress, only when there is a new version
 
 function gitwp(){
     local plugins
+    local i
     i=0
     cd wp-content  &>/dev/null
     #avoid unnecessary merges
-    echo "=============================="
-    echo "updating repository..."
+    out "updating repository..." 1
     sleep 1
     git pull 1>/dev/null
     for plugin in $($wp plugin list --update=available --field=name); do
         old_v=$($wp plugin get $plugin --field=version)
-        echo "=============================="
-        echo "Updating $plugin"
+        out "Updating $plugin" 2
         sleep 1
         $wp plugin update $plugin 1>/dev/null
         #new version
@@ -83,14 +82,11 @@ function gitwp(){
         echo "version: $new_v"
 
         plugins[$i]="$plugin: $old_v --> $new_v"
-        echo "------------------------------"
-        echo "staging changes..."
+        out "staging changes..." 2
         sleep 1
         git add -A plugins/$plugin 1>/dev/null 
-        echo "------------------------------"
-        echo "Writing Commit:"
-        echo "chore: update plugin ${plugins[$i]}"
-        echo "------------------------------"
+        out "Writing Commit:" 2
+        out "chore: update plugin ${plugins[$i]}" 2
         git commit -m "chore: update plugin ${plugins[$i]}" 1>/dev/null
         ((i++)) #increment c-style
     done
