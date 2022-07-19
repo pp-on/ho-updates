@@ -81,20 +81,19 @@ function gitwp(){
         new_v=$(wp plugin get $plugin --field=version)
         echo "version: $new_v"
 
-        plugins[$i]="$plugin: $old_v --> $new_v"
-        out "staging changes..." 2
-        sleep 1
-        git add -A plugins/$plugin 1>/dev/null 
-        out "Writing Commit:" 2
-        out "chore: update plugin ${plugins[$i]}" 2
-        git commit -m "chore: update plugin ${plugins[$i]}" 1>/dev/null
-        ((i++)) #increment c-style
+        if [ "$old_v" != "$new_v" ]; then
+            plugins[$i]="$plugin: $old_v --> $new_v"
+            out "staging changes..." 2
+            sleep 1
+            git add -A plugins/$plugin 1>/dev/null 
+            out "Writing Commit:" 2
+            out "chore: update plugin ${plugins[$i]}" 2
+            git commit -m "chore: update plugin ${plugins[$i]}" 1>/dev/null
+            ((i++)) #increment c-style
+        fi
     done
-    echo "=============================="
-    echo "Summary:"
-    echo "=============================="
-    echo "$i plugins updated"
-    echo "------------------------------"
+    out "Summary:" 1
+    out "$i plugins updated" 2
     for p in "${!plugins[@]}"; do #get  index of array -> !
         echo "${plugins[$p]}"
         echo "------------------------------"
