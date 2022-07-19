@@ -33,8 +33,8 @@ while [ $# -gt 0 ];do
             shift
             dir=$1
             ;;
-        -h)
-            echo "wpupdate.sh [-d targetDIR][-w path/to/wp][-g]"
+        -h|--help)
+            echo "wpupdate.sh [-a][-s sites][-d targetDIR][-w path/to/wp][-g]"
             exit
             ;;
         -w)
