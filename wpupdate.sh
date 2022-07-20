@@ -8,6 +8,7 @@ source "${MYDIR}/wphelpfuntions.sh"
 git=0 #use git?
 dir=./
 wp="wp"         #where is wp-cli 
+exclude=""      #plugins mot be updated
 #argSites=0 
 while [ $# -gt 0 ];do
     case $1 in
@@ -41,6 +42,9 @@ while [ $# -gt 0 ];do
             shift
             wp=${1}
             ;;
+        -x|--exclude-plugins)
+            shift
+            exclude="$1"
     esac
     #next argument -> e.g. $2 becomes $1, $3 becomes $2...
     shift
@@ -73,13 +77,13 @@ function gitwp(){
     git pull 1>/dev/null
     for plugin in $($wp plugin list --update=available --field=name); do
         old_v=$($wp plugin get $plugin --field=version)
-        out "Updating $plugin" 2
+        out "Updating $plugin" 4
         sleep 1
         $wp plugin update $plugin 1>/dev/null
         #new version
         #new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
         new_v=$(wp plugin get $plugin --field=version)
-        echo "version: $new_v"
+        out "version: $old_v" 4
 
         if [ "$old_v" != "$new_v" ]; then
             plugins[$i]="$plugin: $old_v --> $new_v"
@@ -87,7 +91,7 @@ function gitwp(){
             sleep 1
             git add -A plugins/$plugin 1>/dev/null 
             out "Writing Commit:" 2
-            out "chore: update plugin ${plugins[$i]}" 2
+            out "chore: update plugin ${plugins[$i]}" 4
             git commit -m "chore: update plugin ${plugins[$i]}" 1>/dev/null
             ((i++)) #increment c-style
         fi
@@ -99,7 +103,7 @@ function gitwp(){
         echo "------------------------------"
     done
         echo "Push to Github? [y]"
-        read a
+        a="y"
         if [ "$a" = "y" ]; then
             git push 1>/dev/null
         else
@@ -140,7 +144,7 @@ for site in "${sites[@]}"; do
     cd -
 
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
-   plugins_up=$($wp plugin list --update=available) 
+   plugins_up=$($wp plugin list --update=available 2>/dev/null) 
     $wp plugin list --update=available
    if [ -z "$plugins_up" ]; then
        echo "Nothing to be updated!"
@@ -148,10 +152,11 @@ for site in "${sites[@]}"; do
        echo "$plugins_up"
        sleep 1 
        echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
-       read answer
+       answer="y"
        echo -e "\n--------------"
        if [ "$answer" = "y" ]; then
-           [ "$git" -eq 1 ] && gitwp || $wp plugin update --all
+           #-g? -> git else update all but check -x
+           [ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all || $wp plugin update --all --exclude=$exclude
        else
            echo "Nothin done"
        fi
