@@ -49,10 +49,13 @@ while [ $# -gt 0 ];do
             remove_plugins "$1" "$2"
             shift
             ;;
-        -wm|--wp-migrate-db-pro)
+        -f|--acf-pro-lk)
+            wp_key_acf_pro
+            ;;
+        -m|--wp-migrate-db-pro)
             wp_key_migrate
             ;;
-        -cp|--copy-plugins)
+        -y|--copy-plugins)
             shift
             copy_plugins "$1"
             ;;
