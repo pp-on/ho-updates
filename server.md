@@ -6,19 +6,19 @@
     - rsk 
     - sbs
 - he (bbsb)
-  - aura-hotel 
   - bbsb 
-  - bbsb-spenden 
+- cds
+  - aura-hotel 
 - netcup 
   - b&b 
   - emw
   - neuronetz 
   - reha-marketing
+  - inclu-sports
 - 1u1
   - eca-live
   - input-inklusiv 
   - biko
-  - weclimb
 - who
   - pp -> jpp3
   - karrierewe-pp
