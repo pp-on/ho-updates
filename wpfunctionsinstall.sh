@@ -99,16 +99,18 @@ EOF
 htaccess() {
     out "creating .htaccess" 2
 cat  << EOF > .htaccess
-# BEGIN WordPress
+<IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /repos/biko-bayern/
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.php [L]
-# END WordPress
+RewriteRule . /repos/biko-bayern/index.php [L]
+</IfModule>	
 EOF
 sleep 1
+chmod 777 .htaccess -v
 echo "Done"
 }
 ssh_repo(){ #ssh
