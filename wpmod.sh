@@ -1,7 +1,12 @@
 #!/bin/bash
 
+MYDIR="$(dirname "$0")"
+
 #search for wp-sites
-source ~/git/ho-updates/wphelpfuntions.sh
+source "${MYDIR}/wphelpfuntions.sh" 
+
+#search for wp-sites
+#source ~/git/ho-updates/wphelpfuntions.sh
 
 wpuser="test"
 wppw="secret"
