@@ -307,3 +307,43 @@ wp_key_acf_pro (){
     $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
+install_plugins (){
+    plugin_name="$1"
+
+    for i in "${sites[@]}"; do
+        out "${i}" 1
+        cd "$1"
+        target="wp-content/plugins/"
+        if [ -d "${target}${plugin_name}" ]; then
+            out "${plugin_name} already exists" 3
+        else
+            $wp plugin install "$plugin_name"
+            $wp plugin activate "$plugin_name"
+        fi
+        cd -
+    done
+}
+
+# basic htaccess for SEO
+htaccess() {
+    d1=$(dirname $PWD)
+    d1=${d1##*/}
+    d2=${PWD##*/} #trim all dirs before - same as basename
+    target_directory="/$d1/$d2"
+
+    out "creating .htaccess with $target_directory" 2
+cat  << EOF > .htaccess
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase $target_directory
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . $target_directory/index.php [L]
+</IfModule>	
+EOF
+sleep 1
+chmod 777 .htaccess -v
+echo "Done"
+}
