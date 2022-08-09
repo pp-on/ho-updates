@@ -49,6 +49,9 @@ while [ $# -gt 0 ];do
             shift
             wp_update "$1"
             ;;
+        -t|--htaccess)
+            htaccess
+            ;;
         -r|--remove)
             shift
             remove_plugins "$1" "$2"
