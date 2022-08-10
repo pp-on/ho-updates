@@ -103,7 +103,8 @@ function gitwp(){
         echo "------------------------------"
     done
         echo "Push to Github? [y]"
-        a="y"
+        read a
+        #a="y"
         if [ "$a" = "y" ]; then
             git push 1>/dev/null
         else
