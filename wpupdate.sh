@@ -153,7 +153,7 @@ for site in "${sites[@]}"; do
        echo "$plugins_up"
        sleep 1 
        echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
-       answer="y"
+       read answer
        echo -e "\n--------------"
        if [ "$answer" = "y" ]; then
            #-g? -> git else update all but check -x
