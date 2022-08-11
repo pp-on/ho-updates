@@ -145,7 +145,7 @@ for site in "${sites[@]}"; do
     cd -
 
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
-   plugins_up=$($wp plugin list --update=available 2>/dev/null) 
+   plugins_up=$($wp plugin list --update=available > /dev/null 2>&1) #dont print anything
     $wp plugin list --update=available
    if [ -z "$plugins_up" ]; then
        echo "Nothing to be updated!"
