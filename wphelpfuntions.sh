@@ -299,7 +299,8 @@ wp_key_migrate(){
         sleep 1
         echo "define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd');" >> ./wp-config.php
 #    done
-    
+   out "activating pull setting" 4
+   $wp migrate setting update pull on
 }
 wp_key_acf_pro (){
     out "activating acf pro" 2 
