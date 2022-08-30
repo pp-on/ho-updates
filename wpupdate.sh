@@ -6,6 +6,7 @@ MYDIR="$(dirname "$0")"
 source "${MYDIR}/wphelpfuntions.sh" 
 
 git=0 #use git?
+yes_up=0
 dir=./
 wp="wp"         #where is wp-cli 
 exclude=""      #plugins mot be updated
@@ -23,6 +24,9 @@ while [ $# -gt 0 ];do
         -s|--sites)
             shift
             process_dirs "$1"
+            ;;
+        -y|--yes-update)
+            yes_up=1
             ;;
         -c|--colors)
             colors
@@ -102,14 +106,19 @@ function gitwp(){
         echo "${plugins[$p]}"
         echo "------------------------------"
     done
-        echo "Push to Github? [y]"
-        read a
+        if [ -z "$yes_up" ]; then
+            echo "Push to Github? [y]"
+            read a
         #a="y"
-        if [ "$a" = "y" ]; then
-            git push 1>/dev/null
+            if [ "$a" = "y" ]; then
+                git push 1>/dev/null
+            else
+                echo "Not pushing"
+            fi
         else
-            echo "Not pushing"
+            git push 1>/dev/null
         fi
+
     sleep 2
     cd -  &>/dev/null
 }
@@ -149,15 +158,19 @@ for site in "${sites[@]}"; do
    if [ -z "$plugins_up" ]; then
        echo "Nothing to be updated!"
    else
-       echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
-       read answer
-       echo -e "\n--------------"
-       if [ "$answer" = "y" ]; then
-           #-g? -> git else update all but check -x
-           [ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all || $wp plugin update --all --exclude=$exclude
-       else
-           echo "Nothin done"
-       fi
+       if [ -z "$yes_up" ]; then
+           echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
+           read answer
+           echo -e "\n--------------"
+           if [ "$answer" = "y" ]; then
+               #-g? -> git else update all but check -x
+             [ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all --exclude=$exclude ||  $wp plugin update --all
+           else
+               echo "Nothin done"
+           fi
+        else
+            [ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all --exclude=$exclude ||  $wp plugin update --all
+        fi
     fi
     echo "back to $dir"
     cd -  &>/dev/null
