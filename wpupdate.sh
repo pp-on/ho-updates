@@ -143,13 +143,12 @@ for site in "${sites[@]}"; do
     echo -e "${Yellow}---------------\nCheck Plugins\n---------------${Color_Off}"
 
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
-   plugins_up=$($wp plugin list --update=available > /dev/null 2>&1) #dont print anything
+   #plugins_up=$($wp plugin list --update=available > /dev/null 2>&1) #dont print anything
+   plugins_up=$($wp plugin list --update=available ) #dont print anything
     $wp plugin list --update=available
    if [ -z "$plugins_up" ]; then
        echo "Nothing to be updated!"
    else
-       echo "$plugins_up"
-       sleep 1 
        echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
        read answer
        echo -e "\n--------------"
