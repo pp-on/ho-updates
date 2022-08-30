@@ -6,7 +6,7 @@ MYDIR="$(dirname "$0")"
 source "${MYDIR}/wphelpfuntions.sh" 
 
 git=0 #use git?
-yes_up=0
+yes_up=""
 dir=./
 wp="wp"         #where is wp-cli 
 exclude=""      #plugins mot be updated
