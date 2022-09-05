@@ -75,44 +75,6 @@ wp_git (){
     out "activating plugins" 2
     $wp plugin activate --all
 }
-#activate debug
-wp_debug(){
-    out "adding WP DEBUG to wp-config" 2
-    cat <<EOF >> wp-config.php
-    // Enable WP_DEBUG mode
-define( 'WP_DEBUG', true );
-
-// Enable Debug logging to the /wp-content/debug.log file
-define( 'WP_DEBUG_LOG', true );
-
-// Disable display of errors and warnings
-define( 'WP_DEBUG_DISPLAY', false );
-@ini_set( 'display_errors', 0 );
-
-// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
-define( 'SCRIPT_DEBUG', true );
-EOF
-
-     
-}
-# basic htaccess for SEO
-htaccess() {
-    out "creating .htaccess" 2
-cat  << EOF > .htaccess
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /repos/biko-bayern/
-RewriteRule ^index\.php$ - [L]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /repos/biko-bayern/index.php [L]
-</IfModule>	
-EOF
-sleep 1
-chmod 777 .htaccess -v
-echo "Done"
-}
 ssh_repo(){ #ssh
     local ssh
     ssh="$1"
