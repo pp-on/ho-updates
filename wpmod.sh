@@ -52,6 +52,9 @@ while [ $# -gt 0 ];do
         -t|--htaccess)
             htaccess
             ;;
+        -x|--enable-debug)
+            wp_debug
+            ;;
         -r|--remove)
             shift
             remove_plugins "$1" "$2"
