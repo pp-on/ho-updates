@@ -224,12 +224,12 @@ copy_plugins(){ #from
 
     for i in "${sites[@]}"; do
         out "${i}" 1
-        target="${i}/wp-content/plugins/"
-        if [ -d "${target}${plugin_name}" ]; then
+        target="${dir}${i}/wp-content/plugins/"
+        if [ -d "${dir}${target}${plugin_name}" ]; then
             out "${plugin_name} already exists" 3
         else
             out "copying ${plugin_name}from ${from}" 2
-            cp "$from" "$target" -r
+            cp "$from" "${dir}$target" -r
             sleep 1
             echo "Done"
             out "Activating $plugin_name" 2
