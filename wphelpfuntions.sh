@@ -313,7 +313,7 @@ install_plugins (){
 
     for i in "${sites[@]}"; do
         out "${i}" 1
-        cd "$1"
+        cd "${dir}${i}"
         target="wp-content/plugins/"
         if [ -d "${target}${plugin_name}" ]; then
             out "${plugin_name} already exists" 3
