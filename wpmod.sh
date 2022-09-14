@@ -66,6 +66,10 @@ while [ $# -gt 0 ];do
         -m|--wp-migrate-db-pro)
             wp_key_migrate
             ;;
+        -i|--install-plugin)
+            shift
+            install_plugins "$1"
+            ;;
         -y|--copy-plugins)
             shift
             copy_plugins "$1"
