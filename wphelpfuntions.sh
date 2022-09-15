@@ -348,6 +348,18 @@ sleep 1
 chmod 777 .htaccess -v
 echo "Done"
 }
+#hide errors
+wp_hide_errors(){
+    out "hiding errors" 4
+	#remove define(WP-DEBUG', false);
+    sed -i '/DEBUG/d' wp-config.php
+    cat <<EOF >> wp-config.php
+ini_set('display_errors','Off');
+ini_set('error_reporting', E_ALL );
+define('WP_DEBUG', false);
+define('WP_DEBUG_DISPLAY', false);
+EOF
+}
 #activate debug
 wp_debug(){
     out "adding WP DEBUG to wp-config" 2
