@@ -55,6 +55,9 @@ while [ $# -gt 0 ];do
         -x|--enable-debug)
             wp_debug
             ;;
+        -z|--hide-errors)
+            wp_hide_errors
+            ;;
         -r|--remove)
             shift
             remove_plugins "$1" "$2"
