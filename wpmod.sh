@@ -13,6 +13,7 @@ wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
 
 dir=./
+proc_sites=0    #is -a or -s been used? if not site is pwd
 wp="wp"         #where is wp-cli 
 while [ $# -gt 0 ];do
 #for arg in "$@"; do
@@ -31,6 +32,21 @@ while [ $# -gt 0 ];do
             ;;
         -a|--all-sites)
             process_sites
+            proc_sites=1
+            ;;
+        -p|--print)
+            print_sites
+            ;;
+        -c|--colors)
+            colors
+            ;;
+        -l|--list)
+            list_wp_plugins
+            ;;
+        -s|--sites)
+            shift
+            process_dirs "$1"
+            proc_sites=1
             ;;
         -p|--print)
             print_sites
@@ -57,8 +73,6 @@ while [ $# -gt 0 ];do
             ;;
         -z|--hide-errors)
             wp_hide_errors
-            ;;
-        -r|--remove)
             shift
             remove_plugins "$1" "$2"
             shift
@@ -97,3 +111,4 @@ while [ $# -gt 0 ];do
 done #only WP-Sites are to be processed
 verbose=1
 #searchwp
+[ $proc_sites -eq 0 ] && sites+=("$dir") #current site to array
