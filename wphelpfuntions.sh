@@ -272,22 +272,29 @@ wp_new_user(){ #user,passw,email
     done
 }
 
-wp_update() { #what full path e/o closing /
-    plugin=$(basename "$1")
+wp_update() { #what 
+     plugin="$1"
     path="${1}"
+    countdown=4
     for i in "${sites[@]}"; do
         out "$i" 1
         out "check $plugin if there is one, update it"
             cd $i #for wpcli -> into site
-        installed=$(wp plugin is-installed $plugin)
-        if [ -z "$installed" ]; then
-            out "no $plugin found" 3
-            out "installing $path" 2
-            cp $path . -rv
-            $wp plugin activate $plugin
-        else
-            out "found $plugin! Updating..." 2
+        #installed=$(wp plugin status $plugin | grep Error)
+        #if [ -z "$installed" ]; then #found -> empty
+        if [[ "$plugin" != "all" ]]; then
+           out "found $plugin! Updating..." 2
             $wp plugin update $plugin
+       else
+            out "updating all plugins" 2
+            $wp plugin list --update=available
+            while [ "$countdown" -ge 0 ]; do
+                out "$countdown" 4
+                sleep 1
+                (( countdown-- ))
+            done
+            sleep
+            $wp plugin update --all
         fi
             cd -  &>/dev/null #change back to orignal dir 
     done
