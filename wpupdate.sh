@@ -26,7 +26,7 @@ while [ $# -gt 0 ];do
             process_dirs "$1"
             ;;
         -y|--yes-update)
-            yes_up=1
+            yes_up="true"
             ;;
         -c|--colors)
             colors
