@@ -60,7 +60,11 @@ function update_core () { #update wordpress, only when there is a new version
     #echo $?
     if [ -z "$succes" ]; then #1
         echo -e "\nProceed with Core Update? [y]"
-        read answer
+        if [ "$yes_up" -eq 1 ]; then  
+            answer="y"
+        else
+            read answer
+        fi
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             $wp core update
