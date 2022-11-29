@@ -151,7 +151,7 @@ for site in "${sites[@]}"; do
         continue
    fi
     echo -e "${Yellow}---------------\nCheck Core  Update\n---------------${Color_Off}"
-    $wp core check-update
+    #$wp core check-update
     update_core
     echo -e "${Yellow}---------------\nCheck Plugins\n---------------${Color_Off}"
 
