@@ -20,6 +20,9 @@ while [ $# -gt 0 ];do
 #while getopts 'd:w:gh' arg; do
     #case $1 in
     case $1 in
+        -gl|--git-pull)
+            update_repo
+            ;;
         -g)
             git=1
             ;;
