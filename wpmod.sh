@@ -51,19 +51,6 @@ while [ $# -gt 0 ];do
             process_dirs "$1"
             proc_sites=1
             ;;
-        -p|--print)
-            print_sites
-            ;;
-        -c|--colors)
-            colors
-            ;;
-        -l|--list)
-            list_wp_plugins
-            ;;
-        -s|--sites)
-            shift
-            process_dirs "$1"
-            ;;
         -u|--update)
             shift
             wp_update "$1"
