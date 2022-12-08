@@ -385,3 +385,13 @@ define( 'WP_DEBUG_DISPLAY', false );
 define( 'SCRIPT_DEBUG', true );
 EOF
 }
+update_repo(){
+    for i in "${sites[@]}"; do
+        out "${i}" 1
+        cd "${dir}${i}/wp-content"  &>/dev/null
+        #avoid unnecessary merges
+        out "updating repository..." 1
+        sleep 1
+        git pull 1>/dev/null
+    done
+}
