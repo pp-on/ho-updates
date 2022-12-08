@@ -6,7 +6,8 @@ MYDIR="$(dirname "$0")"
 source "${MYDIR}/wphelpfuntions.sh" 
 
 git=0 #use git?
-yes_up=""
+yes_up="" #plugins
+core_up="" #wp core
 dir=./
 wp="wp"         #where is wp-cli 
 exclude=""      #plugins mot be updated
@@ -26,6 +27,7 @@ while [ $# -gt 0 ];do
             process_dirs "$1"
             ;;
         -y|--yes-update)
+            specify
             yes_up="true"
             ;;
         -c|--colors)
@@ -60,11 +62,7 @@ function update_core () { #update wordpress, only when there is a new version
     #echo $?
     if [ -z "$succes" ]; then #1
         echo -e "\nProceed with Core Update? [y]"
-        if [ "$yes_up" -eq 1 ]; then  
-            answer="y"
-        else
-            read answer
-        fi
+
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             $wp core update
@@ -157,12 +155,12 @@ for site in "${sites[@]}"; do
 
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
    #plugins_up=$($wp plugin list --update=available > /dev/null 2>&1) #dont print anything
-   plugins_up=$($wp plugin list --update=available ) #dont print anything
-    $wp plugin list --update=available
+   plugins_up=$($wp plugin list --update=available >/dev/null  2>&1 ) #dont print anything
    if [ -z "$plugins_up" ]; then
        echo "Nothing to be updated!"
    else
        if [ -z "$yes_up" ]; then
+    $wp plugin list --update=available
            echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
            read answer
            echo -e "\n--------------"
