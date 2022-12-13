@@ -60,9 +60,14 @@ done
 function update_core () { #update wordpress, only when there is a new version
     succes=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
     #echo $?
-    if [ -z "$succes" ]; then #1
-        echo -e "\nProceed with Core Update? [y]"
-
+    if [ -z "$succes" ]; then #$succes is length 0
+        if [ -z "$yes_up" ]; then #no -y 
+            echo -e "\nProceed with Core Update? [y]"
+            read answer
+        else #-y
+            out "Updating..." 4
+            $answer="y"
+        fi
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
             $wp core update
@@ -155,8 +160,10 @@ for site in "${sites[@]}"; do
 
    #upd_avail=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
    #plugins_up=$($wp plugin list --update=available > /dev/null 2>&1) #dont print anything
-   plugins_up=$($wp plugin list --update=available >/dev/null  2>&1 ) #dont print anything
-   if [ -z "$plugins_up" ]; then
+   #plugins_up=$($wp plugin list --update=available >/dev/null  2>&1 ) #dont print anything
+   #plugins_up==$(wp plugin list --fields=name,update 2>/dev/null | grep available
+   plugins_up=$(wp plugin list --fields=name,update 2>/dev/null | grep available)
+   if [ -z "$plugins_up" ]; then #plugins_up has 0 length -> empty
        echo "Nothing to be updated!"
    else
        if [ -z "$yes_up" ]; then
