@@ -69,7 +69,7 @@ function update_core () { #update wordpress, only when there is a new version
         fi
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
-            $wp core update
+            $wp core update --locale=de_DE --skip-themes 
         else
             echo -e "${Blue}Nothin to be done${Color_Off}"
         fi
