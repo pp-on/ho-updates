@@ -184,6 +184,7 @@ for site in "${sites[@]}"; do
             else
                 $wp plugin list --update=available
                 out "Updating all plugins" 4
+                $wp plugin update --all
             fi
         fi
     fi
