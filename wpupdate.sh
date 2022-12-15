@@ -27,7 +27,6 @@ while [ $# -gt 0 ];do
             process_dirs "$1"
             ;;
         -y|--yes-update)
-            specify
             yes_up="true"
             ;;
         -c|--colors)
@@ -58,7 +57,7 @@ done
 
 
 function update_core () { #update wordpress, only when there is a new version
-    succes=$($wp core check-update 2>/dev/null| grep Success) #0 -> ok ,1 -> err in bash
+    succes=$($wp core check-update 2>/dev/null| grep Success) #0 -> not found -> empty ,1 -> not 0 lenght
     #echo $?
     if [ -z "$succes" ]; then #$succes is length 0
         if [ -z "$yes_up" ]; then #no -y 
@@ -162,12 +161,13 @@ for site in "${sites[@]}"; do
    #plugins_up=$($wp plugin list --update=available > /dev/null 2>&1) #dont print anything
    #plugins_up=$($wp plugin list --update=available >/dev/null  2>&1 ) #dont print anything
    #plugins_up==$(wp plugin list --fields=name,update 2>/dev/null | grep available
+   #plugins_up=$(wp plugin list --fields=name,update 2>/dev/null | grep available)
    plugins_up=$(wp plugin list --fields=name,update 2>/dev/null | grep available)
    if [ -z "$plugins_up" ]; then #plugins_up has 0 length -> empty
        echo "Nothing to be updated!"
    else
        if [ -z "$yes_up" ]; then
-    $wp plugin list --update=available
+           $wp plugin list --update=available
            echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
            read answer
            echo -e "\n--------------"
@@ -178,7 +178,13 @@ for site in "${sites[@]}"; do
                echo "Nothin done"
            fi
         else
-            [ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all --exclude=$exclude ||  $wp plugin update --all
+            #[ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all --exclude=$exclude ||  $wp plugin update --all
+            if [ "$git" -eq 1 ]; then
+                gitwp
+            else
+                $wp plugin list --update=available
+                out "Updating all plugins" 4
+            fi
         fi
     fi
     echo "back to $dir"
