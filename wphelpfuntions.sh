@@ -403,6 +403,6 @@ update_repo(){
 wp_rights(){
     for i in "${sites[@]}"; do
         out "changing rights uploads ${i}" 1
-        chmod -Rv ugo+w "${dir}${i}/wp-content/uploads" 
+        chmod -Rv ugo+w "${dir}${i}/wp-content/"" 
     done 
 }
