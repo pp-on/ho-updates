@@ -32,6 +32,11 @@
 #+----------------------------------+
 #| wp_new_user()< Uname, pw, email  |
 #+----------------------------------+
+#| wp_rights                        |
+#| change +w wp-content/uploads     |
+#+----------------------------------+
+
+
 colors(){
     # Reset
     Color_Off="\e[0m"       # Text Reset
@@ -394,4 +399,10 @@ update_repo(){
         sleep 1
         git pull 1>/dev/null
     done
+}
+wp_rights(){
+    for i in "${sites[@]}"; do
+        out "changing rights uploads ${i}" 1
+        chmod -Rv ugo+w "${dir}${i}/wp-content/uploads" 
+    done 
 }
