@@ -169,3 +169,4 @@ os_process
 sleep 1
 main
 wp_key_migrate
+wp_rights
