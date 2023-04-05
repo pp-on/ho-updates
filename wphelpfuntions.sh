@@ -402,7 +402,10 @@ update_repo(){
 }
 wp_rights(){
     for i in "${sites[@]}"; do
-        out "changing rights uploads ${i}" 1
-        chmod -Rv ugo+w "${dir}${i}/wp-content/"" 
+        #out "changing rights uploads ${i}" 1
+        out "changing ownership ${i}"
+        chown ossi:ossi "${dir}${i}/wp-content" -Rvf
+        #rights for wpmdb
+        chmod -Rv ugo+w "${dir}${i}/wp-content/uploads"
     done 
 }
