@@ -317,7 +317,8 @@ wp_key_migrate(){
 wp_key_acf_pro (){
     out "activating acf pro" 2 
     sleep 1
-    $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
+    echo "define( 'ACF_PRO_LICENSE', 'b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4' );" >> ./wp-config.php
+#    $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
 install_plugins (){
@@ -406,6 +407,6 @@ wp_rights(){
         out "changing ownership ${i}"
         chown ossi:ossi "${dir}${i}/wp-content" -Rvf
         #rights for wpmdb
-        chmod -Rv ugo+w "${dir}${i}/wp-content/uploads"
+        chmod -Rv 777 "${dir}${i}/wp-content/uploads"
     done 
 }
