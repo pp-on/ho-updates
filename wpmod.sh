@@ -72,7 +72,8 @@ while [ $# -gt 0 ];do
             wp_license_plugins "ACF_PRO"
             ;;
         -m|--wp-migrate-db-pro)
-            wp_key_migrate
+            #wp_key_migrate
+            wp_license_plugins "WPMDB"
             ;;
         -i|--install-plugin)
             shift
