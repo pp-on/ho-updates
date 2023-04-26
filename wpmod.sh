@@ -68,7 +68,8 @@ while [ $# -gt 0 ];do
             shift
             ;;
         -f|--acf-pro-lk)
-            wp_key_acf_pro
+            #wp_key_acf_pro
+            wp_license_plugins "ACF_PRO"
             ;;
         -m|--wp-migrate-db-pro)
             wp_key_migrate
