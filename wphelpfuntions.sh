@@ -321,6 +321,32 @@ wp_key_acf_pro (){
 #    $wp eval 'acf_pro_update_license("b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4");'
     $wp plugin list
 }
+wp_license_plugins () { #LicensePlugin 
+    local plugin
+    local license
+    plugin="$1" #ACF_PRO or WPMDB
+    if [[ "$plugin" == "ACF_PRO" ]]; then
+        #license=$(cat <<-EOM
+        read -r -d '' license <<- EOM
+            if (!defined('${plugin}_LICENSE')){
+                define( 'ACF_PRO_LICENSE', 'b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4' );
+            }
+EOM
+#EOM has to be exact like the upper one (<<-OEM), that means w/o spaces after or
+#before. '-' means keep indentation
+    else
+        read -r -d '' license <<- EOM
+            if (!defined('${plugin}_LICENSE')){
+                define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd');
+            }
+EOM
+    fi
+    out "activating ${plugin}_LICENSE" 2
+    sleep 1
+    #append license ony when not found
+    #grep -q "$plugin" wp-config.php || sed -i "$ a $license" ./wp-config.php
+    grep -q "$plugin" wp-config.php && echo "${plugin}_LICENSE already exists" || echo "$license" >> ./wp-config.php && sleep 1 && out "done" 4
+}
 install_plugins (){
     plugin_name="$1"
 
