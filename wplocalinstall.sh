@@ -168,5 +168,5 @@ os_detection 0
 os_process 
 sleep 1
 main
-wp_key_migrate
+wp_license_plugins "WPMDB"
 wp_rights

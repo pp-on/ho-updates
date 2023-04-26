@@ -123,5 +123,5 @@ main(){
     wp_install
      htaccess
     wp_git 
-    wp_key_acf_pro
+    wp_license_plugins "ACF_PRO"
 }
