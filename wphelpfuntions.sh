@@ -346,7 +346,7 @@ EOM
     #append license ony when not found
     #grep -q "$plugin" wp-config.php || sed -i "$ a $license" ./wp-config.php
     grep -q "$plugin" wp-config.php && echo "${plugin}_LICENSE already exists" || echo "$license" >> ./wp-config.php && sleep 1 && out "done" 4
-}#
+}
 install_plugins (){
     plugin_name="$1"
 
