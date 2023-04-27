@@ -3,6 +3,30 @@
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
+# check if database exists. In order to work -> user has to be in mysql grroup
+check_db(){ 
+    echo "#########################################"
+    echo "### checking database ###"
+    echo "#########################################"
+    checkdb=$(mysqlshow  -h $hostname -u web -p1234 -h $hostname $dbname | grep -v Wildcard | grep -o $dbname)
+    if [ -z "$checkdb" ]; then
+        echo -e "${Red}found no Database with the name $dbname. Moving
+        on${Color_Off}"
+        create_db
+    else
+        echo "found Database $dbname"
+        echo "By continuiing all its data will be erased"
+        echo "Proceed [y/n]"
+        read a
+        if [ "$a" = "y" ]; then
+            create_db
+        elif [ "$a" = "n" ]; then
+            echo "aborting..."
+            exit
+        fi
+    fi
+
+}
 create_db (){
     echo ""
     out "Creating Database $dbname" 1
