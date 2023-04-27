@@ -59,31 +59,6 @@ usage() {
     echo "--ssh arg: host in github to used to clone (default: git@github.com)"
     exit
 }
-# check if database exists. In order to work -> user has to be in mysql grroup
-
-check_db(){ 
-    echo "#########################################"
-    echo "### checking database ###"
-    echo "#########################################"
-    checkdb=$(mysqlshow  -h $hostname -u web -p1234 -h $hostname $dbname | grep -v Wildcard | grep -o $dbname)
-    if [ -z "$checkdb" ]; then
-        echo -e "${Red}found no Database with the name $dbname. Moving
-        on${Color_Off}"
-        create_db
-    else
-        echo "found Database $dbname"
-        echo "By continuiing all its data will be erased"
-        echo "Proceed [y/n]"
-        read a
-        if [ "$a" = "y" ]; then
-            create_db
-        elif [ "$a" = "n" ]; then
-            echo "aborting..."
-            exit
-        fi
-    fi
-
-}
 
 ####################################################
 ####+################################################
@@ -96,7 +71,7 @@ for arg in "$@"; do
     case $arg in
         -n)
             shift
-            dbname=$1
+            dbname="$dbname$1"
             ;;
         -u)
             shift
