@@ -51,7 +51,7 @@ while [ $# -gt 0 ];do
             process_dirs "$1"
             proc_sites=1
             ;;
-        -u|--update)
+        -up|--update)
             shift
             wp_update "$1"
             ;;
@@ -86,6 +86,18 @@ while [ $# -gt 0 ];do
         -n|--new-user)
             out "creating user ${wpuser} with password ${wppw}" 1
             wp_new_user $wpuser $wppw $wpemail
+            ;;
+        -wu|--wp-user)
+            shift
+            wpuser=$1
+            ;;
+        -wp|--wp-password)
+            shift
+            wppw=$1
+            ;;
+        -we|--wp-email)
+            shift
+            wpemail=$1
             ;;
         -w|--location-wp)
             shift
