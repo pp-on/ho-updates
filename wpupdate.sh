@@ -35,6 +35,9 @@ while [ $# -gt 0 ];do
         -g)
             git=1
             ;;
+        -gp|--git-push)
+            git=2
+            ;;
         -d)
             shift
             dir=$1
@@ -115,17 +118,18 @@ function gitwp(){
         echo "${plugins[$p]}"
         echo "------------------------------"
     done
+    #if ! -y
         if [ -z "$yes_up" ]; then
             echo "Push to Github? [y]"
             read a
-        #a="y"
             if [ "$a" = "y" ]; then
                 git push 1>/dev/null
             else
                 echo "Not pushing"
             fi
         else
-            git push 1>/dev/null
+            #if -gp. only push
+            [ "$git" -eq 2 ] && git push 1>/dev/null || out "Not pushing" 3
         fi
 
     sleep 2
@@ -169,20 +173,19 @@ for site in "${sites[@]}"; do
    if [ -z "$plugins_up" ]; then #plugins_up has 0 length -> empty
        echo "Nothing to be updated!"
    else
+       # if ! -y -> ask
        if [ -z "$yes_up" ]; then
            $wp plugin list --update=available
            echo -e "\nAll Plugins will be updated. Proceed? [y/n]"
            read answer
            echo -e "\n--------------"
            if [ "$answer" = "y" ]; then
-               #-g? -> git else update all but check -x
-             [ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all --exclude=$exclude ||  $wp plugin update --all
+             [ "$git" -ge 1 ] && gitwp ||  $wp plugin update --all
            else
                echo "Nothin done"
            fi
         else
-            #[ "$git" -eq 1 ] && gitwp || [ -z "$exclude" ] && $wp plugin update --all --exclude=$exclude ||  $wp plugin update --all
-            if [ "$git" -eq 1 ]; then
+            if [ "$git" -ge 1 ]; then
                 gitwp
             else
                 $wp plugin list --update=available
