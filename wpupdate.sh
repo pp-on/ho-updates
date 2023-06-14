@@ -47,10 +47,11 @@ while [ $# -gt 0 ];do
             dir=$1
             ;;
         -h|--help)
-            echo "wpupdate.sh [-a][-s sites][-d targetDIR][-w path/to/wp][-g][-y]"
+            echo "wpupdate.sh [Options]"
+            echo -e "--------------------\nOptions:"
             echo -e "-a: all\n-s: selected sites (if more than, separation with ,)"
             echo -e "-d: dir where the sites are\n-w: where is wpcli"
-            echo -e "-g: stage,commit, push to github the updated plugins\n-y: dont ask\n-c: colorize the output"
+            echo -e "-g: stage,commit separate for every plugin\n--sum one commit for all\n-gp push to github the updated plugins\n-y: dont ask\n-c: colorize the output"
             exit
             ;;
         -w)
