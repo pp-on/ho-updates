@@ -5,6 +5,7 @@ MYDIR="$(dirname "$0")"
 #search for wp-sites
 source "${MYDIR}/wphelpfuntions.sh" 
 
+sum="" #empty -> not single line commit
 git=0 #use git?
 yes_up="" #plugins
 core_up="" #wp core
@@ -31,6 +32,9 @@ while [ $# -gt 0 ];do
             ;;
         -c|--colors)
             colors
+            ;;
+        --sum) 
+            sum="true"
             ;;
         -g)
             git=1
@@ -83,41 +87,65 @@ function update_core () { #update wordpress, only when there is a new version
 }
 
 function gitwp(){
+    #when --sum -> git commit -m is the begining of the var, which will be exec
+    #later
+    # git_com_sum="git commit"
+    git_com_sum=""
     local plugins
-    local i
+    #commit
+    local commit
+    local i #plugins count
     i=0
-    cd wp-content  &>/dev/null
+    
+    #cd to where repo is -> git commands
+    cd wp-content  &>/dev/null || exit #just in case
+
     #avoid unnecessary merges
     out "updating repository..." 1
     sleep 1
     git pull 1>/dev/null
+
     for plugin in $($wp plugin list --update=available --field=name); do
-        old_v=$($wp plugin get $plugin --field=version)
+        old_v=$("$wp" plugin get "$plugin" --field=version)
         out "Updating $plugin" 4
         sleep 1
-        $wp plugin update $plugin 1>/dev/null
+        $wp plugin update "$plugin" 1>/dev/null
         #new version
         #new_v=$(cat wp-content/plugins/$plugin/$plugin.php | grep -Po "(?<=Version: )([0-9]|\.)*(?=\s|$)")
-        new_v=$(wp plugin get $plugin --field=version)
+        new_v=$(wp plugin get "$plugin" --field=version)
         out "version: $old_v" 4
 
         if [ "$old_v" != "$new_v" ]; then
             plugins[$i]="$plugin: $old_v --> $new_v"
             out "staging changes..." 2
             sleep 1
-            git add -A plugins/$plugin 1>/dev/null 
+            git add -A plugins/"$plugin" 1>/dev/null 
             out "Writing Commit:" 2
             out "chore: update plugin ${plugins[$i]}" 4
-            git commit -m "chore: update plugin ${plugins[$i]}" 1>/dev/null
+            # if one commit for all updates -> skip commit here and add em to a variable $git_com_sum
+            commit="plugin ${plugins[$i]}"
+            if [ -z "$sum" ] ; then # separated commit for every plugin
+                git commit -m "chore: update $commit" 1>/dev/null
+            else
+                git_com_sum="$git_com_sum -m \"$commit\""
+            fi
             ((i++)) #increment c-style
         fi
     done
+    #if one commit
+    #
+    sleep 1
     out "Summary:" 1
     out "$i plugins updated" 2
-    for p in "${!plugins[@]}"; do #get  index of array -> !
-        echo "${plugins[$p]}"
-        echo "------------------------------"
-    done
+    if [ -z "$sum" ]; then
+        for p in "${!plugins[@]}"; do #get  index of array -> !
+            echo "${plugins[$p]}"
+            echo "------------------------------"
+        done
+    else
+        echo "chore: update plugin $git_com_sum"
+        git commit -m "chore: update $i plugins $git_com_sum"
+    fi
     #if ! -y
         if [ -z "$yes_up" ]; then
             echo "Push to Github? [y]"
