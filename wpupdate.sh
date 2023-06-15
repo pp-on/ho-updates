@@ -128,7 +128,7 @@ function gitwp(){
             if [ -z "$sum" ] ; then # separated commit for every plugin
                 git commit -m "chore: update $commit" 1>/dev/null
             else
-                git_com_sum="$git_com_sum -m \"$commit\""
+                git_com_sum="$git_com_sum $i. \"$commit\""
             fi
             ((i++)) #increment c-style
         fi
@@ -145,7 +145,19 @@ function gitwp(){
         done
     else
         echo "chore: update plugin $git_com_sum"
-        git commit -m "chore: update $i plugins $git_com_sum"
+        # git commit -m "chore: update $i plugins $(date "+%d-%m-%y")" -m "$git_com_sum"
+        git commit -F- << EOF
+chore: update $i plugins $(date "+%d-%m-%y")
+--------------------------------
+
+$(
+for s in "${plugins[@]}"; do
+    echo "$s"
+done
+)
+
+EOF
+
     fi
     #if ! -y
         if [ -z "$yes_up" ]; then
