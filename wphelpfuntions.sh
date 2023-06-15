@@ -328,17 +328,17 @@ wp_license_plugins () { #LicensePlugin
     if [[ "$plugin" == "ACF_PRO" ]]; then
         #license=$(cat <<-EOM
         read -r -d '' license <<- EOM
-            if (!defined('${plugin}_LICENSE')){
-                define( 'ACF_PRO_LICENSE', 'b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4' );
-            }
+if (!defined('${plugin}_LICENSE')){
+    define( 'ACF_PRO_LICENSE', 'b3JkZXJfaWQ9NzQ3MzF8dHlwZT1kZXZlbG9wZXJ8ZGF0ZT0yMDE2LTAyLTEwIDE1OjE1OjI4' );
+}
 EOM
 #EOM has to be exact like the upper one (<<-OEM), that means w/o spaces after or
 #before. '-' means keep indentation
     else
         read -r -d '' license <<- EOM
-            if (!defined('${plugin}_LICENSE')){
-                define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd');
-            }
+if (!defined('${plugin}_LICENSE')){
+    define( 'WPMDB_LICENCE', 'a8ff1ac2-3291-4591-b774-9d506de828fd');
+}
 EOM
     fi
     out "activating ${plugin}_LICENSE" 2
