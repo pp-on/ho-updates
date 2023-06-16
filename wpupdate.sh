@@ -39,7 +39,7 @@ while [ $# -gt 0 ];do
         -g)
             git=1
             ;;
-        -gp|--git-push)
+        --gp|--git-push)
             git=2
             ;;
         -d)
