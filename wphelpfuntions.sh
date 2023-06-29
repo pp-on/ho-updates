@@ -35,6 +35,10 @@
 #| wp_rights                        |
 #| change +w wp-content/uploads     |
 #+----------------------------------+
+#| git_log                          |
+#+----------------------------------+
+#| git_pull                          |
+#+----------------------------------+
 
 
 colors(){
@@ -442,5 +446,20 @@ wp_rights(){
         chown ossi:ossi "${dir}${i}/wp-content" -Rvf
         #rights for wpmdb
         chmod -Rv 777 "${dir}${i}/wp-content/uploads"
+    done 
+}
+git_wp (){ # sucommand
+    for i in "${sites[@]}"; do
+        out "${i}" 1
+        cd "${dir}${i}/wp-content"  &>/dev/null
+        case "$1" in
+            pull)
+                git pull
+                ;;
+            log)
+                git log --graph --max-count=10
+                ;;
+        esac
+        cd -
     done 
 }

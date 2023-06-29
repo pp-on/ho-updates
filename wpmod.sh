@@ -15,11 +15,15 @@ wpemail="oswaldo.nickel@pfennigparade.de"
 dir=./
 proc_sites=0    #is -a or -s been used? if not site is pwd
 wp="wp"         #where is wp-cli 
-while [ $# -gt 0 ];do
+while [ $# -gt -0 ];do
 #for arg in "$@"; do
 #while getopts 'd:w:gh' arg; do
     #case $1 in
     case $1 in
+        --git) #run subcommand
+            shift
+            git_wp "$1"
+            ;;
         -gl|--git-pull)
             update_repo
             ;;
