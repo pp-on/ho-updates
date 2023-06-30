@@ -76,7 +76,7 @@ function update_core () { #update wordpress, only when there is a new version
             read answer
         else #-y
             out "Updating..." 4
-            $answer="y"
+            answer="y"
         fi
         echo -e "\n--------------"
         if [ "$answer" = "y" ]; then
