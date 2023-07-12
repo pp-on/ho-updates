@@ -210,7 +210,7 @@ for site in "${sites[@]}"; do
    #plugins_up=$($wp plugin list --update=available >/dev/null  2>&1 ) #dont print anything
    #plugins_up==$(wp plugin list --fields=name,update 2>/dev/null | grep available
    #plugins_up=$(wp plugin list --fields=name,update 2>/dev/null | grep available)
-   plugins_up=$(wp plugin list --fields=name,update 2>/dev/null | grep available)
+   plugins_up=$($wp plugin list --fields=name,update 2>/dev/null | grep available)
    if [ -z "$plugins_up" ]; then #plugins_up has 0 length -> empty
        echo "Nothing to be updated!"
    else
