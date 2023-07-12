@@ -5,6 +5,7 @@ MYDIR="$(dirname "$0")"
 #search for wp-sites
 source "${MYDIR}/wphelpfuntions.sh" 
 
+minor=0 #for wp plugin
 sum="" #empty -> not single line commit
 git=0 #use git?
 yes_up="" #plugins
@@ -26,6 +27,9 @@ while [ $# -gt 0 ];do
         -s|--sites)
             shift
             process_dirs "$1"
+            ;;
+        -m|--minor)
+            minor=1
             ;;
         -y|--yes-update)
             yes_up="true"
@@ -210,7 +214,8 @@ for site in "${sites[@]}"; do
    #plugins_up=$($wp plugin list --update=available >/dev/null  2>&1 ) #dont print anything
    #plugins_up==$(wp plugin list --fields=name,update 2>/dev/null | grep available
    #plugins_up=$(wp plugin list --fields=name,update 2>/dev/null | grep available)
-   plugins_up=$($wp plugin list --fields=name,update 2>/dev/null | grep available)
+   # plugins_up=$($wp plugin list --fields=name,update 2>/dev/null | grep available)
+   [[ $minor -eq 0 ]] && plugins_up=$($wp plugin list --fields=name,update 2>/dev/null | grep available) || plugins_up=$($wp plugin list --fields=name,update --minor 2>/dev/null | grep available)
    if [ -z "$plugins_up" ]; then #plugins_up has 0 length -> empty
        echo "Nothing to be updated!"
    else
