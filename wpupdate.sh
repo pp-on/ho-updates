@@ -17,6 +17,18 @@ exclude=""      #plugins mot be updated
 while [ $# -gt 0 ];do
     case $1 in
         -a|--all-sites)
+        -u)
+            shift
+            dbuser=$1
+        -u)
+            shift
+            dbuser=$1
+            ;;
+            ;;
+        -u)
+            shift
+            dbuser=$1
+            ;;
             process_sites
             ;;
         #-s)
