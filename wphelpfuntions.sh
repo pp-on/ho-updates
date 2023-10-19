@@ -437,6 +437,7 @@ update_repo(){
         out "updating repository..." 1
         sleep 1
         git pull 1>/dev/null
+        cd -
     done
 }
 wp_rights(){
