@@ -31,9 +31,24 @@ server=""
  }
 function r_server(){
     case $server in
+        netcup)
+            rem_h="nc"
+            wp='~/git/wp-cli.phar'
+            ;;
         he)
-            rem_h="wp1065095@wp1065095.server-he.de"
+            # where is wp cli
+            wp="~/www/.bin/wp"
+            # rem_h="wp1065095@wp1065095.server-he.de"
+            # using host in .ssh/config
+            rem_h="bbsb"
              ser_d="/is/htdocs/wp1065095_P40ZWGUICY/www"
+            ;;
+        mkq)
+            # rem_h="www.muniqiev.org@ssh.strato.de"
+            # using host in .ssh/config
+            rem_h="mkq"
+            ser_d="/mnt/web511/c0/05/53594905/htdocs"
+            #same directory for both profiles
             ;;
     esac
  }
@@ -43,18 +58,30 @@ function r_client(){
     local_d="${loc_d}/${wp_site:?}"
     case "$wp_site" in
         bzt)
+            #akeeba
+            profile=" --profile=2"
+            #bu server
+            local_d="${loc_d}/bit-zentrum"
             #only copy tday's date
-            rem_d="${ser_d}/bit-zentrum/wp-content/plugins/akeebabackupwp/app/backups/tag_bu/*${dt}*.j*"
-          rm_a="rm ${rem_d}"
-        
+            rem_d="${ser_d}/bit-zentrum"
+          # rm_a="rm ${rem_d}/*"
                 ;;
             bzm)
                 # rm_a="rm ${rem_d}/*.j*"
-                rem_d="/is/htdocs/wp1065095_P40ZWGUICY/www/bit-zentrum/wp-content/plugins/akeebabackupwp/app/backups"
+                rem_d="${ser_d}/bit-zentrum/wp-content/plugins/akeebabackupwp/app/backups"
                 ;;
             bbsb)
-                rem_d="${ser_d}/bbsb_wp/wp-content/plugins/akeebabackupwp/app/backups/*.j*"
-                rm_a="rm ${rem_d}/bbsb_wp/wp-content/plugins/akeebabackupwp/app/backups/*.j*"
+                rem_d="${ser_d}/bbsb_wp"
+                ;;
+            mkq-t)
+                #bu server
+                local_d="${loc_d}/mkq"
+                rem_d="${ser_d}/wordpress/wp-content/backups/daily*.j*"
+                ;;
+            mkq-m)
+                #bu server
+                local_d="${loc_d}/mkq"
+                rm_a="rm ${rem_d}/monat*.j*"
                 ;;
     esac
  }
@@ -62,6 +89,12 @@ function r_client(){
             echo "taking backup $wp_site"
             
             case $wp_site in
+                wezet)
+                    ssh $rem_h "cd wezet && $wp akeeba backup take"
+                    ;;
+                sbz)
+                     curl -L --max-redirs 1000 -v "https://www.sbz.de/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=py1zI0b6FhAmwOASA86I-dEWW-CnWwFf" 1>/dev/null 2>/dev/null
+                     ;;
                 eca)
                     curl -L --max-redirs 1000 -v "https://european-conductive-association.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=oRxLxnVNtiUkBqKmLTMkOkAeCocRSGKZ" 1>/dev/null 2>/dev/null
                     ;;
@@ -73,15 +106,18 @@ function r_client(){
                      ;;
                 bzt)
                     # curl -L --max-redirs 1000 -v 'https://www.bit-zentrum.bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=od3QYg4_apgPldIVN4eg-r2MpAsW7Sma&profile=2'
-                    curl -L --max-redirs 1000 -v 'https://www.bit-zentrum.bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=od3QYg4_apgPldIVN4eg-r2MpAsW7Sma&profile=2' > /dev/null 2>&1 
+                    # curl -L --max-redirs 1000 -v 'https://www.bit-zentrum.bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=od3QYg4_apgPldIVN4eg-r2MpAsW7Sma&profile=2' > /dev/null 2>&1
+                    ssh  "${rem_h}" "cd $rem_d && $wp akeeba backup take $profile"
                     ;;
                 bzm)
                     # curl -L --max-redirs 1000 -v 'https://www.bit-zentrum.bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=od3QYg4_apgPldIVN4eg-r2MpAsW7Sma&profile=3'
-                    curl -L --max-redirs 1000 -v 'https://www.bit-zentrum.bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=od3QYg4_apgPldIVN4eg-r2MpAsW7Sma&profile=3' 1>/dev/null 2>/dev/null
+                    # curl -L --max-redirs 1000 -v 'https://www.bit-zentrum.bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=od3QYg4_apgPldIVN4eg-r2MpAsW7Sma&profile=3' 1>/dev/null 2>/dev/null
+                    ssh bbsb "cd www/bit-zentrum && $wp akeeba backup take"
                     ;;
                 bbsb)
                     # curl -L --max-redirs 1000 -v "https://bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=oGO6W78BKj-gzuaK2mIFvhMuNC35dNop"
-                    curl -L --max-redirs 1000 -v "https://bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=oGO6W78BKj-gzuaK2mIFvhMuNC35dNop" 1>/dev/null 2>/dev/null
+                    # curl -L --max-redirs 1000 -v "https://bbsb.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=oGO6W78BKj-gzuaK2mIFvhMuNC35dNop" 1>/dev/null 2>/dev/null
+                    ssh bbsb "cd www/bbsb_wp && $wp akeeba backup take"
                     ;;
                 lag)
                     curl -L --max-redirs 1000 -v "https://www.wfbm-bayern.de/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=_jCA1rel_H-kifC4oDVVNTIt48ihqH" 1>/dev/null 2>/dev/null
@@ -91,6 +127,14 @@ function r_client(){
                     ;;
                 sbs)
                     curl -L --max-redirs 1000 -v "https://www.sbsfahrdienst.de/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=al_b6PBNKUL55WhVhu86a_nspLLARU-0" 1>/dev/null 2>/dev/null
+                    ;;
+                mkq-m)
+                    ssh mkq "cd wordpress && wp akeeba backup take"
+                     # curl -L --max-redirs 1000 -v "https://munichkyivqueer.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=L1df_JFMlSQ50OxUgXr2hY0tMHfYXJBn" 1>/dev/null
+                     # curl -L --max-redirs 1000 -v "https://munichkyivqueer.org/wp-admin/admin-ajax.php?action=akeebabackup_legacy&key=%BD%1D%ED%C9%E8i%C9%8F%F89%88vq%C6%23%FA%89%E8%9B%C2K%BD%FF%40%2B%B8TU%A3%1B%2A%93T%FB%D4q%DF%23%A9%8B%D4C%C6%F3%9FG%CE3" 1>/dev/null 2>/dev/null
+                     ;;
+                mkq-t)
+                    ssh mkq "cd wordpress && wp akeeba backup take --profile=2"
                     ;;
             esac
 
@@ -150,9 +194,12 @@ function r_client(){
 #main() {
 # for arg in "$@"; do
 # while [[ $# -gt 0 ]]; do
-while getopts ":s:w:bcdhmr" o; do
+while getopts ":s:w:bcdhmlr" o; do
     case "${o}" in
-        m)
+        l)
+            echo -e "he"
+            ;;
+       m)
     		# Check next positional parameter
     		eval nextopt=\${$OPTIND}
     		# existing or starting with dash?
@@ -192,14 +239,19 @@ while getopts ":s:w:bcdhmr" o; do
             ;;
         c)
             # copy (ssh)
-            echo "copy..."
-            scp "${rem_h}":"${rem_d}"  "$local_d"
+            echo "copy to $local_d..."
+            # ssh "${rem_h}" "find $rem_d -type f -name '*.j*' -newermt $dt
+            # -exec cp {} $local_d/ \;"
+            # scp "${rem_h}":"${re m_d}/*$dt*"  "$local_d"
+            # scp "${rem_h}":"${rem_d}/*.j*"  "$local_d"
+            rsync -avP --remove-source-files "$rem_h":"$rem_d" "$local_d"
             ;;
         d)
             #delete remote backup
             if [[  -n "$rm_a" ]]; then
                 echo "rm remote"
                 ssh "${rem_h}" "${rm_a}"
+                echo "Files removed from the remote server."
             fi
             ;;
         h)
