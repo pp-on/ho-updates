@@ -102,14 +102,23 @@ wp_git (){
 ssh_repo(){ #ssh
     local ssh
     ssh="$1"
-    if [ $ssh -eq 1 ]; then
-        git="git@github.com-a:" 
-    elif [ $ssh -eq 2 ]; then
-        git="git@github.com:" 
-    else
-        git="https://github.com/"
-    fi
+
+    case "$ssh" in
+        0)
+            git="https://github.com/"
+            ;;
+        1)
+            git="git@github.com-a:" 
+            ;;
+        2)
+            git="git@github.com:" 
+            ;;
+            
+    esac
+}
+compose_repo (){ #git 
     repo=${git}${gituser}/${dir}.git    #default, it can be cchanged with -g
+
 }
 out_msg (){ #what?, where? ssh
     url="$2"
