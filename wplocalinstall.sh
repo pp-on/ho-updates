@@ -128,15 +128,15 @@ for arg in "$@"; do
         -sa|--ssh-alias)
             #host in .ssh/config
             shift
-            git="$1"
+            compose_repo "$1"
             ;;
         -pk|--private-ssh)
             #ssh=1 #use my ssh key
-            git="git@github.com-a" 
+            compose_repo "git@github.com-a" 
             ;;
         --ssh)
             #ssh=2 #normal
-            git="git@github.com" 
+            compose_repo "git@github.com" 
             ;;
         --debug)
             wp_debug
