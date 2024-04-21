@@ -116,8 +116,8 @@ ssh_repo(){ #ssh
             
     esac
 }
-compose_repo (){ #git 
-    repo=${git}${gituser}/${dir}.git    #default, it can be cchanged with -g
+compose_repo (){ #git for ssh -> : !! 
+    repo=${git}:${gituser}/${dir}.git    #it can be changed with -g
 
 }
 out_msg (){ #what?, where? ssh
