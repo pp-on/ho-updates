@@ -117,7 +117,7 @@ wp_git (){
     #esac
 #}
 compose_repo (){ #git for ssh -> : !! 
-    repo=${git}:${gituser}/${dir}.git    #it can be changed with -g
+    repo=${1}:${gituser}/${dir}.git    #it can be changed with -g
 
 }
 out_msg (){ #what?, where? ssh
