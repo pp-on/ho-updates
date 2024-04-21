@@ -99,23 +99,23 @@ wp_git (){
     out "activating plugins" 2
     $wp plugin activate --all
 }
-ssh_repo(){ #ssh
-    local ssh
-    ssh="$1"
+#ssh_repo(){ #ssh
+    #local ssh
+    #ssh="$1"
 
-    case "$ssh" in
-        0)
-            git="https://github.com/"
-            ;;
-        1)
-            git="git@github.com-a:" 
-            ;;
-        2)
-            git="git@github.com:" 
-            ;;
+    #case "$ssh" in
+        #0)
+            #git="https://github.com/"
+            #;;
+        #1)
+            #git="git@github.com-a:" 
+            #;;
+        #2)
+            #git="git@github.com:" 
+            #;;
             
-    esac
-}
+    #esac
+#}
 compose_repo (){ #git for ssh -> : !! 
     repo=${git}:${gituser}/${dir}.git    #it can be changed with -g
 
