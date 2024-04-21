@@ -129,6 +129,7 @@ for arg in "$@"; do
             #host in .ssh/config
             shift
             git="$1"
+            ;;
         -pk|--private-ssh)
             #ssh=1 #use my ssh key
             git="git@github.com-a" 
