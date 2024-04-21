@@ -21,10 +21,12 @@ url="arbeit.local/repos/$dir"
 php=$(php -v |  head -n 1 | cut -d " " -f 2)
 wp="wp"
 tdir="."
-ssh=0 # for git clone HTTPS(default)
+#ssh=0 # for git clone HTTPS(default)
 #git="git@github.com-a"
+#default
 gituser="pfennigparade" #github user
-repo="https://github.com/${gituser}/${dir}.git"
+git="https://github.com/"
+repo="$git${gituser}/${dir}.git"
 ###########################
 ##     functions        ###
 ###########################
@@ -120,11 +122,20 @@ for arg in "$@"; do
             shift
             repo=${1}
             ;;
+        -hc|--https-clone)
+            git="https://github.com/"
+            ;;
+        -sa|--ssh-alias)
+            #host in .ssh/config
+            shift
+            git="$1"
         -pk|--private-ssh)
-            ssh=1 #use my ssh key
+            #ssh=1 #use my ssh key
+            git="git@github.com-a" 
             ;;
         --ssh)
-            ssh=2 #normal
+            #ssh=2 #normal
+            git="git@github.com" 
             ;;
         --debug)
             wp_debug
