@@ -99,17 +99,26 @@ wp_git (){
     out "activating plugins" 2
     $wp plugin activate --all
 }
-ssh_repo(){ #ssh
-    local ssh
-    ssh="$1"
-    if [ $ssh -eq 1 ]; then
-        git="git@github.com-a:" 
-    elif [ $ssh -eq 2 ]; then
-        git="git@github.com:" 
-    else
-        git="https://github.com/"
-    fi
-    repo=${git}${gituser}/${dir}.git    #default, it can be cchanged with -g
+#ssh_repo(){ #ssh
+    #local ssh
+    #ssh="$1"
+
+    #case "$ssh" in
+        #0)
+            #git="https://github.com/"
+            #;;
+        #1)
+            #git="git@github.com-a:" 
+            #;;
+        #2)
+            #git="git@github.com:" 
+            #;;
+            
+    #esac
+#}
+compose_repo (){ #git for ssh -> : !! 
+    repo=${1}:${gituser}/${dir}.git    #it can be changed with -g
+
 }
 out_msg (){ #what?, where? ssh
     url="$2"
@@ -137,7 +146,7 @@ os_process(){ #kernel version
  #   [[ "$cOS" == "WSL" ]]  && url="localhost/repos/${dir}" && hostname="127.0.0.1" 
  #   [[ "$cOS" == "Git_Bash" ]]  && url="localhost/repos/${dir}" &&  hostname="localhost"
     uname="$(uname -r)"
-    ssh_repo "$ssh"
+    #ssh_repo "$ssh"
     out_msg "${cOS}-${uname}" "${url}" 
 }
 main(){ 
