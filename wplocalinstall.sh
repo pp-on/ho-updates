@@ -9,6 +9,8 @@ source "${MYDIR}/wpfunctionsinstall.sh"
 
 hostname="localhost"     #host in DB
 wsl=0
+#if new wp install
+new=0
 dbuser="web"
 dbpw="Hola@1234"
 wpemail="oswaldo.nickel@pfennigparade.de"
@@ -71,6 +73,9 @@ usage() {
 for arg in "$@"; do
     #case $1 in
     case $arg in
+        --new)
+            new=1
+            ;; 
         -n)
             shift
             dbname="$dbname$1"
@@ -154,6 +159,4 @@ colors
 os_detection 0
 os_process 
 sleep 1
-main
-wp_license_plugins "WPMDB"
-wp_rights
+[ "$new" -eq 1 ] && new_wp || main
