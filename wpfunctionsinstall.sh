@@ -160,3 +160,10 @@ main(){
     wp_license_plugins "WPMDB"
     wp_rights
 }
+new_wp(){
+    wp_dw
+    wp_config
+    wp_db
+    wp_install
+    htaccess
+}
