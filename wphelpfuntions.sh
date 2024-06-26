@@ -379,6 +379,10 @@ htaccess() {
 cat  << EOF > .htaccess
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# force https 
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteBase $target_directory
 RewriteRule ^index\.php$ - [L]
