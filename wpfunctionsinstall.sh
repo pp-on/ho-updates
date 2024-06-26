@@ -157,4 +157,6 @@ main(){
      htaccess
     wp_git 
     wp_license_plugins "ACF_PRO"
+    wp_license_plugins "WPMDB"
+    wp_rights
 }
