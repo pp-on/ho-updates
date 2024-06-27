@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MYDIR="$(dirname "$0")"
+MDIR="$(dirname "$0")"
 
 #search for wp-sites
 source "${MYDIR}/wphelpfuntions.sh" 
@@ -74,6 +74,7 @@ for arg in "$@"; do
     #case $1 in
     case $arg in
         --new)
+            url="arbeit.local/wp/$dir"
             new=1
             ;; 
         -n)
