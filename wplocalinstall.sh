@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MDIR="$(dirname "$0")"
+MYDIR="$(dirname "$0")"
 
 #search for wp-sites
 source "${MYDIR}/wphelpfuntions.sh" 
@@ -160,4 +160,8 @@ colors
 os_detection 0
 os_process 
 sleep 1
-[ "$new" -eq 1 ] && new_wp || main
+if [ "$new" -eq 1 ]; then
+    new_wp
+else
+    main
+fi
