@@ -37,7 +37,11 @@
 #+----------------------------------+
 #| git_log                          |
 #+----------------------------------+
-#| git_pull                          |
+#| git_pull                         |
+#+----------------------------------+
+#| wp_debug                         |
+#| add debug to wp-config           |
+#| < current WP directory           |
 #+----------------------------------+
 
 
@@ -408,10 +412,12 @@ define('WP_DEBUG_DISPLAY', false);
 EOF
 }
 #activate debug
-wp_debug(){
+wp_debug(){ #current WP directory/wp-config.php
+    local file_path="$1"
     out "adding WP DEBUG to wp-config" 2
-    cat <<EOF >> wp-config.php
-    // Enable WP_DEBUG mode
+    # cat <<EOF >> wp-config.php
+    local debug_code="
+// Enable WP_DEBUG mode
 if ( !defined ('WP_DEBUG') ){
     define( 'WP_DEBUG', true );
 }
@@ -431,8 +437,16 @@ if ( !defined ('WP_DEBUG_DISPLAY') ){
 if ( !defined ( 'SCRIPT_DEBUG' )) {
     define( 'SCRIPT_DEBUG', true );
 }
-EOF
+"
+# insert code into wp-config.php
+     # Use sed to insert the debug code before the specified line
+    sed -i "/\/\* That's all, stop editing! Happy publishing. \*\//i $debug_code" "$file_path"
+
+
+    out "done" 4
 }
+# EOF
+# }
 update_repo(){
     for i in "${sites[@]}"; do
         out "${i}" 1
