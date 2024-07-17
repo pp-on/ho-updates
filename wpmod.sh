@@ -63,7 +63,9 @@ while [ $# -gt -0 ];do
             htaccess
             ;;
         -x|--enable-debug)
-            wp_debug
+            # Use find to search for wp-config.php starting from the given directory
+    wp_config_path=$(find "$dir" -name "wp-config.php" 2>/dev/null | head -n 1)
+            wp_debug "$wp_config_path"
             ;;
         -z|--hide-errors)
             wp_hide_errors
