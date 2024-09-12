@@ -154,7 +154,8 @@ main(){
     wp_config 
     wp_db
     wp_install
-     htaccess
+    htaccess
+    wp_block_se
     wp_git 
     wp_license_plugins "ACF_PRO"
     wp_license_plugins "WPMDB"
