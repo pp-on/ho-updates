@@ -43,6 +43,9 @@
 #| add debug to wp-config           |
 #| < current WP directory           |
 #+----------------------------------+
+#| wp_block_se ()                   |
+#| Disable search engine indexing   |
+#+----------------------------------+
 
 
 colors(){
@@ -481,4 +484,10 @@ git_wp (){ # sucommand
         esac
         cd -
     done 
+}
+wp_block_se (){
+    for i in "${sites[@]}"; do
+        out "Disabling search engine indexing for $i "
+        $wp option update blog-public 0
+    done
 }
