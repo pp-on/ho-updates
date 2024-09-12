@@ -33,10 +33,8 @@ repo="$git${gituser}/${dir}.git"
 ##     functions        ###
 ###########################
 tldr() {
-    echo -e $Green"This script will install a new fresh WordPress in the actual
-    directory.\nIt will used its name and create a db. Then download andninstall
-    WordPress. Then it will clone and activate all the
-    plugins.\n${Purple}Default will be cloned with https\nRequirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"$Color_Off
+
+    echo -e "${Green}This script will install a new fresh WordPress in the current directory. It could use another path with -d.\nIt will used its name (directory) and create a db. \n${Yellow} It'll download, install and disable search engine indexing for local development of the latest WordPrss. Then it will clone the repository (The directory must be named exatly the repository in GitHub) and activate all the  plugins.\n${Purple}Default will be cloned with https\nRequirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"$Color_Off
 }
 usage() { 
     echo -e "${Cyan}USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t

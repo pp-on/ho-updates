@@ -472,6 +472,7 @@ wp_rights(){
 }
 git_wp (){ # sucommand
     for i in "${sites[@]}"; do
+    #for i in "${sites[@]}"; do
         out "${i}" 1
         cd "${dir}${i}/wp-content"  &>/dev/null
         case "$1" in
@@ -486,8 +487,9 @@ git_wp (){ # sucommand
     done 
 }
 wp_block_se (){
-    for i in "${sites[@]}"; do
-        out "Disabling search engine indexing for $i "
+    #for i in "${sites[@]}"; do
+        #out "Disabling search engine indexing for $i "
+        out "Disabling search engine indexing for $(basename $PWD) "
         $wp option update blog_public 0
-    done
+    #done
 }
