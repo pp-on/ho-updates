@@ -488,6 +488,6 @@ git_wp (){ # sucommand
 wp_block_se (){
     for i in "${sites[@]}"; do
         out "Disabling search engine indexing for $i "
-        $wp option update blog-public 0
+        $wp option update blog_public 0
     done
 }
