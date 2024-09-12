@@ -81,6 +81,9 @@ while [ $# -gt -0 ];do
             #wp_key_migrate
             wp_license_plugins "WPMDB"
             ;;
+        -r|--disable-search-engine-indexing)
+            wp_block_se
+            ;;
         -i|--install-plugin)
             shift
             install_plugins "$1"
