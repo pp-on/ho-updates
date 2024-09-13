@@ -27,6 +27,9 @@
 #| out () < text, typ of line       |
 #| print text with line "-" or "="  |
 #+----------------------------------+
+#| txt () < text,color (b,c,g,r,y)  |
+#| print text with color            | 
+#+----------------------------------+
 #| copy_plugins()< from             |
 #| cp from/plug/in to array wp-sites|
 #+----------------------------------+
@@ -204,21 +207,42 @@ out () { #what? - or #
     name="##        ${1}        "
     length=${#name}
     #echo $length
+
     if [[ "$2" -eq 1 ]]; then
         line="${Yellow}${line}"
     elif [[ "$2" -eq 3 ]]; then
         line="${Red}${line}"
     elif [[ "$2" -eq 4 ]]; then
         line="${Green}${line}"
-   else
+    else
         line="${Cyan}${line}"
-   fi
-    #echo -e "$name${line:$length}" 
-    #echo -e ${line}\n${1}\n$line${Color_Off}
-echo -e "${line}"
-echo -e "${1}"
-echo -e "${line}${Color_Off}"
+    fi
+    echo -e "${line}"
+    echo -e "${1}"
+    echo -e "${line}${Color_Off}"
+}
+txt () {
+    local line
+    line="$1"
+    case $2 in
+        y)  
+            line="${Yellow}${line}"
+            ;;
+        r)
+            line="${Red}${line}"
+            ;;
+        c)
+            line="${Cyan}${line}"
+            ;;
+        b)
+            line="${Blue}${line}"
+            ;;
+        g)
+            line="${Green}${line}"
+            ;;
+    esac
 
+    echo -e "${line}${Color_Off}"
 }
 assign_env(){
     declare -n var="$1" #string $1 will be the name of var
