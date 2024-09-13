@@ -20,6 +20,16 @@ while [ $# -gt -0 ];do
 #while getopts 'd:w:gh' arg; do
     #case $1 in
     case $1 in
+        --out)#line,color
+            shift
+            out "$1" "$2"
+            shift #next
+            ;;
+        -t|--text-color)#line,color
+            shift
+            txt "$1" "$2"
+            shift #next
+            ;;
         --git) #run subcommand
             shift
             git_wp "$1"
@@ -59,7 +69,7 @@ while [ $# -gt -0 ];do
             shift
             wp_update "$1"
             ;;
-        -t|--htaccess)
+        --htaccess)
             htaccess
             ;;
         -x|--enable-debug)
