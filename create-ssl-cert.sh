@@ -40,66 +40,76 @@ function vhost() {
     "
 
     echo "copying $conf to $APACHE_CONF"
-    sudo echo $conf > $APACHE_CONF
+    sleep 1
+    echo "#################################"
+     echo $conf > $APACHE_CONF
 }
 
-######################################################
-# argument parsing
-######################################################
+create_cert(){
+    # Prüfe, ob eidn Domainname übergeben wurde
+    if [ -z "$DOMAIN" ]; then
+        echo "Bitte eine Domain angeben, z.B. ./create_ssl_cert.sh example.local"
+        exit 1
+    fi
 
-while [ $# -gt 0 ];do
-    case $1 in
-        -d)
-            shift
-            DOMAIN="$1"
-            ;;
-        -r|--document-root)
-            shift
-            DOMAIN_ROOT="$1"
-            ;;
-        -a|--apache-conf)
-            shift
-            $APACHE_CONF="$1"
-            ;;
-        --ssl)
-            sleep 2
-            vhost
-            ;;
-    esac
-    #next argument -> e.g. $2 becomes $1, $3 becomes $2...
-    shift
-done
+    # Generiere den privaten Schlüssel und das selbstsignierte Zertifikat
+    echo "Erstelle den privaten Schlüssel und das selbstsignierte Zertifikat für $DOMAIN ..."
 
-######################################################
-# main
-######################################################
+     openssl req -x509 -nodes -days $DAYS_VALID -newkey rsa:2048 \
+        -keyout "$KEY_FILE" -out "$CERT_FILE" \
+        -subj "/C=DE/ST=YourState/L=YourCity/O=YourOrg/OU=YourUnit/CN=$DOMAIN"
 
-# Prüfe, ob ein Domainname übergeben wurde
-if [ -z "$DOMAIN" ]; then
-    echo "Bitte eine Domain angeben, z.B. ./create_ssl_cert.sh example.local"
-    exit 1
-fi
+    # Berechtigungen setzen
+     chmod 600 "$KEY_FILE" "$CERT_FILE"
 
-# Erstelle das Verzeichnis für die Zertifikate, falls es noch nicht existiert
-if [ ! -d "$CERT_DIR" ]; then
-    sudo mkdir -p "$CERT_DIR"
-fi
-
-# Generiere den privaten Schlüssel und das selbstsignierte Zertifikat
-echo "Erstelle den privaten Schlüssel und das selbstsignierte Zertifikat für $DOMAIN ..."
-
-sudo openssl req -x509 -nodes -days $DAYS_VALID -newkey rsa:2048 \
-    -keyout "$KEY_FILE" -out "$CERT_FILE" \
-    -subj "/C=DE/ST=YourState/L=YourCity/O=YourOrg/OU=YourUnit/CN=$DOMAIN"
-
-# Berechtigungen setzen
-sudo chmod 600 "$KEY_FILE" "$CERT_FILE"
-
-# Ausgabe der Dateipfade
-echo "Zertifikat und Schlüssel erstellt:"
-echo "Privater Schlüssel: $KEY_FILE"
-echo "Zertifikat: $CERT_FILE"
+    # Ausgabe der Dateipfade
+    echo "Zertifikat und Schlüssel erstellt:"
+    echo "Privater Schlüssel: $KEY_FILE"
+    echo "Zertifikat: $CERT_FILE"
 
 
-echo -e "\nZertifikat für $DOMAIN erfolgreich erstellt und gespeichert unter $CERT_DIR"
+    echo -e "\nZertifikat für $DOMAIN erfolgreich erstellt und gespeichert unter $CERT_DIR"
+    }
 
+    # Erstelle das Verzeichnis für die Zertifikate, falls es noch nicht existiert
+    if [ ! -d "$CERT_DIR" ]; then
+         mkdir -p "$CERT_DIR"
+    fi
+
+    ######################################################
+    # argument parsing
+    ######################################################
+
+    while [ $# -gt 0 ];do
+        case $1 in
+            -d)
+                shift
+                DOMAIN="$1"
+                ;;
+            -r|--document-root)
+                shift
+                DOMAIN_ROOT="$1"
+                ;;
+            -a|--apache-conf)
+                shift
+                $APACHE_CONF="$1"
+                ;;
+            -s|--ssl)
+                sleep 1
+                vhost
+                ;;
+            -c)
+                create_cert
+                ;;
+        esac
+        #next argument -> e.g. $2 becomes $1, $3 becomes $2...
+        shift
+    done
+
+    ######################################################
+    # main
+    ######################################################
+    if [ $# -eq 0 ] ; then
+        echo "no actions"
+        exit 1
+    fi
