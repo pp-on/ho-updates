@@ -439,41 +439,72 @@ define('WP_DEBUG_DISPLAY', false);
 EOF
 }
 #activate debug
-wp_debug(){ #current WP directory/wp-config.php
-    local file_path="$1"
-    out "adding WP DEBUG to wp-config" 2
-    # cat <<EOF >> wp-config.php
-    local debug_code="
-// Enable WP_DEBUG mode
-if ( !defined ('WP_DEBUG') ){
-    define( 'WP_DEBUG', true );
-}
+wp_debug(){ #on/off
+    local switch="$1"
+    #where is wp-config.php
+    local file_path="$wp_config_path"
+    if [ "$switch" = "off" ]; then
+        wp config set --raw WP_DEBUG false
+        # if grep -Fxq "define('WP_DEBUG', true);" "$file_path"; then
+            # sed -i "s/define('WP_DEBUG', true);/define('WP_DEBUG', false);/g" wp-config.php
+            wp config set --raw WP_DEBUG_LOG false
+        # fi
+        out "Debugging is off $wp_config_path" 4
 
-// Enable Debug logging to the /wp-content/debug.log file
-if ( !defined ('WP_DEBUG_LOG') ){
-    define( 'WP_DEBUG_LOG', true );
-}
-
-// Disable display of errors and warnings
-if ( !defined ('WP_DEBUG_DISPLAY') ){
-    define( 'WP_DEBUG_DISPLAY', false );
-    @ini_set( 'display_errors', 0 );
-}
-
-// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
-if ( !defined ( 'SCRIPT_DEBUG' )) {
-    define( 'SCRIPT_DEBUG', true );
-}
-"
-# insert code into wp-config.php
-     # Use sed to insert the debug code before the specified line
-    sed -i "/\/\* That's all, stop editing! Happy publishing. \*\//i $debug_code" "$file_path"
-
-
-    out "done" 4
-}
-# EOF
+    else
+        wp config set --raw WP_DEBUG true
+		wp config set --raw WP_DEBUG_LOG true
+        out "Debugging is on" 4
+        # cat <<EOF >> wp-config.php
+#         local debug_code
+#         # debug_code="
+#         read -r -d '' debug_code <<- EOM
+#     out "adding WP DEBUG to wp-config" 2
+#     # cat <<EOF >> wp-config.php
+#     local debug_code
+#     # debug_code="
+#
+#     read -r -d '' debug_code <<- EOM
+# // Enable WP_DEBUG mode
+# if ( !defined ('WP_DEBUG') ){
+#     define( 'WP_DEBUG', true );
 # }
+#
+# // Enable Debug logging to the /wp-content/debug.log file
+# if ( !defined ('WP_DEBUG_LOG') ){
+#     define( 'WP_DEBUG_LOG', true );
+# }
+#
+# // Disable display of errors and warnings
+# if ( !defined ('WP_DEBUG_DISPLAY') ){
+#     define( 'WP_DEBUG_DISPLAY', false );
+#     @ini_set( 'display_errors', 0 );
+# }
+#
+# // Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
+# if ( !defined ( 'SCRIPT_DEBUG' )) {
+#     define( 'SCRIPT_DEBUG', true );
+# }
+# EOM
+# # insert code into wp-config.php
+#      # make file does exist
+#      if [ -f "$file_path" ]; then
+#         echo "inserting debug code into $file_path"
+#         #remove define(WP-DEBUG', false);
+#         sed -i "s/'WP_DEBUG', false/'WP_DEBUG', true/g" wp-config.php
+#         echo "$debug_code" >> "$file_path"
+#      else
+#         echo "File not found"
+#      fi
+#
+#     out "done" 4JJ
+# }
+# EOF
+ 
+
+
+	fi #end if switchH
+}
 update_repo(){
     for i in "${sites[@]}"; do
         out "${i}" 1
