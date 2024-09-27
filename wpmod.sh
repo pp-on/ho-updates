@@ -8,6 +8,8 @@ source "${MYDIR}/wphelpfuntions.sh"
 #search for wp-sites
 #source ~/git/ho-updates/wphelpfuntions.sh
 
+# Use find to search for wp-config.php starting from the given directory
+wp_config_path=$(find "$dir" -name "wp-config.php" 2>/dev/null | head -n 1)
 wpuser="test"
 wppw="secret"
 wpemail="oswaldo.nickel@pfennigparade.de"
@@ -72,16 +74,15 @@ while [ $# -gt -0 ];do
         --htaccess)
             htaccess
             ;;
-        -x|--enable-debug)
-            # Use find to search for wp-config.php starting from the given directory
-    wp_config_path=$(find "$dir" -name "wp-config.php" 2>/dev/null | head -n 1)
-            wp_debug "$wp_config_path"
+        -x|--wp-debug)#activate debug mode or deactivate it -> ##1/0
+            shift
+            wp_debug "$1"
             ;;
         -z|--hide-errors)
             wp_hide_errors
-            shift
-            remove_plugins "$1" "$2"
-            shift
+            # shift
+            # remove_plugins "$1" "$2"
+            # shift
             ;;
         -f|--acf-pro-lk)
             #wp_key_acf_pro
