@@ -105,7 +105,9 @@ while [ $# -gt -0 ];do
             ;;
         -n|--new-user)
             out "creating user ${wpuser} with password ${wppw}" 1
-            wp_new_user $wpuser $wppw $wpemail
+            echo "continue? [y/n]"
+            read r
+            [ "$r" = "y" ] && wp_new_user $wpuser $wppw $wpemail  || out "aborting" 3
             ;;
         -wu|--wp-user)
             shift
