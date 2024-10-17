@@ -454,6 +454,7 @@ wp_debug(){ #on/off
     else
         wp config set --raw WP_DEBUG true
 		wp config set --raw WP_DEBUG_LOG true
+        wp config set --raw WP_DEBUG_DISPLAY false
         out "Debugging is on" 4
         # cat <<EOF >> wp-config.php
 #         local debug_code
