@@ -68,7 +68,14 @@ wp_db (){
 #    fi
     out "Dropping $dbname" 2
     sleep 1
-    $wp db drop --yes
+    read -p "Do you want to drop the database? [y/n]" a
+    if [ "$a" = "y" ]; then
+        $wp db drop --yes
+        # mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+    elif [ "$a" = "n" ]; then
+        echo "aborting..."
+        exit
+    fi
     out "Creating new $dbname" 2
     sleep 1
     $wp db create
