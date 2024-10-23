@@ -3,32 +3,39 @@
 # Default values
 USE_IPV6=false
 DISTRO=""
+SERVER_ALIAS=""
+ERROR_LOG=""
+ACCESS_LOG=""
 
 # Function to display help
 function usage() {
-    echo "Usage: sudo $0 -t <document_root> -k <ssl_key> -c <ssl_cert> -d <ubuntu|gentoo> [-6]"
+    echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key> -c <ssl_cert> -d <ubuntu|gentoo> [-a <server_alias>] [-6]"
     echo "  -t  Root document directory (required)"
+    echo "  -n  Domain name (required)"
     echo "  -k  SSL key file path (required for port 443)"
     echo "  -c  SSL certificate file path (required for port 443)"
     echo "  -d  Distribution (ubuntu or gentoo) (required)"
+    echo "  -a  Server alias (optional, e.g., www.example.com)"
     echo "  -6  Enable IPv6 (optional)"
     exit 1
 }
 
 # Parse arguments
-while getopts "t:k:c:d:6" opt; do
+while getopts "t:n:k:c:d:a:6" opt; do
     case "$opt" in
         t) DOC_ROOT=$OPTARG ;;
+        n) DOMAIN_NAME=$OPTARG ;;
         k) SSL_KEY=$OPTARG ;;
         c) SSL_CERT=$OPTARG ;;
         d) DISTRO=$OPTARG ;;
+        a) SERVER_ALIAS=$OPTARG ;;
         6) USE_IPV6=true ;;
         *) usage ;;
     esac
 done
 
 # Ensure required parameters are provided
-if [[ -z "$DOC_ROOT" || -z "$SSL_KEY" || -z "$SSL_CERT" || -z "$DISTRO" ]]; then
+if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME" || -z "$SSL_KEY" || -z "$SSL_CERT" || -z "$DISTRO" ]]; then
     usage
 fi
 
@@ -40,15 +47,30 @@ fi
 
 # Set virtual host configuration file path based on the distro
 if [[ "$DISTRO" == "ubuntu" ]]; then
-    VHOST_CONF="/etc/apache2/sites-available/$(basename $DOC_ROOT).conf"
+    VHOST_CONF="/etc/apache2/sites-available/${DOMAIN_NAME}.conf"
 else
-    VHOST_CONF="/etc/apache2/vhosts.d/$(basename $DOC_ROOT).conf"
+    VHOST_CONF="/etc/apache2/vhosts.d/${DOMAIN_NAME}.conf"
 fi
+
+# Define log file paths
+ERROR_LOG="/var/log/apache2/${DOMAIN_NAME}_error.log"
+ACCESS_LOG="/var/log/apache2/${DOMAIN_NAME}_access.log"
 
 # Create the virtual host configuration file
 sudo cat <<EOF > $VHOST_CONF
 <VirtualHost *:80>
-    ServerAdmin webmaster@localhost
+    ServerName $DOMAIN_NAME
+EOF
+
+# If a ServerAlias is provided, include it
+if [[ ! -z "$SERVER_ALIAS" ]]; then
+    sudo cat <<EOF >> $VHOST_CONF
+    ServerAlias $SERVER_ALIAS
+EOF
+fi
+
+sudo cat <<EOF >> $VHOST_CONF
+    ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
     <Directory $DOC_ROOT>
@@ -57,12 +79,23 @@ sudo cat <<EOF > $VHOST_CONF
         Require all granted
     </Directory>
 
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
+    ErrorLog $ERROR_LOG
+    CustomLog $ACCESS_LOG combined
 </VirtualHost>
 
 <VirtualHost *:443>
-    ServerAdmin webmaster@localhost
+    ServerName $DOMAIN_NAME
+EOF
+
+# If a ServerAlias is provided, include it for HTTPS as well
+if [[ ! -z "$SERVER_ALIAS" ]]; then
+    sudo cat <<EOF >> $VHOST_CONF
+    ServerAlias $SERVER_ALIAS
+EOF
+fi
+
+sudo cat <<EOF >> $VHOST_CONF
+    ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
     <Directory $DOC_ROOT>
@@ -75,8 +108,8 @@ sudo cat <<EOF > $VHOST_CONF
     SSLCertificateFile $SSL_CERT
     SSLCertificateKeyFile $SSL_KEY
 
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
+    ErrorLog $ERROR_LOG
+    CustomLog $ACCESS_LOG combined
 </VirtualHost>
 EOF
 
@@ -85,7 +118,17 @@ if [ "$USE_IPV6" = true ]; then
     sudo cat <<EOF >> $VHOST_CONF
 
 <VirtualHost [::]:80>
-    ServerAdmin webmaster@localhost
+    ServerName $DOMAIN_NAME
+EOF
+
+    if [[ ! -z "$SERVER_ALIAS" ]]; then
+        sudo cat <<EOF >> $VHOST_CONF
+    ServerAlias $SERVER_ALIAS
+EOF
+    fi
+
+    sudo cat <<EOF >> $VHOST_CONF
+    ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
     <Directory $DOC_ROOT>
@@ -94,12 +137,22 @@ if [ "$USE_IPV6" = true ]; then
         Require all granted
     </Directory>
 
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
+    ErrorLog $ERROR_LOG
+    CustomLog $ACCESS_LOG combined
 </VirtualHost>
 
 <VirtualHost [::]:443>
-    ServerAdmin webmaster@localhost
+    ServerName $DOMAIN_NAME
+EOF
+
+    if [[ ! -z "$SERVER_ALIAS" ]]; then
+        sudo cat <<EOF >> $VHOST_CONF
+    ServerAlias $SERVER_ALIAS
+EOF
+    fi
+
+    sudo cat <<EOF >> $VHOST_CONF
+    ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
     <Directory $DOC_ROOT>
@@ -112,8 +165,8 @@ if [ "$USE_IPV6" = true ]; then
     SSLCertificateFile $SSL_CERT
     SSLCertificateKeyFile $SSL_KEY
 
-    ErrorLog \${APACHE_LOG_DIR}/error.log
-    CustomLog \${APACHE_LOG_DIR}/access.log combined
+    ErrorLog $ERROR_LOG
+    CustomLog $ACCESS_LOG combined
 </VirtualHost>
 EOF
 fi
@@ -121,7 +174,7 @@ fi
 # Enable site and restart Apache depending on the distribution
 if [[ "$DISTRO" == "ubuntu" ]]; then
     # Ubuntu: Enable site and restart Apache
-    sudo a2ensite $(basename $DOC_ROOT).conf
+    sudo a2ensite ${DOMAIN_NAME}.conf
     sudo systemctl restart apache2
 else
     # Gentoo: Just restart Apache
@@ -129,4 +182,3 @@ else
 fi
 
 echo "Virtual host configuration created and Apache restarted for $DISTRO."
-
