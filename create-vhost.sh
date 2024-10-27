@@ -2,10 +2,19 @@
 
 # Default values
 USE_IPV6=false
-DISTRO=""
+#DISTRO=""
 SERVER_ALIAS=""
 ERROR_LOG=""
 ACCESS_LOG=""
+
+# Detect Distribution
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+    DISTRO=$ID
+else
+    echo "Distribution not supported by this script."
+    exit 1
+fi
 
 # Function to display help
 function usage() {
