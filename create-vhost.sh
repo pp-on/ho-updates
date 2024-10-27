@@ -23,7 +23,7 @@ function usage() {
     echo "  -n  Domain name (required)"
     echo "  -k  SSL key file fullpath (required for port 443)"
     echo "  -c  SSL certificate file fullpath (required for port 443)"
-    echo "  -d  Distribution (ubuntu or gentoo) (required)"
+    #echo "  -d  Distribution (ubuntu or gentoo) (required)"
     echo "  -a  Server alias (optional, e.g., www.example.com)"
     echo "  -6  Enable IPv6 (optional)"
     exit 1
@@ -36,7 +36,7 @@ while getopts "t:n:k:c:d:a:6" opt; do
         n) DOMAIN_NAME=$OPTARG ;;
         k) SSL_KEY=$OPTARG ;;
         c) SSL_CERT=$OPTARG ;;
-        d) DISTRO=$OPTARG ;;
+        #d) DISTRO=$OPTARG ;;
         a) SERVER_ALIAS=$OPTARG ;;
         6) USE_IPV6=true ;;
         *) usage ;;
