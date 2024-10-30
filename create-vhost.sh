@@ -2,15 +2,15 @@
 
 # Default values
 USE_IPV6=false
-#DISTRO=""
 SERVER_ALIAS=""
 ERROR_LOG=""
 ACCESS_LOG=""
+DISTRO=""
 
-# Detect Distribution
+# Detect Distribution if not specified
 if [[ -f /etc/os-release ]]; then
     . /etc/os-release
-    DISTRO=$ID
+    DISTRO=${DISTRO:-$ID}
 else
     echo "Distribution not supported by this script."
     exit 1
@@ -18,12 +18,12 @@ fi
 
 # Function to display help
 function usage() {
-    echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key> -c <ssl_cert> -d <ubuntu|gentoo> [-a <server_alias>] [-6]"
+    echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key> -c <ssl_cert> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
     echo "  -t  Root document directory (required)"
     echo "  -n  Domain name (required)"
     echo "  -k  SSL key file fullpath (required for port 443)"
     echo "  -c  SSL certificate file fullpath (required for port 443)"
-    echo "  -d  Distribution (ubuntu or gentoo) (required)"
+    echo "  -d  Distribution (ubuntu or gentoo) (optional, auto-detects if omitted)"
     echo "  -a  Server alias (optional, e.g., www.example.com)"
     echo "  -6  Enable IPv6 (optional)"
     exit 1
@@ -44,12 +44,14 @@ while getopts "t:n:k:c:d:a:6" opt; do
 done
 
 # Ensure required parameters are provided
-if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME" || -z "$SSL_KEY" || -z "$SSL_CERT" || -z "$DISTRO" ]]; then
+if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME" || -z "$SSL_KEY" || -z "$SSL_CERT" ]]; then
     usage
 fi
 
-# Validate distribution choice
-if [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "gentoo" ]]; then
+# Validate or default the distribution
+if [[ -z "$DISTRO" ]]; then
+    DISTRO=$ID
+elif [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "gentoo" ]]; then
     echo "Error: Invalid distribution. Please choose 'ubuntu' or 'gentoo'."
     usage
 fi
@@ -65,20 +67,19 @@ fi
 ERROR_LOG="/var/log/apache2/${DOMAIN_NAME}_error.log"
 ACCESS_LOG="/var/log/apache2/${DOMAIN_NAME}_access.log"
 
-# Create the virtual host configuration file
-sudo cat <<EOF > $VHOST_CONF
+# Create the main virtual host configuration
+sudo tee "$VHOST_CONF" > /dev/null <<EOF
 <VirtualHost *:80>
     ServerName $DOMAIN_NAME
 EOF
 
-# If a ServerAlias is provided, include it
 if [[ ! -z "$SERVER_ALIAS" ]]; then
-    sudo cat <<EOF >> $VHOST_CONF
+    sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAlias $SERVER_ALIAS
 EOF
 fi
 
-sudo cat <<EOF >> $VHOST_CONF
+sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
@@ -96,14 +97,13 @@ sudo cat <<EOF >> $VHOST_CONF
     ServerName $DOMAIN_NAME
 EOF
 
-# If a ServerAlias is provided, include it for HTTPS as well
 if [[ ! -z "$SERVER_ALIAS" ]]; then
-    sudo cat <<EOF >> $VHOST_CONF
+    sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAlias $SERVER_ALIAS
 EOF
 fi
 
-sudo cat <<EOF >> $VHOST_CONF
+sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
@@ -124,19 +124,19 @@ EOF
 
 # Add IPv6 configuration if enabled
 if [ "$USE_IPV6" = true ]; then
-    sudo cat <<EOF >> $VHOST_CONF
+    sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
 
 <VirtualHost [::]:80>
     ServerName $DOMAIN_NAME
 EOF
 
     if [[ ! -z "$SERVER_ALIAS" ]]; then
-        sudo cat <<EOF >> $VHOST_CONF
+        sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAlias $SERVER_ALIAS
 EOF
     fi
 
-    sudo cat <<EOF >> $VHOST_CONF
+    sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
@@ -155,12 +155,12 @@ EOF
 EOF
 
     if [[ ! -z "$SERVER_ALIAS" ]]; then
-        sudo cat <<EOF >> $VHOST_CONF
+        sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAlias $SERVER_ALIAS
 EOF
     fi
 
-    sudo cat <<EOF >> $VHOST_CONF
+    sudo tee -a "$VHOST_CONF" > /dev/null <<EOF
     ServerAdmin webmaster@$DOMAIN_NAME
     DocumentRoot $DOC_ROOT
 
@@ -180,13 +180,19 @@ EOF
 EOF
 fi
 
+# Add entry to /etc/hosts for local development
+if grep -q "$DOMAIN_NAME" /etc/hosts; then
+    echo "$DOMAIN_NAME already exists in /etc/hosts."
+else
+    echo "127.0.0.1 $DOMAIN_NAME" | sudo tee -a /etc/hosts > /dev/null
+    echo "Added $DOMAIN_NAME to /etc/hosts."
+fi
+
 # Enable site and restart Apache depending on the distribution
 if [[ "$DISTRO" == "ubuntu" ]]; then
-    # Ubuntu: Enable site and restart Apache
     sudo a2ensite ${DOMAIN_NAME}.conf
     sudo systemctl restart apache2
 else
-    # Gentoo: Just restart Apache
     sudo /etc/init.d/apache2 restart
 fi
 
