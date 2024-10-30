@@ -1,12 +1,10 @@
 #!/bin/env bash
 
-#!/bin/env bash
-
 # Default values
 CERT_NAME=$(date +%s | sha256sum | base64 | head -c 8)
-KEY_SIZE=409 6
+KEY_SIZE=4096
 DAYS_VALID=365
-BASE_DIR="$HOME/.local/certs/"
+BASE_DIR="$HOME/.local/certs"
 DIRNAME=""
 
 # Function to generate a random name
