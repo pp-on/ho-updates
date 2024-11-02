@@ -5,15 +5,15 @@ USE_IPV6=false
 SERVER_ALIAS=""
 ERROR_LOG=""
 ACCESS_LOG=""
-DISTRO=""
+SSL_KEY_DIR=""
 
 # Detect Distribution if not specified
 if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     DISTRO=${DISTRO:-$ID}
 else
-    echo "Distribution not supported by this script."
-    exit 1
+    echo "Warning: Distribution not supported by this script."
+    #exit 1
 fi
 
 # Function to display help
@@ -21,8 +21,7 @@ function usage() {
     echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key> -c <ssl_cert> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
     echo "  -t  Root document directory (required)"
     echo "  -n  Domain name (required)"
-    echo "  -k  SSL key file fullpath (required for port 443)"
-    echo "  -c  SSL certificate file fullpath (required for port 443)"
+    echo "  -k  SSL directory (required) where key and crt are   locateed"
     echo "  -d  Distribution (ubuntu or gentoo) (optional, auto-detects if omitted)"
     echo "  -a  Server alias (optional, e.g., www.example.com)"
     echo "  -6  Enable IPv6 (optional)"
@@ -34,9 +33,8 @@ while getopts "t:n:k:c:d:a:6" opt; do
     case "$opt" in
         t) DOC_ROOT=$OPTARG ;;
         n) DOMAIN_NAME=$OPTARG ;;
-        k) SSL_KEY=$OPTARG ;;
-        c) SSL_CERT=$OPTARG ;;
-        #d) DISTRO=$OPTARG ;;
+        k) SSL_KEY_DIR=$OPTARG ;;
+        d) DISTRO=$OPTARG ;;
         a) SERVER_ALIAS=$OPTARG ;;
         6) USE_IPV6=true ;;
         *) usage ;;
@@ -44,17 +42,34 @@ while getopts "t:n:k:c:d:a:6" opt; do
 done
 
 # Ensure required parameters are provided
-if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME" || -z "$SSL_KEY" || -z "$SSL_CERT" ]]; then
+if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME" || -z "$SSL_KEY_DIR"  ]]; then
     usage
 fi
 
-# Validate or default the distribution
-if [[ -z "$DISTRO" ]]; then
-    DISTRO=$ID
-elif [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "gentoo" ]]; then
-    echo "Error: Invalid distribution. Please choose 'ubuntu' or 'gentoo'."
-    usage
+if [[ -d "$SSL_KEY_DIR" ]]; then
+    for f in "$SSL_KEY_DIR"/*; do
+        [ "$f" == "*.key" ] && $SSL_KEY="$f" || $SSL_CERT="$f"
+    done
 fi
+
+# Check if SSL files were found
+if [[ -z "$SSL_CERT" || -z "$SSL_KEY" ]]; then
+    echo "Error: SSL certificate or key file not found in the specified directory."
+    echo "Expected file names include '${DOMAIN_NAME}.crt' and '${DOMAIN_NAME}.key'."
+    exit 1
+fi
+
+
+
+# Validate or default the distribution
+# sometimes ChatGPT is really stupid! I don't get the reason   of the following:
+#if [[ -z "$DISTRO" ]]; then
+    #DISTRO=$ID
+#elif [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "gentoo" ]]; then
+    #echo "Error: Invalid distribution. Please choose 'ubuntu' or 'gentoo'."
+    #usage
+#fi
+
 
 # Set virtual host configuration file path based on the distro
 if [[ "$DISTRO" == "ubuntu" ]]; then
