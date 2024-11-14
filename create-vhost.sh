@@ -5,7 +5,56 @@ USE_IPV6=false
 SERVER_ALIAS=""
 ERROR_LOG=""
 ACCESS_LOG=""
-SSL_KEY_DIR=""
+SSL_KEY_DIR="$HOME/.local/certs/"
+
+# Check if WSL2 environment
+is_wsl2() {
+    grep -qEi "(Microsoft|WSL2)" /proc/version &> /dev/null
+    return $? # 0 if WSL2, 1 if not
+    # systemd-detect-virt -q -v &> /dev/null
+    # return $? # 0 if WSL2, 1 if not
+}
+
+# Edit /etc/hosts or Windows hosts file based on environment
+edit_hosts() {
+    WSL2=$(systemd-detect-virt)
+    if [[ -z $WSL2 ]]; then
+        # Use PowerShell command to edit Windows hosts file if in WSL2
+        if powershell.exe -Command "Get-Content C:\Windows\System32\drivers\etc\hosts" | grep -q "$DOMAIN_NAME"; then
+            echo "$DOMAIN_NAME already exists in Windows hosts file."
+        else
+            powershell.exe -Command "Add-Content C:\Windows\System32\drivers\etc\hosts '127.0.0.1 $DOMAIN_NAME'"
+            echo "Added $DOMAIN_NAME to Windows hosts file."
+        fi
+    elif [[ "$DISTRO" == "gentoo" ]]; then
+        if grep -q "$DOMAIN_NAME" /etc/hosts; then
+            echo "$DOMAIN_NAME already exists in /etc/hosts."
+        else
+            echo "127.0.0.1 $DOMAIN_NAME" | sudo tee -a /etc/hosts > /dev/null
+            echo "Added $DOMAIN_NAME to /etc/hosts."
+        fi
+    fi
+}
+
+
+# Edit /etc/hosts according to Distribution and system  (linux or windows)
+edit_hosts() {
+    if [[ "$DISTRO" == "ubuntu" ]]; then
+        if grep -q "$DOMAIN_NAME" /etc/hosts; then
+            echo "$DOMAIN_NAME already exists in /etc/hosts."
+        # else
+        fi
+    else #gentoo
+        # Add entry to /etc/hosts for local development
+        if grep -q "$DOMAIN_NAME" /etc/hosts; then
+            echo "$DOMAIN_NAME already exists in /etc/hosts."
+        else
+            echo "127.0.0.1 $DOMAIN_NAME" | sudo tee -a /etc/hosts > /dev/null
+            echo "Added $DOMAIN_NAME to /etc/hosts."
+        fi
+    fi
+}
+
 
 # Detect Distribution if not specified
 if [[ -f /etc/os-release ]]; then
@@ -21,7 +70,7 @@ function usage() {
     echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key> -c <ssl_cert> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
     echo "  -t  Root document directory (required)"
     echo "  -n  Domain name (required)"
-    echo "  -k  SSL directory (required) where key and crt are   locateed"
+    echo "  -k  SSL directory (optional, default is already defined) where key and crt are   locateed"
     echo "  -d  Distribution (ubuntu or gentoo) (optional, auto-detects if omitted)"
     echo "  -a  Server alias (optional, e.g., www.example.com)"
     echo "  -6  Enable IPv6 (optional)"
@@ -42,14 +91,22 @@ while getopts "t:n:k:c:d:a:6" opt; do
 done
 
 # Ensure required parameters are provided
-if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME" || -z "$SSL_KEY_DIR"  ]]; then
+if [[ -z "$DOC_ROOT" || -z "$DOMAIN_NAME"   ]]; then
     usage
 fi
 
-if [[ -d "$SSL_KEY_DIR" ]]; then
-    for f in "$SSL_KEY_DIR"/*; do
-        [ "$f" == "*.key" ] && $SSL_KEY="$f" || $SSL_CERT="$f"
+if [[ -d "$SSL_KEY_DIR$DOMAIN_NAME" ]]; then
+    files=($SSL_KEY_DIR$DOMAIN_NAME/*)
+    for file in "${files[@]}"; do
+        if [[ "$file" == *".key" ]]; then
+            SSL_KEY=$file
+        elif [[ "$file" == *".crt" ]]; then
+            SSL_CERT=$file
+        fi
     done
+    echo "SSL files found in $SSL_KEY_DIR$DOMAIN_NAME"
+    echo "SSL key: $SSL_KEY"
+    echo "SSL cert: $SSL_CERT"
 fi
 
 # Check if SSL files were found
@@ -62,7 +119,6 @@ fi
 
 
 # Validate or default the distribution
-# sometimes ChatGPT is really stupid! I don't get the reason   of the following:
 #if [[ -z "$DISTRO" ]]; then
     #DISTRO=$ID
 #elif [[ "$DISTRO" != "ubuntu" && "$DISTRO" != "gentoo" ]]; then
@@ -196,12 +252,7 @@ EOF
 fi
 
 # Add entry to /etc/hosts for local development
-if grep -q "$DOMAIN_NAME" /etc/hosts; then
-    echo "$DOMAIN_NAME already exists in /etc/hosts."
-else
-    echo "127.0.0.1 $DOMAIN_NAME" | sudo tee -a /etc/hosts > /dev/null
-    echo "Added $DOMAIN_NAME to /etc/hosts."
-fi
+edit_hosts
 
 # Enable site and restart Apache depending on the distribution
 if [[ "$DISTRO" == "ubuntu" ]]; then
