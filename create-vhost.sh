@@ -17,9 +17,7 @@ is_wsl2() {
 
 # Edit /etc/hosts or Windows hosts file based on environment
 edit_hosts() {
-    WSL2=$(systemd-detect-virt)
-    if [[ -z $WSL2 ]]; then
-        # Use PowerShell command to edit Windows hosts file if in WSL2
+    # WSL2=$(systemd-detect-virt)
         if powershell.exe -Command "Get-Content C:\Windows\System32\drivers\etc\hosts" | grep -q "$DOMAIN_NAME"; then
             echo "$DOMAIN_NAME already exists in Windows hosts file."
         else
@@ -70,7 +68,7 @@ function usage() {
     echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key> -c <ssl_cert> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
     echo "  -t  Root document directory (required)"
     echo "  -n  Domain name (required)"
-    echo "  -k  SSL directory (optional, default is already defined) where key and crt are   locateed"
+    echo "  -k  SSL directory (optional) where key and crt are located, default is ~/.local/certs"
     echo "  -d  Distribution (ubuntu or gentoo) (optional, auto-detects if omitted)"
     echo "  -a  Server alias (optional, e.g., www.example.com)"
     echo "  -6  Enable IPv6 (optional)"
