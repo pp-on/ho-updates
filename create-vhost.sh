@@ -5,6 +5,27 @@ USE_IPV6=false
 SERVER_ALIAS=""
 SSL_KEY_DIR="$HOME/.local/certs/"
 
+# Detect distribution if not specified
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+    DISTRO=${DISTRO:-$ID}
+else
+    echo "Warning: Distribution not supported by this script."
+    exit 1
+fi
+
+# Function to display help
+usage() {
+    echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key_dir> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
+    echo "  -t  Root document directory (required)"
+    echo "  -n  Domain name (required)"
+    echo "  -k  SSL directory (optional, default is ~/.local/certs)"
+    echo "  -d  Distribution (ubuntu or gentoo, auto-detects if omitted)"
+    echo "  -a  Server alias (optional, e.g., www.example.com)"
+    echo "  -6  Enable IPv6 (optional)"
+    exit 1
+}
+
 # Check if WSL2 environment
 is_wsl2() {
     grep -qEi "(Microsoft|WSL2)" /proc/version &> /dev/null
@@ -28,27 +49,6 @@ edit_hosts() {
             echo "Added $DOMAIN_NAME to /etc/hosts."
         fi
     fi
-}
-
-# Detect distribution if not specified
-if [[ -f /etc/os-release ]]; then
-    . /etc/os-release
-    DISTRO=${DISTRO:-$ID}
-else
-    echo "Warning: Distribution not supported by this script."
-    exit 1
-fi
-
-# Function to display help
-usage() {
-    echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key_dir> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
-    echo "  -t  Root document directory (required)"
-    echo "  -n  Domain name (required)"
-    echo "  -k  SSL directory (optional, default is ~/.local/certs)"
-    echo "  -d  Distribution (ubuntu or gentoo, auto-detects if omitted)"
-    echo "  -a  Server alias (optional, e.g., www.example.com)"
-    echo "  -6  Enable IPv6 (optional)"
-    exit 1
 }
 
 # Parse arguments
