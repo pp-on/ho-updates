@@ -14,6 +14,130 @@ else
     exit 1
 fi
 
+# vHost configuration for port 80 and 443
+create_vhost() {
+    # port 80
+    sudo tee "$VHOST_CONF_HTTP" > /dev/null <<-EOF
+    <VirtualHost *:80>
+        ServerName $DOMAIN_NAME
+    EOF
+
+    if [[ -n "$SERVER_ALIAS" ]]; then
+        sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<-EOF
+        ServerAlias $SERVER_ALIAS
+    EOF
+    fi
+
+    sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<-EOF
+        ServerAdmin webmaster@$DOMAIN_NAME
+        DocumentRoot $DOC_ROOT
+
+        <Directory $DOC_ROOT>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        ErrorLog $ERROR_LOG
+        CustomLog $ACCESS_LOG combined
+    </VirtualHost>
+    EOF
+
+    # Add IPv6 block for HTTP if enabled
+    if [[ "$USE_IPV6" == true ]]; then
+        sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<-EOF
+
+    <VirtualHost [::]:80>
+        ServerName $DOMAIN_NAME
+    EOF
+
+        if [[ -n "$SERVER_ALIAS" ]]; then
+            sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<-EOF
+        ServerAlias $SERVER_ALIAS
+    EOF
+        fi
+
+        sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<-EOF
+        ServerAdmin webmaster@$DOMAIN_NAME
+        DocumentRoot $DOC_ROOT
+
+        <Directory $DOC_ROOT>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        ErrorLog $ERROR_LOG
+        CustomLog $ACCESS_LOG combined
+    </VirtualHost>
+    EOF
+    fi
+
+    # Create HTTPS virtual host configuration (port 443)
+    sudo tee "$VHOST_CONF_HTTPS" > /dev/null <<-EOF
+    <VirtualHost *:443>
+        ServerName $DOMAIN_NAME
+    EOF
+
+    if [[ -n "$SERVER_ALIAS" ]]; then
+        sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<-EOF
+        ServerAlias $SERVER_ALIAS
+    EOF
+    fi
+
+    sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<-EOF
+        ServerAdmin webmaster@$DOMAIN_NAME
+        DocumentRoot $DOC_ROOT
+
+        <Directory $DOC_ROOT>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        SSLEngine on
+        SSLCertificateFile $SSL_CERT
+        SSLCertificateKeyFile $SSL_KEY
+
+        ErrorLog $ERROR_LOG
+        CustomLog $ACCESS_LOG combined
+    </VirtualHost>
+    EOF
+
+    # Add IPv6 block for HTTPS if enabled
+    if [[ "$USE_IPV6" == true ]]; then
+        sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<-EOF
+
+    <VirtualHost [::]:443>
+        ServerName $DOMAIN_NAME
+    EOF
+
+        if [[ -n "$SERVER_ALIAS" ]]; then
+            sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<-EOF
+        ServerAlias $SERVER_ALIAS
+    EOF
+        fi
+
+        sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<-EOF
+        ServerAdmin webmaster@$DOMAIN_NAME
+        DocumentRoot $DOC_ROOT
+
+        <Directory $DOC_ROOT>
+            Options Indexes FollowSymLinks
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        SSLEngine on
+        SSLCertificateFile $SSL_CERT
+        SSLCertificateKeyFile $SSL_KEY
+
+        ErrorLog $ERROR_LOG
+        CustomLog $ACCESS_LOG combined
+    </VirtualHost>
+    EOF
+    fi
+}
 # Function to display help
 usage() {
     echo "Usage: sudo $0 -t <document_root> -n <domain_name> -k <ssl_key_dir> [-d <ubuntu|gentoo>] [-a <server_alias>] [-6]"
@@ -98,63 +222,8 @@ else
     VHOST_CONF_HTTPS="/etc/apache2/vhosts.d/${DOMAIN_NAME}_https.conf"
 fi
 
-# Create HTTP virtual host configuration (port 80)
-sudo tee "$VHOST_CONF_HTTP" > /dev/null <<EOF
-<VirtualHost *:80>
-    ServerName $DOMAIN_NAME
-EOF
-
-if [[ -n "$SERVER_ALIAS" ]]; then
-    sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<EOF
-    ServerAlias $SERVER_ALIAS
-EOF
-fi
-
-sudo tee -a "$VHOST_CONF_HTTP" > /dev/null <<EOF
-    ServerAdmin webmaster@$DOMAIN_NAME
-    DocumentRoot $DOC_ROOT
-
-    <Directory $DOC_ROOT>
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    ErrorLog $ERROR_LOG
-    CustomLog $ACCESS_LOG combined
-</VirtualHost>
-EOF
-
-# Create HTTPS virtual host configuration (port 443)
-sudo tee "$VHOST_CONF_HTTPS" > /dev/null <<EOF
-<VirtualHost *:443>
-    ServerName $DOMAIN_NAME
-EOF
-
-if [[ -n "$SERVER_ALIAS" ]]; then
-    sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<EOF
-    ServerAlias $SERVER_ALIAS
-EOF
-fi
-
-sudo tee -a "$VHOST_CONF_HTTPS" > /dev/null <<EOF
-    ServerAdmin webmaster@$DOMAIN_NAME
-    DocumentRoot $DOC_ROOT
-
-    <Directory $DOC_ROOT>
-        Options Indexes FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    SSLEngine on
-    SSLCertificateFile $SSL_CERT
-    SSLCertificateKeyFile $SSL_KEY
-
-    ErrorLog $ERROR_LOG
-    CustomLog $ACCESS_LOG combined
-</VirtualHost>
-EOF
+# Create HTTP virtual host configuration (port 80 and 443)
+create_vhost
 
 # Add entry to hosts file
 edit_hosts
