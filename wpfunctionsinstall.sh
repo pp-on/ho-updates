@@ -60,25 +60,28 @@ wp_config (){ #
 wp_db (){
     out "Creating Database $dbname" 1
     sleep 1
+    # drop the database and create a new one##
+    $wp db reset --yes
+
     #if there's  an error, exit -> || means exit status 1
-#    if [ $gb -eq 1 ]; then
-#        winpty mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+#    if [ $gb -eq 1 ]; then    #if there's  an error, e
+#        winpty mysql -u "$#    if [ $gb -eq 1 ]; then dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
 #    else
-#        mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+#        mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "drop DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
 #    fi
-    out "Dropping $dbname" 2
-    sleep 1
-    read -p "Do you want to drop the database? [y/n]" a
-    if [ "$a" = "y" ]; then
-        $wp db drop --yes
-        # mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
-    elif [ "$a" = "n" ]; then
-        echo "aborting..."
-    fi
-    out "Creating new $dbname" 2
-    sleep 1
-    $wp db create
-    
+    # out "Dropping $dbname" 2
+    # sleep 1
+    # read -p "Do you want to drop the database? [y/n]" a
+    # if [ "$a" = "y" ]; then
+    #     $wp db drop --yes
+    #     # mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+    # elif [ "$a" = "n" ]; then
+    #     echo "aborting..."
+    # fi
+    # out "Creating new $dbname" 2
+    # sleep 1
+    # $wp db create
+    #
 }
 wp_install (){
     out "installing wp ${title}" 1
