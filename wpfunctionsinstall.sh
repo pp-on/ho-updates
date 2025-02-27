@@ -8,7 +8,7 @@ check_db(){
     echo "#########################################"
     echo "### checking database ###"
     echo "#########################################"
-    checkdb=$(mysqlshow  -h $hostname -u web -p1234 -h $hostname $dbname | grep -v Wildcard | grep -o $dbname)
+    checkdb=$(mysqlshow  -h $dbhost -u web -p1234 -h $dbhost $dbname | grep -v Wildcard | grep -o $dbname)
     if [ -z "$checkdb" ]; then
         echo -e "${Red}found no Database with the name $dbname. Moving
         on${Color_Off}"
@@ -31,7 +31,7 @@ create_db (){
     echo ""
     out "Creating Database $dbname" 1
     sleep 1
-    mysql -u $dbuser -p$dbpw -h $hostname -e "DROP DATABASE IF EXISTS $dbname;
+    mysql -u $dbuser -p$dbpw -h $dbhost -e "DROP DATABASE IF EXISTS $dbname;
     CREATE DATABASE $dbname"
 }
 wp_dw (){
@@ -41,7 +41,7 @@ wp_dw (){
 }
 wp_config (){ #
     out "creating config" 1
-    out "using hostname $hostname" 2
+    out "using dbhost $dbhost" 2
     f="wp-config.php"
     if [ ! -f "$f" ]; then
         echo -e "$Yellow there is no $f $Color_Off"
@@ -49,7 +49,12 @@ wp_config (){ #
         rm $f
     fi
     sleep 1
-    $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$hostname" 
+    # choice for unix socket or tcp
+    if [ $unix -eq 1 ]; then
+        $wp config create --dbuser="$USER" --dbpass="" --dbname="$dbname" --dbhost="$dbhost:/run/mysqld/mysqld.sock" --dbprefix="wp_"
+    else
+        $wp config create --dbname="$dbname" --dbuser="$dbuser" --dbpass="$dbpw" --dbhost="$dbhost" --dbprefix="wp_"
+    fi
 
 #    if [ "$wsl" -eq 1 ]; then
  #       echo "define('WP_USE_EXT_MYSQL', false);" >> wp-config.php
@@ -65,16 +70,16 @@ wp_db (){
 
     #if there's  an error, exit -> || means exit status 1
 #    if [ $gb -eq 1 ]; then    #if there's  an error, e
-#        winpty mysql -u "$#    if [ $gb -eq 1 ]; then dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+#        winpty mysql -u "$#    if [ $gb -eq 1 ]; then dbuser" -p"$dbpw" -h "$dbhost" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
 #    else
-#        mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "drop DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+#        mysql -u "$dbuser" -p"$dbpw" -h "$dbhost" -e "drop DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
 #    fi
     # out "Dropping $dbname" 2
     # sleep 1
     # read -p "Do you want to drop the database? [y/n]" a
     # if [ "$a" = "y" ]; then
     #     $wp db drop --yes
-    #     # mysql -u "$dbuser" -p"$dbpw" -h "$hostname" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
+    #     # mysql -u "$dbuser" -p"$dbpw" -h "$dbhost" -e "DROP DATABASE IF EXISTS `$dbname`;" || echo -e "$Red Error $Color_Off dropping Database"
     # elif [ "$a" = "n" ]; then
     #     echo "aborting..."
     # fi
@@ -142,7 +147,7 @@ out_msg (){ #what?, where? ssh
     out "WP_pass: $wppw" 2
     out "WP_email: $wpemail" 2
     sleep 1
-    out "hostname: $hostname" 2
+    out "dbhost: $dbhost" 2
     sleep 1
     out "Local: $url" 2
     sleep 1
@@ -152,8 +157,8 @@ out_msg (){ #what?, where? ssh
 
 
 os_process(){ #kernel version
- #   [[ "$cOS" == "WSL" ]]  && url="localhost/repos/${dir}" && hostname="127.0.0.1" 
- #   [[ "$cOS" == "Git_Bash" ]]  && url="localhost/repos/${dir}" &&  hostname="localhost"
+ #   [[ "$cOS" == "WSL" ]]  && url="localhost/repos/${dir}" && dbhost="127.0.0.1" 
+ #   [[ "$cOS" == "Git_Bash" ]]  && url="localhost/repos/${dir}" &&  dbhost="localhost"
     uname="$(uname -r)"
     #ssh_repo "$ssh"
     out_msg "${cOS}-${uname}" "${url}" 
@@ -175,5 +180,5 @@ new_wp(){
     wp_config
     wp_db
     wp_install
-    htaccess
+   taccess
 }

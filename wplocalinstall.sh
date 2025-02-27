@@ -7,16 +7,19 @@ source "${MYDIR}/wphelpfuntions.sh"
 #wp  functions for installing
 source "${MYDIR}/wpfunctionsinstall.sh"
 
-hostname="localhost"     #host in DB
 wsl=0
 #if new wp install
 new=0
-dbuser="web"
+#default values for database
+dbuser="web" 
 dbpw="Hola@1234"
-wpemail="oswaldo.nickel@pfennigparade.de"
+dbhost="localhost"
+#the ddbname will be the name of the directory
 dir=$(basename $PWD)
 # replace "-" with "_" for database name 
 dbname=${dir//[^a-zA-Z0-9]/_}
+#default values for wp
+wpemail="oswaldo.nickel@pfennigparade.de"
 title="test${dir^^}"           #uppercase
 #url="localhost/arbeit/repos/$dir"
 url="arbeit.local/repos/$dir"
@@ -37,12 +40,13 @@ tldr() {
     echo -e "${Green}This script will install a new fresh WordPress in the current directory. It could use another path with -d.\nIt will used its name (directory) and create a db. \n${Yellow} It'll download, install and disable search engine indexing for local development of the latest WordPrss. Then it will clone the repository (The directory must be named exatly the repository in GitHub) and activate all the  plugins.\n${Purple}Default will be cloned with https\nRequirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"$Color_Off
 }
 usage() { 
-    echo -e "${Cyan}USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
+    echo -e "${Cyan}USAGE: $0 [-h dbhost][-u dbuser][-p dbpassword][-n dbname] -t
     title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
-    path/to/wp][-g repository ][--ssh user@host for github]${Color_Off}"
-    echo -e "-n arg:  specify the name of the database (if not, current dir
+    path/to/wp][-g repository ][--ssh user@host for github][-s]${Color_Off}"
+    echo -e "-n arg:  specify the name of the database (if not , current dir
     would be used)\n[WARNING] If it exists, it will be dropped"
-    echo "-h arg: specify the hostname for the database (default localhost)"
+    echo "-s: use unix socket for mysql"
+    echo "-h arg: specify the dbhost for the database (default localhost)"
     echo "-u arg: specify the user for the DBMS (default web)"
     echo "-p arg: specify the password for the DBMS (default 1234)"
     echo "-t arg: [MANDATORY] set the the title for the Website"
@@ -71,6 +75,11 @@ usage() {
 for arg in "$@"; do
     #case $1 in
     case $arg in
+        -s|---unix-socket)
+            dbuser="$USER"
+            dbpw=""
+            dbhost="localhost:$(mysql_config --socket)"
+            ;;
         --new)
             url="arbeit.local/wp/$dir"
             new=1
@@ -113,7 +122,7 @@ for arg in "$@"; do
             ;;
         -h)
             shift
-            hostname=$1
+            dbhost=$1
             ;;
         -wm|--wp-migrate-db-pro)
             wp_key_migrate
