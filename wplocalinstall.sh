@@ -7,16 +7,19 @@ source "${MYDIR}/wphelpfuntions.sh"
 #wp  functions for installing
 source "${MYDIR}/wpfunctionsinstall.sh"
 
-hostname="localhost"     #host in DB
+#default values
+dir=$(basename $PWD) #current directory
 wsl=0
 #if new wp install
 new=0
-dbuser="web"
-dbpw="Hola@1234"
-wpemail="oswaldo.nickel@pfennigparade.de"
-dir=$(basename $PWD)
+#default values for DB
+dbuser="wordpress"
+dbpw="AM1uY+4C9l4#,1;V=xDAd."
+hostname="localhost"
 # replace "-" with "_" for database name 
 dbname=${dir//[^a-zA-Z0-9]/_}
+
+wpemail="oswaldo.nickel@pfennigparade.de"
 title="test${dir^^}"           #uppercase
 #url="localhost/arbeit/repos/$dir"
 url="arbeit.local/repos/$dir"
