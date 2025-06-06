@@ -177,3 +177,16 @@ new_wp(){
     wp_install
     htaccess
 }
+ddev_install_wp(){
+    # Variables for wp
+    dbuser="db"
+    dbpw="db"
+    hostname="db"
+    # Initialize DDEV config
+    ddev config --project-type=wordpress --docroot=htdocs --project-name="$dir"
+
+    # Start DDEV containers
+    ddev start
+
+
+}
