@@ -161,7 +161,9 @@ os_process(){ #kernel version
 main(){ 
     wp_dw
     wp_config 
-    wp_db
+    if [[ "$ddev" -eq 0 ]]; then #lamp
+        wp_db
+    fi
     wp_install
     htaccess
     wp_block_se
@@ -182,8 +184,11 @@ ddev_install_wp(){
     dbuser="db"
     dbpw="db"
     hostname="db"
+    dbname="db"
+    url="${dir}.ddev.site"
+    wp="ddev wp"
     # Initialize DDEV config
-    ddev config --project-type=wordpress --docroot=htdocs --project-name="$dir"
+    ddev config --project-type=wordpress --docroot=. --project-name="$dir"
 
     # Start DDEV containers
     ddev start

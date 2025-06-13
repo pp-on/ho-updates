@@ -12,6 +12,7 @@ dir=$(basename $PWD) #current directory
 wsl=0
 #if new wp install
 new=0
+ddev=0 #default norma 
 #default values for DB
 dbuser="wordpress"
 dbpw="AM1uY+4C9l4#,1;V=xDAd."
@@ -37,8 +38,10 @@ repo="$git${gituser}/${dir}.git"
 ###########################
 tldr() {
 
-    echo -e "${Green}This script will install a new fresh WordPress in the current directory. It could use another path with -d.\nIt will used its name (directory) and create a db. \n${Yellow} It'll download, install and disable search engine indexing for local development of the latest WordPrss. Then it will clone the repository (The directory must be named exatly the repository in GitHub) and activate all the  plugins.\n${Purple}Default will be cloned with https\nRequirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also"$Color_Off
+    echo -e "${Green}This script will install a new fresh WordPress in the current directory. It could use another path with -d.\nIt will used its name (directory) and create a db. \n${Yellow} It'll download, install and disable search engine indexing for local development of the latest WordPrss. Then it will clone the repository (The directory must be named exatly the repository in GitHub) and activate all the  plugins.\n${Purple}Default will be cloned with https\nRequirements ar e that Xampp (or any webserver) is set up and running. Wp cli must be installed also. ddev flag could also be passed. It will then use this dockerized as webserver.
+    "$Color_Off
 }
+
 usage() { 
     echo -e "${Cyan}USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
     title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
@@ -58,9 +61,7 @@ usage() {
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
     echo "-g arg: repository to be cloned from GitHub"
-    echo "--wsl: use this script in wsl/windows -> mysql for creating DB,
-    localhost 127.0.0.1 and url /mnt/c/xampp/htdocs/repos"
-    echo --gitbash: since wsl2 does not work with git, use this torun the script
+    echo"-x or --ddev: init and starts container. url: https//$CURRENT_DIR.ddev.site wp: ddev wp, hostname: db" 
     echo "--ssh arg: host in github to used to clone (default: git@github.com)"
     exit
 }
@@ -139,11 +140,21 @@ for arg in "$@"; do
             ;;
         -pk|--private-ssh)
             #ssh=1 #use my ssh key
-            compose_repo "git@github.com-a" 
+            compose_repo "arbeit" 
             ;;
         --ssh)
             #ssh=2 #normal
             compose_repo "git@github.com" 
+            ;;
+        
+        -x|--ddev)
+            # Initialize DDEV config
+            ddev config --project-type=wordpress --docroot=. --create-docroot=false --project-name="${dir}"
+            # Start DDEV containers
+            ddev start
+            hostname="db"
+            url="${dir}.ddev.site"
+            wp="ddev wp"
             ;;
         --debug)
             wp_debug
