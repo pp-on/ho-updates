@@ -83,6 +83,13 @@ wp_db (){
     # $wp db create
     #
 }
+wp_config_ddev(){
+    out "Generating wp-config.php..." 1
+    ddev wp config create \
+    --dbname=db --dbuser=db --dbpass=db --dbhost=db \
+    --skip-check --force
+
+}
 wp_install (){
     out "installing wp ${title}" 1
     sleep 1
@@ -158,12 +165,11 @@ os_process(){ #kernel version
     #ssh_repo "$ssh"
     out_msg "${cOS}-${uname}" "${url}" 
 }
-main(){ 
+install_wp(){ 
     wp_dw
     wp_config 
-    if [[ "$ddev" -eq 0 ]]; then #lamp
-        wp_db
-    fi
+    wp_db
+    
     wp_install
     htaccess
     wp_block_se
@@ -180,18 +186,24 @@ new_wp(){
     htaccess
 }
 ddev_install_wp(){
-    # Variables for wp
-    dbuser="db"
-    dbpw="db"
-    hostname="db"
-    dbname="db"
-    url="${dir}.ddev.site"
-    wp="ddev wp"
     # Initialize DDEV config
+    out "Initializing and starting DDEV"
     ddev config --project-type=wordpress --docroot=. --project-name="$dir"
 
     # Start DDEV containers
     ddev start
+    out "Installing WordPress"
+    wp_dw
+    wp_config
+    wp_install
+    wp_block_se
+    htaccess
+    wp_git
+        if [[ -f "wp-config.php" ]]; then
+            wp_license_plugins "ACF_PRO"
+        wp_license_plugins "WPMDB"
+        wp_rights
+    fi
 
 
 }
