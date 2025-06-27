@@ -8,11 +8,8 @@ source "${MYDIR}/wphelpfuntions.sh"
 source "${MYDIR}/wpfunctionsinstall.sh"
 
 #default values
+mode="normal"  #install wordpress
 dir=$(basename $PWD) #current directory
-wsl=0
-#if new wp install
-new=0
-ddev=0 #default norma 
 #default values for DB
 dbuser="wordpress"
 dbpw="AM1uY+4C9l4#,1;V=xDAd."
@@ -44,7 +41,7 @@ tldr() {
 
 usage() { 
     echo -e "${Cyan}USAGE: $0 [-h hostname][-u dbuser][-p dbpassword][-n dbname] -t
-    title[--url location][--wpu wpuser][--wpp wppassword][-d targetDIR][-w
+    title[--url location][-U|--wp-user wpuser][-P|--wpp wppassword][-d targetDIR][-w
     path/to/wp][-g repository ][--ssh user@host for github]${Color_Off}"
     echo -e "-n arg:  specify the name of the database (if not, current dir
     would be used)\n[WARNING] If it exists, it will be dropped"
@@ -53,15 +50,15 @@ usage() {
     echo "-p arg: specify the password for the DBMS (default 1234)"
     echo "-t arg: [MANDATORY] set the the title for the Website"
     echo "--url arg: set the location/address inn the webserver (defauLt
-    localhost/arbeit/updates/CURRENT_DIR)"
-    echo "--wpu|--wpp arg: user credentials for this WP site (default "test",
+    localhost/arbeit/CURRENT_DIR)"
+    echo "-u or --wp-user and -P or --wp-password arg: admin credentials for this WP site (default "test",
     "secret")"
-    echo "--wpe arg: specify the email address for this WP site (default
+    echo "-E or --wp-email arg: specify the email address for this WP site (default
     oswaldo.nickel@pfennigparade.de)"
     echo "-d arg: use this director for the installation (default CURRENT_DIR)"
     echo "-w arg: specify location of wp-cli"
     echo "-g arg: repository to be cloned from GitHub"
-    echo"-x or --ddev: init and starts container. url: https//$CURRENT_DIR.ddev.site wp: ddev wp, hostname: db" 
+    echo "-D or --ddev: init and starts container. url: https//$CURRENT_DIR.ddev.site wp: ddev wp, hostname: db" 
     echo "--ssh arg: host in github to used to clone (default: git@github.com)"
     exit
 }
@@ -75,9 +72,8 @@ usage() {
 for arg in "$@"; do
     #case $1 in
     case $arg in
-        --new)
-            url="arbeit.local/wp/$dir"
-            new=1
+        -N|--new)
+            mode="new"
             ;; 
         -n)
             shift
@@ -99,15 +95,15 @@ for arg in "$@"; do
             shift
              url=$1
             ;;
-        --wpu)
+        -U|--wp-user)
             shift
             wpuser=$1
             ;;
-        --wpp)
+        -P--wp-password)
             shift
             wppw=$1
             ;;
-        --wpe)
+       -E|--wp-email)
             shift
             wpemail=$1
             ;;
@@ -147,11 +143,11 @@ for arg in "$@"; do
             compose_repo "git@github.com" 
             ;;
         
-        -x|--ddev)
-            # Initialize DDEV config
-            ddev config --project-type=wordpress --docroot=. --create-docroot=false --project-name="${dir}"
-            # Start DDEV containers
-            ddev start
+        -D|--ddev)
+            mode="ddev"
+            wpuser="db"
+            wppw="db"
+            dbname="db"
             hostname="db"
             url="${dir}.ddev.site"
             wp="ddev wp"
@@ -172,8 +168,19 @@ colors
 os_detection 0
 os_process 
 sleep 1
-if [ "$new" -eq 1 ]; then
-    new_wp
-else
-    main
-fi
+case "$mode" in
+    normal)
+        install_wp
+        ;;
+    new)
+        new_wp
+        ;;
+    ddev)
+        ddev_install_wp
+        ;;
+esac
+
+
+
+
+
