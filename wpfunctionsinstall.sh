@@ -197,7 +197,7 @@ ddev_install_wp(){
     txt "downloading WordPress" b
     sleep 1
     wp_dw
-    if [[ °!  -f "wp-config.php" ]]; then
+    if [[ !  -f "wp-config.php" ]]; then
         txt "Creating wp-config" b
         sleep 1
         ddev wp config create --dbname=db --dbuser=db --dbpass=db --dbhost=db
