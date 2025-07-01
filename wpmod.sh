@@ -109,16 +109,16 @@ while [ $# -gt -0 ];do
             read r
             [ "$r" = "y" ] && wp_new_user $wpuser $wppw $wpemail  || out "aborting" 3
             ;;
-        -wu|--wp-user)
+        -U|--wp-user)
             shift
             wpuser=$1
             ;;
-        -wp|--wp-password)
+        -P|--wp-password)
             shift
             wppw=$1
             ;;
-        -we|--wp-email)
-            shift
+        -E|--wp-email)
+            SHIFT
             wpemail=$1
             ;;
         -w|--location-wp)
