@@ -193,34 +193,47 @@ esac
 
     [[ "$1" -eq 1 ]] && out "$cOS" 1
 }
-out () { #what? - or #
-    local line #avoid extra lines between calls
-    local i #avoid stupid errors
-    for ((i=0; i<30; i++)); do
-        if [[ "$2" -eq 1 ]]; then
-            line+='#'
-        else
-            line+='-'
-        fi
+out() {
+    local text="$1"
+    local color_key="${2,,}"  # Convert to lowercase for consistency
+    local line_char="${3:--}" # Default to '-' if not provided
+    local color="$Cyan"       # Default color
+    local total_width=60      # Total width of the output line
 
+    # Choose color based on keyword
+    case "$color_key" in
+        1 | warning) color="$Yellow" ;;
+        3 | error)   color="$Red" ;;
+        4 | good)    color="$Green" ;;
+        *)           color="$Cyan" ;;
+    esac
+
+    # Format label with padding
+    local label=" ${text} "
+    local label_length=${#label}
+    local side_length=$(( (total_width - label_length) / 2 ))
+
+    # Build full line
+    local line=""
+    for ((i = 0; i < total_width; i++)); do
+        line+="$line_char"
     done
-    name="##        ${1}        "
-    length=${#name}
-    #echo $length
 
-    if [[ "$2" -eq 1 ]]; then
-        line="${Yellow}${line}"
-    elif [[ "$2" -eq 3 ]]; then
-        line="${Red}${line}"
-    elif [[ "$2" -eq 4 ]]; then
-        line="${Green}${line}"
-    else
-        line="${Cyan}${line}"
-    fi
-    echo -e "${line}"
-    echo -e "${1}"
+    # Build centered label line
+    local centered_line=""
+    for ((i = 0; i < side_length; i++)); do
+        centered_line+="$line_char"
+    done
+    centered_line+="$label"
+    while [[ ${#centered_line} -lt $total_width ]]; do
+        centered_line+="$line_char"
+    done
+    # Output
+    echo -e "${color}${line}"
+    echo -e "${centered_line}"
     echo -e "${line}${Color_Off}"
 }
+
 txt () {
     local line
     line="$1"
