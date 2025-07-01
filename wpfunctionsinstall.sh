@@ -187,23 +187,30 @@ new_wp(){
 }
 ddev_install_wp(){
     # Initialize DDEV config
-    out "Initializing and starting DDEV"
+    out "Initializing and starting DDEV" "#"
     ddev config --project-type=wordpress --docroot=. --project-name="$dir"
 
     # Start DDEV containers
+    out "starting..." 1
+    sleep 1
     ddev start
-    out "Installing WordPress"
+    txt "downloading WordPress" b
+    sleep 1
     wp_dw
-    wp_config
-    wp_install
-    wp_block_se
-    htaccess
-    wp_git
-        if [[ -f "wp-config.php" ]]; then
-            wp_license_plugins "ACF_PRO"
+    if [[ °!  -f "wp-config.php" ]]; then
+        txt "Creating wp-config" b
+        sleep 1
+        ddev wp config create --dbname=db --dbuser=db --dbpass=db --dbhost=db
+    fi
+    txt "Installing..." y
+    sleep 1
+    ddev wp core install --url="$url" --title="$title" --admin_user="$wpuser" --admin_password="$wppw" --admin_email="$wpemail"
+    if [[ -f "wp-config.php" ]]; then
+        wp_block_se
+        htaccess
+        wp_git
+        wp_license_plugins "ACF_PRO"
         wp_license_plugins "WPMDB"
         wp_rights
     fi
-
-
 }
