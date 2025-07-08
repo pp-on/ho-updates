@@ -1,0 +1,19 @@
+#!/bin/bash
+case "$1" in
+  install)
+    bash scripts/install/wplocalinstall.sh
+    ;;
+  update)
+    bash scripts/update/wpupdate.sh
+    ;;
+  mod)
+    bash scripts/mod/wpmod.sh
+    ;;
+  debug)
+    bash scripts/install/wplocalinstall.sh -x 1
+    ;;
+  *)
+    echo "Usage: webwerk {install|update|mod|debug}"
+    ;;
+esac
+
