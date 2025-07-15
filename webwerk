@@ -1,19 +1,44 @@
 #!/bin/bash
-case "$1" in
+set -euo pipefail
+
+# Load .env if it exists
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+fi
+
+# Load ~/.keys if it exists
+if [ -f "$HOME/.keys" ]; then
+  export $(grep -v '^#' "$HOME/.keys" | xargs)
+else
+  echo "❌ .keys not found! Plese add them manually"
+fi
+
+# Source wphelpfuntions.sh if it exists
+if [ -f scripts/install/wphelpfuntions.sh ]; then
+  source scripts/install/wphelpfuntions.sh
+else
+  echo "❌ wphelpfuntions.sh not found!"
+  exit 1
+fi
+
+COMMAND=$1
+shift || true
+
+case "$COMMAND" in
   install)
-    bash scripts/install/wplocalinstall.sh
+    bash scripts/install/wplocalinstall.sh "$@"
     ;;
   update)
-    bash scripts/update/wpupdate.sh
+    bash scripts/update/wpupdate.sh "$@"
     ;;
   mod)
-    bash scripts/mod/wpmod.sh
+    bash scripts/mod/wpmod.sh "$@"
     ;;
   debug)
-    bash scripts/install/wplocalinstall.sh -x 1
+    bash scripts/install/wplocalinstall.sh --debug "$@"
     ;;
   *)
-    echo "Usage: webwerk {install|update|mod|debug}"
+    echo "Usage: webwerk {install|update|mod|debug} [--flags]"
+    exit 1
     ;;
 esac
-
